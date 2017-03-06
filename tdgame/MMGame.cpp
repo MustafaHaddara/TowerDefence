@@ -371,20 +371,15 @@ void Game::HandlePlayerEvent(PlayerEvent event, Player *player, const void *para
 		 // NOTHING TO DO 
             }
             
-            if (TheMessageMgr->GetServerFlag())
-            {
-                /*
-                 GamePlayer *gamePlayer = static_cast<GamePlayer *>(TheMessageMgr->GetFirstPlayer());
-                 while (gamePlayer)
-                 {
-                 if ((gamePlayer != player) && (gamePlayer->GetPlayerFlags() & kPlayerReceiveVoiceChat))
-                 {
-                 new Channel(player, gamePlayer);
-                 }
-                 
-                 gamePlayer = gamePlayer->GetNextPlayer();
-                 }
-                 */
+            if (TheMessageMgr->GetServerFlag()) {
+//                 GamePlayer *gamePlayer = static_cast<GamePlayer *>(TheMessageMgr->GetFirstPlayer());
+//                 while (gamePlayer->GetNextPlayer()) {
+//                 if ((gamePlayer != player) && (gamePlayer->GetPlayerFlags() & kPlayerReceiveVoiceChat)) {
+//                     new Channel(player, gamePlayer);
+//                 }
+//                     gamePlayer = gamePlayer->GetNextPlayer();
+//                 }
+                
             }
             
             break;

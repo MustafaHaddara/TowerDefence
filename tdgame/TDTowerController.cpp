@@ -55,92 +55,101 @@ namespace MMGame
     }
 
     void TowerController::MoveController(void) {
-        World *world = Tombstone::TheWorldMgr->GetWorld();
-        Node *target = GetTargetNode();
-        
-        /* To fire at camera */
-        World *myWorld = TheWorldMgr->GetWorld();
-        const FrustumCamera *myCamera =	myWorld->GetWorldCamera();
-        Point3D targetPoint = myCamera->GetNearPlaneCenter();
-        
-        Point3D startPos = turretBarrel->GetWorldPosition();
-        Vector3D view = (targetPoint - startPos);
-        float x = view.x, y = view.y, z = view.z;
-        float distance = Sqrt(x * x + y * y + z * z);
-        printf("distance: %f\n", distance);
-        view = view.Normalize();
-        
-        if (distance < range) {
-            //interpolate between the current viewing direction and the target viewing direction.
-            //If you use say 40.0 instead of 20.0 then it will move twice as slowly.
-            Vector3D updatedView = Vector3D(originalView.x+(view.x-originalView.x)/40.0f, originalView.y+(view.y-originalView.y)/40.0f, originalView.z+(view.z-originalView.z)/40.0f);
+        /* Only track the server player */
+        if (Tombstone::TheMessageMgr->GetServerFlag()) {
+                
+            /* To fire at camera */
+            World *myWorld = TheWorldMgr->GetWorld();
+            const FrustumCamera *myCamera =	myWorld->GetWorldCamera();
+            Point3D targetPoint = myCamera->GetNearPlaneCenter();
             
-            originalView = updatedView;
-            x = updatedView.x;
-            y = updatedView.y;
-            float f = InverseSqrt(x * x + y * y);
-            Vector3D right(y * f, -x * f, 0.0F);
-            Vector3D down = Cross(updatedView, right);
-            
-            target->SetNodeMatrix3D(updatedView, -right, -down);
-            updatedView = updatedView.Normalize();
-            
-            Vector3D objectVelocity = 5.0F * (Vector3D(distance * updatedView.x, distance * updatedView.y, distance * updatedView.z));
-            objectVelocity.Normalize();
-            
-            //Firing
-            if (world)
-            {
-                //Fire on some condition - here is just an example
-                //So this is true about once every few seconds - increase (or decrease) "300"
-                //for longer (or shorter) pauses between shots
-                if ((myCount++ % (300 + Math::RandomInteger(50))) == 0)
-                {
-                    //shoot
-                    printf("firing in direction %f %f %f\n", objectVelocity.x, objectVelocity.y, objectVelocity.z);
-                }
-            }
-            // Invalidate the target node so that it gets updated properly
-            target->InvalidateNode();
-        } else {
-            // rotate by a regular amount
-//            Node *center = target->GetConnectedNode("center");
-//            Transform4D axis = center->GetNodeTransform();
-//            Transform4D rot = axis.MakeRotationZ(10.0f);
-////            originalView.SetNodeTransform(rot);
-//            target->SetNodeTransform(rot);
-////            updatedView = updatedView.Normalize();
-//            
-//            target->InvalidateNode();
+            printf("Num players: %d\n", TheMessageMgr->GetPlayerCount());
+//            Player *player = TheMessageMgr->GetFirstPlayer();
+//            int i = 0;
+//            do
+//            {
+//                i++;
+//                printf("Player #%d ", i);
+//            } while (player);
+            TheMessageMgr->SendMessageAll(TowerRotateMessage(kTowerRotateMessage, targetPoint, GetControllerIndex()));
         }
     }
 
-//    void TowerController::ReceiveMessage(const ControllerMessage *message) {
-//        if (message->GetControllerMessageType() == kSpinMessageState)
-//        {
-//            const TDSpinStateMessage *stateMessage = static_cast<const TDSpinStateMessage *>(message);
-//            
-//            spinSpeed = stateMessage->spinSpeed;
-//            currentSpeed = stateMessage->currentSpeed;
-//            currentAcceleration = stateMessage->currentAcceleration;
-//            
-//            if (spinState & kSpinInitialized)
-//            {
-//                UpdateNodeAngle(stateMessage->spinAngle);
-//                
-//                if (spinSpeed != 0.0F)
-//                {
-//                    WakeController();
-//                }
-//            }
-//        }
-//        else
-//        {
-//            KinematicController::ReceiveMessage(message);
-//        }
-//    }
+    void TowerController::ReceiveMessage(const ControllerMessage *message) {
+        printf("recieved message\n");
+        if (message->GetControllerMessageType() == kTowerRotateMessage) {
+            const TowerRotateMessage *m = static_cast<const TowerRotateMessage *>(message);
+            Point3D targetPoint = m->getTarget();
+            
+            Node *target = GetTargetNode();
+            Point3D startPos = turretBarrel->GetWorldPosition();
+            Vector3D view = (targetPoint - startPos);
+            float x = view.x, y = view.y, z = view.z;
+            float distance = Sqrt(x * x + y * y + z * z);
+            view = view.Normalize();
+            
+            if (distance < range) {
+                //interpolate between the current viewing direction and the target viewing direction.
+                //If you use say 40.0 instead of 20.0 then it will move twice as slowly.
+                Vector3D updatedView = Vector3D(originalView.x+(view.x-originalView.x)/40.0f, originalView.y+(view.y-originalView.y)/40.0f, originalView.z+(view.z-originalView.z)/40.0f);
+                
+                originalView = updatedView;
+                x = updatedView.x;
+                y = updatedView.y;
+                float f = InverseSqrt(x * x + y * y);
+                Vector3D right(y * f, -x * f, 0.0F);
+                Vector3D down = Cross(updatedView, right);
+                
+                target->SetNodeMatrix3D(updatedView, -right, -down);
+                // Invalidate the target node so that it gets updated properly
+                target->InvalidateNode();
+            }
+            
+        } else if (message->GetControllerMessageType() == kTowerShootMessage) {
+            //Fire on some condition - here is just an example
+            //So this is true about once every few seconds - increase (or decrease) "300"
+            //for longer (or shorter) pauses between shots
+            if ((myCount++ % (300)) == 0) {
+                printf("firing in direction %f %f %f\n", originalView.x, originalView.y, originalView.z);
+            }
+        } else {
+            Controller::ReceiveMessage(message);
+        }
+    }
 //
 //    void TowerController::SendInitialStateMessages(Player *player) const {
 //        player->SendMessage(TDSpinStateMessage(GetControllerIndex(), spinAngle, spinSpeed, currentSpeed, currentAcceleration));
 //    }
+
+
+    TowerRotateMessage::TowerRotateMessage(ControllerMessageType type, const Point3D& trgt, int32 index, unsigned_int32 flags): Tombstone::ControllerMessage(type, index, flags) {
+        target = trgt;
+    }
+
+    TowerRotateMessage::~TowerRotateMessage()
+    {
+    }
+
+    void TowerRotateMessage::CompressMessage(Compressor& data) const
+    {
+        ControllerMessage::CompressMessage(data);
+        
+        data << target.x;
+        data << target.y;
+        data << target.z;
+    }
+
+    bool TowerRotateMessage::DecompressMessage(Decompressor& data)
+    {
+        if (ControllerMessage::DecompressMessage(data))
+        {
+            data >> target.x;
+            data >> target.y;
+            data >> target.z;
+            
+            return (true);
+        }
+        
+        return (false);
+    }
 }

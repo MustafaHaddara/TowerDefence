@@ -18,10 +18,7 @@ namespace MMGame
         kModelTower             = 'Turt'
     };
     
-    class TowerController final : public Controller
-    {
-    private:
-        
+    class TowerController final : public Controller {
     private:
         
         const float     range = 30.0f;          // Range within aiming
@@ -35,7 +32,56 @@ namespace MMGame
         ~TowerController();
         void PreprocessController(void);
         void MoveController(void);
+        void ReceiveMessage(const ControllerMessage *message);
+        
+        enum {
+            kTowerRotateMessage,
+            kTowerShootMessage
+        };
+        
     };
+    
+    class TowerRotateMessage : public ControllerMessage {
+        friend class TowerController;
+        
+    private:
+        
+        Point3D target;
+        
+    public:
+        
+        TowerRotateMessage(ControllerMessageType type, const Point3D& trgt, int32 index, unsigned_int32 flags = 0);
+        ~TowerRotateMessage();
+        
+        Point3D getTarget() const {
+            return target;
+        }
+        
+        void CompressMessage(Compressor& data) const override;
+        bool DecompressMessage(Decompressor& data) override;
+    };
+    
+//    class TowerShootMessage : public ControllerMessage {
+//        friend class TowerController;
+//        
+//    private:
+//        
+//        Point3D target;
+//        
+//        TowerShootMessage(ControllerMessageType type, int32 controllerIndex);
+//        
+//    public:
+//        
+//        TowerShootMessage(ControllerMessageType type, const Point3D& target);
+//        ~TowerShootMessage();
+//        
+//        Point3D getTarget() const {
+//            return target;
+//        }
+//        
+//        void CompressMessage(Compressor& data) const override;
+//        bool DecompressMessage(Decompressor& data) override;
+//    };
 }
 
 #endif

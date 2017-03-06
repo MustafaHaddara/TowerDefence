@@ -575,8 +575,10 @@ void FighterController::SendInitialStateMessages(Player *player) const
 
 void FighterController::SendSnapshot(void)
 {
-	//GameCharacterController::SendSnapshot();
-	//TheMessageMgr->SendMessageClients(FighterUpdateMessage(GetControllerIndex(), lookAzimuth, lookAltitude), GetFighterPlayer());
+    if (TheMessageMgr->GetServerFlag()) {
+        GameCharacterController::SendSnapshot();
+    }
+	TheMessageMgr->SendMessageClients(FighterUpdateMessage(GetControllerIndex(), lookAzimuth, lookAltitude), 0);
 }
 
 RigidBodyStatus FighterController::HandleNewGeometryContact(const GeometryContact *contact)

@@ -57,34 +57,13 @@ namespace MMGame
     void TowerController::MoveController(void) {
         /* Only track the server player */
         if (Tombstone::TheMessageMgr->GetServerFlag()) {
-                
+            myCount += TheTimeMgr->GetDeltaTime();
+
             /* To fire at camera */
             World *myWorld = TheWorldMgr->GetWorld();
             const FrustumCamera *myCamera =	myWorld->GetWorldCamera();
             Point3D targetPoint = myCamera->GetNearPlaneCenter();
-            
-            printf("Num players: %d\n", TheMessageMgr->GetPlayerCount());
-            TheMessageMgr->SendMessageAll(TowerRotateMessage(kTowerRotateMessage, targetPoint, GetControllerIndex()));
-        }
-    }
-    
-    ControllerMessage *TowerController::CreateMessage(ControllerMessageType type) const {
-        switch (type)
-        {
-            case kTowerRotateMessage:
-                return (new TowerRotateMessage(type, GetControllerIndex()));
-        }
-        
-        return (Controller::CreateMessage(type));
-    }
-    
-    void TowerController::ReceiveMessage(const ControllerMessage *message) {
-        printf("recieved message\n");
-        if (message->GetControllerMessageType() == kTowerRotateMessage) {
-            const TowerRotateMessage *m = static_cast<const TowerRotateMessage *>(message);
-            Point3D targetPoint = m->getTarget();
-            
-            Node *target = GetTargetNode();
+
             Point3D startPos = turretBarrel->GetWorldPosition();
             Vector3D view = (targetPoint - startPos);
             float x = view.x, y = view.y, z = view.z;
@@ -94,27 +73,58 @@ namespace MMGame
             if (distance < range) {
                 //interpolate between the current viewing direction and the target viewing direction.
                 //If you use say 40.0 instead of 20.0 then it will move twice as slowly.
-                Vector3D updatedView = Vector3D(originalView.x+(view.x-originalView.x)/40.0f, originalView.y+(view.y-originalView.y)/40.0f, originalView.z+(view.z-originalView.z)/40.0f);
+                Vector3D updatedView = Vector3D(originalView.x+(view.x-originalView.x)/40.0f,
+                                                originalView.y+(view.y-originalView.y)/40.0f,
+                                                originalView.z+(view.z-originalView.z)/40.0f);
                 
                 originalView = updatedView;
-                x = updatedView.x;
-                y = updatedView.y;
-                float f = InverseSqrt(x * x + y * y);
-                Vector3D right(y * f, -x * f, 0.0F);
-                Vector3D down = Cross(updatedView, right);
                 
-                target->SetNodeMatrix3D(updatedView, -right, -down);
-                // Invalidate the target node so that it gets updated properly
-                target->InvalidateNode();
+                TheMessageMgr->SendMessageAll(TowerRotateMessage(kTowerRotateMessage, updatedView, GetControllerIndex()));
+                
+                // Fire on every SHOOT_DURATION milliseconds
+                if (myCount >= SHOOT_DURATION) {
+                    myCount = 0;
+                    // Fire
+                    TheMessageMgr->SendMessageAll(TowerShootMessage(kTowerShootMessage, targetPoint, GetControllerIndex()));
+                }
             }
+        }
+    }
+    
+    ControllerMessage *TowerController::CreateMessage(ControllerMessageType type) const {
+        switch (type)
+        {
+            case kTowerRotateMessage:
+                return new TowerRotateMessage(type, GetControllerIndex());
+                
+            case kTowerShootMessage:
+                return new TowerShootMessage(type, GetControllerIndex());
+        }
+        
+        return (Controller::CreateMessage(type));
+    }
+    
+    void TowerController::ReceiveMessage(const ControllerMessage *message) {
+        if (message->GetControllerMessageType() == kTowerRotateMessage) {
+            Node *target = GetTargetNode();
+            
+            const TowerRotateMessage *m = static_cast<const TowerRotateMessage *>(message);
+            Vector3D updatedView = m->getTarget();
+            
+            float x = updatedView.x;
+            float y = updatedView.y;
+            float f = InverseSqrt(x * x + y * y);
+            Vector3D right(y * f, -x * f, 0.0F);
+            Vector3D down = Cross(updatedView, right);
+            
+            target->SetNodeMatrix3D(updatedView, -right, -down);
+            // Invalidate the target node so that it gets updated properly
+            target->InvalidateNode();
             
         } else if (message->GetControllerMessageType() == kTowerShootMessage) {
-            //Fire on some condition - here is just an example
-            //So this is true about once every few seconds - increase (or decrease) "300"
-            //for longer (or shorter) pauses between shots
-            if ((myCount++ % (300)) == 0) {
-                printf("firing in direction %f %f %f\n", originalView.x, originalView.y, originalView.z);
-            }
+            const TowerShootMessage *m = static_cast<const TowerShootMessage *>(message);
+            Vector3D shootTarget = m->getTarget();
+            printf("firing in direction %f %f %f\n", shootTarget.x, shootTarget.y, shootTarget.z);
         } else {
             Controller::ReceiveMessage(message);
         }
@@ -124,7 +134,7 @@ namespace MMGame
         
     }
     
-    TowerRotateMessage::TowerRotateMessage(ControllerMessageType type, const Point3D& trgt, int32 index, unsigned_int32 flags): Tombstone::ControllerMessage(type, index, flags) {
+    TowerRotateMessage::TowerRotateMessage(ControllerMessageType type, const Vector3D& trgt, int32 index, unsigned_int32 flags): Tombstone::ControllerMessage(type, index, flags) {
         target = trgt;
     }
 
@@ -143,15 +153,45 @@ namespace MMGame
 
     bool TowerRotateMessage::DecompressMessage(Decompressor& data)
     {
-        if (ControllerMessage::DecompressMessage(data))
-        {
+        if (ControllerMessage::DecompressMessage(data)) {
             data >> target.x;
             data >> target.y;
             data >> target.z;
             
-            return (true);
+            return true;
         }
         
-        return (false);
+        return false;
+    }
+    
+    TowerShootMessage::TowerShootMessage(ControllerMessageType type, int32 index): Tombstone::ControllerMessage(type, index) {
+    
+    }
+    
+    TowerShootMessage::TowerShootMessage(ControllerMessageType type, const Point3D& trgt, int32 index): Tombstone::ControllerMessage(type, index) {
+        target = trgt;
+    }
+    
+    TowerShootMessage::~TowerShootMessage() {}
+    
+    void TowerShootMessage::CompressMessage(Compressor& data) const {
+        ControllerMessage::CompressMessage(data);
+        
+        data << target.x;
+        data << target.y;
+        data << target.z;
+    
+    }
+    
+    bool TowerShootMessage::DecompressMessage(Decompressor& data) {
+        if (ControllerMessage::DecompressMessage(data)) {
+            data >> target.x;
+            data >> target.y;
+            data >> target.z;
+            
+            return true;
+        }
+        
+        return false;
     }
 }

@@ -21,7 +21,7 @@ namespace MMGame
     class TowerController final : public Controller {
     private:
         
-        const float     range = 30.0f;          // Range within aiming
+        const float     range = 30.0f;      // Range within aiming
         int             myCount;            // for firing
         Transform4D     originalTransform;  // The target's original transform
         Vector3D        originalView;       // The direction turret is facing before any rotation
@@ -30,9 +30,10 @@ namespace MMGame
     public:
         TowerController();
         ~TowerController();
-        void PreprocessController(void);
-        void MoveController(void);
-        void ReceiveMessage(const ControllerMessage *message);
+        void PreprocessController(void) override;
+        void MoveController(void) override;
+        ControllerMessage *CreateMessage(ControllerMessageType type) const override;
+        void ReceiveMessage(const ControllerMessage *message) override;
         
         enum {
             kTowerRotateMessage,
@@ -50,6 +51,7 @@ namespace MMGame
         
     public:
         
+        TowerRotateMessage(ControllerMessageType type, int32 index);
         TowerRotateMessage(ControllerMessageType type, const Point3D& trgt, int32 index, unsigned_int32 flags = 0);
         ~TowerRotateMessage();
         

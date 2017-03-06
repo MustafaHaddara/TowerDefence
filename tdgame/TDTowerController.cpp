@@ -64,17 +64,20 @@ namespace MMGame
             Point3D targetPoint = myCamera->GetNearPlaneCenter();
             
             printf("Num players: %d\n", TheMessageMgr->GetPlayerCount());
-//            Player *player = TheMessageMgr->GetFirstPlayer();
-//            int i = 0;
-//            do
-//            {
-//                i++;
-//                printf("Player #%d ", i);
-//            } while (player);
             TheMessageMgr->SendMessageAll(TowerRotateMessage(kTowerRotateMessage, targetPoint, GetControllerIndex()));
         }
     }
-
+    
+    ControllerMessage *TowerController::CreateMessage(ControllerMessageType type) const {
+        switch (type)
+        {
+            case kTowerRotateMessage:
+                return (new TowerRotateMessage(type, GetControllerIndex()));
+        }
+        
+        return (Controller::CreateMessage(type));
+    }
+    
     void TowerController::ReceiveMessage(const ControllerMessage *message) {
         printf("recieved message\n");
         if (message->GetControllerMessageType() == kTowerRotateMessage) {
@@ -116,12 +119,11 @@ namespace MMGame
             Controller::ReceiveMessage(message);
         }
     }
-//
-//    void TowerController::SendInitialStateMessages(Player *player) const {
-//        player->SendMessage(TDSpinStateMessage(GetControllerIndex(), spinAngle, spinSpeed, currentSpeed, currentAcceleration));
-//    }
-
-
+    
+    TowerRotateMessage::TowerRotateMessage(ControllerMessageType type, int32 index): Tombstone::ControllerMessage(type, index) {
+        
+    }
+    
     TowerRotateMessage::TowerRotateMessage(ControllerMessageType type, const Point3D& trgt, int32 index, unsigned_int32 flags): Tombstone::ControllerMessage(type, index, flags) {
         target = trgt;
     }

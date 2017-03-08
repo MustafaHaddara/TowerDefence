@@ -68,7 +68,7 @@ namespace MMGame
 
 			//ControllerReg<GameRigidBodyController>			gameRigidBodyControllerRegistration;
             ControllerReg<TowerController> towerControllerRegistration;
-
+            
 
 			LocatorRegistration								spawnLocatorRegistration;
 			LocatorRegistration								collLocatorRegistration;

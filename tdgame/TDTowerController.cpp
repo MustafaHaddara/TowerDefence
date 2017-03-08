@@ -103,6 +103,7 @@ namespace MMGame
         
         return (Controller::CreateMessage(type));
     }
+
     
     void TowerController::ReceiveMessage(const ControllerMessage *message) {
         if (message->GetControllerMessageType() == kTowerRotateMessage) {

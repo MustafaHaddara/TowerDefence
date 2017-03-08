@@ -260,6 +260,8 @@ namespace MMGame
 
 		public:
 
+            void fireLaser(void);
+        
 			FighterController(ControllerType type);
 
 			enum
@@ -280,7 +282,8 @@ namespace MMGame
 				kFighterMessageWeapon,
 				kFighterMessageEmptyAmmo,
 				kFighterMessageDamage,
-				kFighterMessageDeath
+				kFighterMessageDeath,
+                kFireLaser
 			};
 
 			~FighterController();

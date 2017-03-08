@@ -452,8 +452,12 @@ bool ClientFiringMessage::DecompressMessage(Decompressor& data)
 bool ClientFiringMessage::HandleMessage(Player *sender) const
 {
 	
-
-	return (true);
+    FighterController *controller = static_cast<GamePlayer *>(sender)->GetPlayerController();
+    if (controller) {
+        controller->fireLaser();
+    }
+    
+    return (true);
 }
 
 

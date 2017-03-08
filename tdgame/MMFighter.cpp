@@ -415,22 +415,26 @@ ControllerMessage *FighterController::CreateMessage(ControllerMessageType type) 
 {
 	switch (type)
 	{
-				case kFighterMessageBeginMovement:
-		case kFighterMessageEndMovement:
-		case kFighterMessageChangeMovement:
+            case kFighterMessageBeginMovement:
+            case kFighterMessageEndMovement:
+            case kFighterMessageChangeMovement:
 
 			return (new FighterMovementMessage(type, GetControllerIndex()));
 
 			case kFighterMessageDeath:
 
 			return (new ControllerMessage(kFighterMessageDeath, GetControllerIndex()));
+            
+            case kFireLaser:
+           
+            return(new ControllerMessage(kFireLaser, GetControllerIndex()));
 	}
 
 	return (GameCharacterController::CreateMessage(type));
 }
 
 void FighterController::ReceiveMessage(const ControllerMessage *message)
-{
+{   printf("ray Receive Message \n");
 	switch (message->GetControllerMessageType())
 	{
 		case kFighterMessageBeginMovement:
@@ -553,6 +557,15 @@ void FighterController::ReceiveMessage(const ControllerMessage *message)
 
 			break;
 		}
+            
+        case kFireLaser:
+        {
+            printf("ray Recieve a FireLaser Message \n");
+            if (message->GetControllerMessageType() == kFireLaser) {
+                Controller::ReceiveMessage(message);
+            }
+            break;
+        }
 
 		default:
 
@@ -758,6 +771,34 @@ void FighterController::AnimateFighter(void)
 	GetTargetNode()->AnimateModel();
 }
 */
+
+void FighterController::fireLaser(void)
+{
+    
+    CollisionData   collisionData;
+    const Point3D& position = GetTargetNode()->GetWorldPosition();
+    Vector2D t = CosSin(lookAzimuth);
+    Vector2D u = CosSin(lookAltitude);
+#define FIRE_RANGE 100.
+    Vector3D shotDirection(t.x * u.x,  t.y * u.x,  u.y);
+    Point3D pos(position.x,position.y,position.z+1);
+    
+    World* world=TheWorldMgr->GetWorld();
+    // DetectCollision works too if data not needed !
+    CollisionState state = world->QueryCollision(pos, pos +  shotDirection* 100.F, 0.0F,kCollisionProjectile , &collisionData);
+    if (state == kCollisionStateGeometry){
+        TheEngine->Report("GEOMETRY");
+        printf("ray: GEOMETRY \n");
+    }else if (state == kCollisionStateRigidBody){
+        TheEngine->Report("BODY");
+        printf("ray: BODY \n");
+    }else{
+        TheEngine->Report("MISS");
+        printf("ray: Miss \n");
+        
+    };
+    
+}
 
 //----------------------------------------------------------------------------------------------------------------
 

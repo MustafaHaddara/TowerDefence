@@ -15,8 +15,7 @@
 #include "TSWorld.h"
 #include "TSZones.h"
 
-namespace MMGame
-{
+namespace MMGame {
     using namespace Tombstone;
 
     using Tombstone::ControllerType;
@@ -139,12 +138,11 @@ namespace MMGame
         target = trgt;
     }
 
-    TowerRotateMessage::~TowerRotateMessage()
-    {
+    TowerRotateMessage::~TowerRotateMessage() {
+        
     }
 
-    void TowerRotateMessage::CompressMessage(Compressor& data) const
-    {
+    void TowerRotateMessage::CompressMessage(Compressor& data) const {
         ControllerMessage::CompressMessage(data);
         
         data << target.x;
@@ -152,8 +150,7 @@ namespace MMGame
         data << target.z;
     }
 
-    bool TowerRotateMessage::DecompressMessage(Decompressor& data)
-    {
+    bool TowerRotateMessage::DecompressMessage(Decompressor& data) {
         if (ControllerMessage::DecompressMessage(data)) {
             data >> target.x;
             data >> target.y;

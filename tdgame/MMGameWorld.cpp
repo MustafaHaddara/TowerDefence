@@ -11,6 +11,7 @@
 #include "MMMultiPLayer.h"
 #include "MMGamePlayer.h"
 #include "MMFighter.h"
+#include "TDMinionController.h"
 
 #include "MMColectCont.h"
 #include "MMPhysEntity.h"
@@ -62,15 +63,12 @@ WorldResult GameWorld::PreprocessWorld(void)
 void GameWorld::CollectZoneMarkers(Zone *zone)
 {
     Marker *marker = zone->GetFirstMarker();
-    while (marker)
-    {
+    while (marker) {
         Marker *next = marker->GetNextListElement();
         
-        if ((marker->GetMarkerType() == kMarkerLocator) && (marker->NodeEnabled()))
-        {
+        if ((marker->GetMarkerType() == kMarkerLocator) && (marker->NodeEnabled())) {
             LocatorMarker *locator = static_cast<LocatorMarker *>(marker);
-            switch (locator->GetLocatorType())
-            {
+            switch (locator->GetLocatorType()) {
                 case kLocatorSpawn:
                     spawnLocatorCount++;
                     spawnLocatorList.AppendListElement(locator);
@@ -216,9 +214,9 @@ void GameWorld::ReqestOjectAtLocation(const Point3D& pos ,ObjectType type,Player
         TheMessageMgr->SendMessageAll(message,true);
 
     }else{
-        
-        CreateCharacterMessage  message(kMessageCreateCharacter,cIndex,type,key,pos);
-        TheMessageMgr->SendMessageAll(message,true);
+
+        CreateCharacterMessage *message = new CreateCharacterMessage(kMessageCreateCharacter,cIndex,type,key,pos);
+        TheMessageMgr->SendMessageAll(*message,true);
 
         
     }
@@ -284,33 +282,25 @@ void GameWorld::AddOjectAtLocation(const Point3D& pos ,ObjectType type,long inde
     Controller* controller;
     Model *model;
     
-    
-    // TMP
-    //if (key =! TheMessageMgr->GetLocalPlayer())return;
-    
     GameWorld *world = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
     
     switch(type){
-        case kSoldierEntity:{
-                // SPECIAL CASE !!!!
-                CreateAvatar(pos , index, key);return;
-                return;
-        }
-	// COLELCT OBJECT
-	case kCollectEntity:	{
+        case kSoldierEntity:
+            // SPECIAL CASE !!!!
+            CreateAvatar(pos , index, key);
+            return;
+
+        case kCollectEntity:
             controller=new CollectableController();
             //Model *model = Model::GetModel(kModelApple);
             // WE CAN LOAD MODELS AT RUNTIM TOO
             model = Model::NewModel("models/model1");
             break;
-            }
             
-    case kPhysEntiy:	{
+        case kPhysEntiy:
             controller=new PhysEntity();
             model = Model::NewModel("models/model1");
             break;
-        }
-
     }
     
     // SET THE CONTROLLER KEY

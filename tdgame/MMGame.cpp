@@ -51,6 +51,7 @@ Game::Game() :
 //        gameRigidBodyControllerRegistration(kControllerGameRigidBody, stringTable.GetString(StringID('CTRL', kControllerGameRigidBody))),
 
         towerControllerRegistration(kControllerTower, "Tower"),
+        minionControllerRegistration(kControllerMinion, "Minion"),
 
 		hostCommandObserver(this, &Game::HandleHostCommand),
 		joinCommandObserver(this, &Game::HandleJoinCommand),

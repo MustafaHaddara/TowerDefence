@@ -14,7 +14,7 @@
 //
 //=============================================================
 
-
+#include <stdio.h>
 #include "MMFighter.h"
 #include "MMGame.h"
 #include "MMCameras.h"

@@ -6,6 +6,7 @@
 //
 //
 
+#include <stdio.h>
 #include "TDMinionController.h"
 
 #include "TSController.h"

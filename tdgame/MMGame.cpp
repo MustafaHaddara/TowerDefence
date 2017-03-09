@@ -15,7 +15,7 @@
 //
 //=============================================================
 
-
+#include <stdio.h>
 #include "TSToolWindows.h"
 #include "TSAudioCapture.h"
 #include "TSWater.h"

@@ -11,7 +11,7 @@
 //
 //=============================================================
 
-
+#include <stdio.h>
 #include "MMColectCont.h"
 #include "MMGame.h"
 #include "MMMultiplayer.h"

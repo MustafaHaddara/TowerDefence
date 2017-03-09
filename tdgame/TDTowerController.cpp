@@ -5,7 +5,7 @@
 //  Created by Mustafa Haddara on 2017-01-07.
 //
 //
-
+#include <stdio.h>
 #include "TDTowerController.h"
 #include "MMGameWorld.h"
 
@@ -82,7 +82,7 @@ namespace MMGame {
         }
     }
     
-    Boolean TowerController::GetTargetPoint(int32 max_dist, Vector3D *out) {
+    bool TowerController::GetTargetPoint(int32 max_dist, Vector3D *out) {
         GameWorld *gw = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
         Node** minions = gw->GetMinions();
         

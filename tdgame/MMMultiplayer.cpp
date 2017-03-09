@@ -603,6 +603,7 @@ bool ClientRequestMessage::HandleMessage(Player *sender) const
             Point3D pos;
             GameWorld *world = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
             world->ReqestOjectAtLocation(pos,kSoldierEntity,sender->GetPlayerKey());
+			return true;
         //}
     //}
 }

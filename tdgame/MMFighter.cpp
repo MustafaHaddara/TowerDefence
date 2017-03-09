@@ -146,7 +146,7 @@ void FighterController::PreprocessController(void)
 {
 	GameCharacterController::PreprocessController();
 
-    printf("Preprocess \n");
+    //printf("Preprocess \n");
 	SetFrictionCoefficient(0.001F);
 	//SetCollisionKind(GetCollisionKind() | kCollisionPlayer);
 
@@ -434,7 +434,7 @@ ControllerMessage *FighterController::CreateMessage(ControllerMessageType type) 
 }
 
 void FighterController::ReceiveMessage(const ControllerMessage *message) {
-    printf("ray Receive Message \n");
+    //printf("ray Receive Message \n");
 	switch (message->GetControllerMessageType())
 	{
 		case kFighterMessageBeginMovement:
@@ -560,7 +560,7 @@ void FighterController::ReceiveMessage(const ControllerMessage *message) {
             
         case kFireLaser:
         {
-            printf("ray Recieve a FireLaser Message \n");
+            //printf("ray Recieve a FireLaser Message \n");
             if (message->GetControllerMessageType() == kFireLaser) {
                 Controller::ReceiveMessage(message);
             }
@@ -576,7 +576,7 @@ void FighterController::ReceiveMessage(const ControllerMessage *message) {
 
 void FighterController::SendInitialStateMessages(Player *player) const
 {
-    printf("FIGHTER Send Initial State Message CALLED \n");
+    //printf("FIGHTER Send Initial State Message CALLED \n");
     
     
     const Point3D& pos = GetTargetNode()->GetWorldPosition();
@@ -788,13 +788,13 @@ void FighterController::fireLaser(void)
     CollisionState state = world->QueryCollision(pos, pos +  shotDirection* 100.F, 0.0F,kCollisionProjectile , &collisionData);
     if (state == kCollisionStateGeometry){
         TheEngine->Report("GEOMETRY");
-        printf("ray: GEOMETRY \n");
+        //printf("ray: GEOMETRY \n");
     }else if (state == kCollisionStateRigidBody){
         TheEngine->Report("BODY");
-        printf("ray: BODY \n");
+        //printf("ray: BODY \n");
     }else{
         TheEngine->Report("MISS");
-        printf("ray: Miss \n");
+        //printf("ray: Miss \n");
         
     };
     

@@ -82,7 +82,7 @@ namespace MMGame {
         }
     }
     
-    Boolean TowerController::GetTargetPoint(int32 max_dist, Vector3D *out) {
+    bool TowerController::GetTargetPoint(int32 max_dist, Vector3D *out) {
         GameWorld *gw = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
         Node** minions = gw->GetMinions();
         
@@ -147,7 +147,7 @@ namespace MMGame {
         } else if (message->GetControllerMessageType() == kTowerShootMessage) {
             const TowerShootMessage *m = static_cast<const TowerShootMessage *>(message);
             Vector3D shootTarget = m->getTarget();
-            printf("firing in direction %f %f %f\n", shootTarget.x, shootTarget.y, shootTarget.z);
+            //printf("firing in direction %f %f %f\n", shootTarget.x, shootTarget.y, shootTarget.z);
         } else {
             Controller::ReceiveMessage(message);
         }

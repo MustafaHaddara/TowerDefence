@@ -172,7 +172,7 @@ void Game::StartSinglePlayerGame(const char *name)
 // I hard coded this, so it connects to the local machine
 void Game::HandleJoinCommand(Command *command, const char *text)
 {
-    printf(" Joining a Game \n");
+    //printf(" Joining a Game \n");
     TheMessageMgr->BeginMultiplayerGame(false);
     
     //String *addressText=MessageMgr::AddressToString(TheNetworkMgr->GetLocalAddress());
@@ -204,7 +204,7 @@ EngineResult Game::HostMultiplayerGame(const char *name, unsigned_int32 flags)
 {
 	ExitCurrentGame();
     
-    printf("Start Multi Player Game \n");
+    //printf("Start Multi Player Game \n");
 
 	//TheNetworkMgr->SetProtocol(kGameProtocol);
 	TheNetworkMgr->SetPortNumber(kGamePort);
@@ -218,7 +218,7 @@ EngineResult Game::HostMultiplayerGame(const char *name, unsigned_int32 flags)
 		if (result == kWorldOkay)
 		{
             
-            printf("World Loaded \n");
+            //printf("World Loaded \n");
             GameWorld *world = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
 			//multiplayerFlags = flags;
 
@@ -251,7 +251,7 @@ EngineResult Game::JoinMultiplayerGame(const char *name, unsigned_int32 flags)
 	if (result == kWorldOkay)
 	{
 
-        printf("Joinging Game in word %s \n",name);
+        //printf("Joinging Game in word %s \n",name);
 		//GamePlayer *player = static_cast<GamePlayer *>(TheMessageMgr->GetPlayer(kPlayerServer));
 		//if (flags & kMultiplayerDedicated)
 		{
@@ -300,14 +300,14 @@ void Game::UnloadWorld(void)
 
 void Game::HandleConnectionEvent(ConnectionEvent event, const NetworkAddress& address, const void *param)
 {
-    printf("HandleConnectionEvent\n");
+    //printf("HandleConnectionEvent\n");
     switch (event)
     {
         case kConnectionQueryReceived:
         {
             World *world = TheWorldMgr->GetWorld();
             if (world){
-                printf("SENDING WORLD NAME \n");
+                //printf("SENDING WORLD NAME \n");
                 const char *gameName = TheEngine->GetVariable("gameName")->GetValue();
                 const char *worldName = world->GetWorldName();
                 
@@ -319,7 +319,7 @@ void Game::HandleConnectionEvent(ConnectionEvent event, const NetworkAddress& ad
         }
             
         case kConnectionAttemptFailed:
-            printf("kConnectionAttemptFailed\n");
+            //printf("kConnectionAttemptFailed\n");
             
             // The server rejected our connection.
             
@@ -329,7 +329,7 @@ void Game::HandleConnectionEvent(ConnectionEvent event, const NetworkAddress& ad
         case kConnectionServerAccepted:
             
             // The server accepted our connection.
-            printf("kConnectionServerAccepted\n");
+            //printf("kConnectionServerAccepted\n");
             
             
             
@@ -342,7 +342,7 @@ void Game::HandleConnectionEvent(ConnectionEvent event, const NetworkAddress& ad
         case kConnectionServerClosed:
             
             // The server was shut down.
-            printf("closed \n");
+            //printf("closed \n");
             
             ExitCurrentGame();
             break;
@@ -360,12 +360,12 @@ void Game::HandleConnectionEvent(ConnectionEvent event, const NetworkAddress& ad
 
 void Game::HandlePlayerEvent(PlayerEvent event, Player *player, const void *param)
 {
-    printf("HandlePlayerEvent\n");
+    //printf("HandlePlayerEvent\n");
     switch (event)
     {
         case kPlayerConnected:
         {
-            printf("kPlayerConnected\n");
+            //printf("kPlayerConnected\n");
             
             if (TheMessageMgr->GetSynchronizedFlag())
             {
@@ -388,7 +388,7 @@ void Game::HandlePlayerEvent(PlayerEvent event, Player *player, const void *para
             
         case kPlayerDisconnected:
         {
-             printf("kPlayerDisconnected\n");
+             //printf("kPlayerDisconnected\n");
             Controller *controller = static_cast<GamePlayer *>(player)->GetPlayerController();
             if (controller)
             {
@@ -400,7 +400,7 @@ void Game::HandlePlayerEvent(PlayerEvent event, Player *player, const void *para
             
         case kPlayerTimedOut:
         {
-            printf("kPlayerTimedOut\n");
+            //printf("kPlayerTimedOut\n");
             Controller *controller = static_cast<GamePlayer *>(player)->GetPlayerController();
             if (controller)
             {
@@ -413,7 +413,7 @@ void Game::HandlePlayerEvent(PlayerEvent event, Player *player, const void *para
         case kPlayerInitialized:
         {
             
-            printf("kPlayerInitialized\n");
+            //printf("kPlayerInitialized\n");
             // A new player joining the game has been initialized. For each player already
             // in the game, send a message  TO constrcut the coresponding Avatar
             
@@ -431,7 +431,7 @@ void Game::HandlePlayerEvent(PlayerEvent event, Player *player, const void *para
             // Now tell the new player what world is being played.
             
             World *world = TheWorldMgr->GetWorld();
-            printf("Server Send Word Name \n");
+            //printf("Server Send Word Name \n");
             if (world) player->SendMessage(GameInfoMessage(0,world->GetWorldName()));
             
             
@@ -447,11 +447,11 @@ void Game::HandlePlayerEvent(PlayerEvent event, Player *player, const void *para
 // THIS IS CALLED WHEN ALL THE LOADING ON THE CLIENT IS DONE
 void Game::HandleGameEvent(GameEvent event, const void *param)
 {
-    printf("HandleGameEvent\n");
+    //printf("HandleGameEvent\n");
     switch (event)
     {
         case kGameSynchronized:
-            printf("Game Syncronized request avatar\n");
+            //printf("Game Syncronized request avatar\n");
             ClientRequestMessage message(kMessageRequestAvantar,0);
             TheMessageMgr->SendMessage(kPlayerServer,message);
             break;

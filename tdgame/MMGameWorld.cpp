@@ -52,7 +52,7 @@ WorldResult GameWorld::PreprocessWorld(void)
     collLocatorCount = 0;
     minionCount = 0;
     CollectZoneMarkers(GetRootNode());
-    printf("WE found %d coll Locators \n",collLocatorCount);
+    //printf("WE found %d coll Locators \n",collLocatorCount);
     
     {
         spectatorCamera.SetNodePosition(Point3D(0.0F, 0.0F, 1.0F));
@@ -91,7 +91,7 @@ void GameWorld::CollectZoneMarkers(Zone *zone)
         Controller *c = child->GetController();
         if (c != nullptr && c->GetControllerType() == kControllerMinion) {
             if (minionCount > MAX_NUM_MINIONS) {
-                printf("too many minions!");
+                //printf("too many minions!");
                 return;
             }
             minionList[minionCount] = child;
@@ -220,9 +220,9 @@ void GameWorld::ReqestOjectAtLocation(const Point3D& pos ,ObjectType type,Player
     //PlayerKey key=TheMessageMgr->GetLocalPlayer()->GetPlayerKey();
     
     
-    printf("Request Oject: Index %d Type %s key %d \n",cIndex,TYPE_NAME(type),key);
+    //printf("Request Oject: Index %d Type %s key %d \n",cIndex,TYPE_NAME(type),key);
     if(type==kSoldierEntity){
-        printf("THis is an Avatar, Spwn a spawn point \n");
+        //printf("THis is an Avatar, Spwn a spawn point \n");
         GameWorld *world = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
         const Marker *marker = world->GetSpawnLocator(0);
         
@@ -268,7 +268,7 @@ Controller* GameWorld::CreateAvatar(const Point3D& pos ,long index,PlayerKey key
     // NOW WE Have to set the camara to this avantar if it is the local!
     if(key==TheMessageMgr->GetLocalPlayer()->GetKey()){
         
-        printf("This is my player, Set Camara \n");
+        //printf("This is my player, Set Camara \n");
         
         
         world->SetCameraTargetModel(model);
@@ -292,7 +292,7 @@ void GameWorld::AddOjectAtLocation(const Point3D& pos ,ObjectType type,long inde
 {
     
     //printf("CREATE object of type %s with index %d for player key %d \n",TYPE_NAME(type),index,key);
-    printf("CREATE  Oject: Index %d Type %s key %d \n",index,TYPE_NAME(type),key);
+    //printf("CREATE  Oject: Index %d Type %s key %d \n",index,TYPE_NAME(type),key);
     
     // Create the controller and the model and put it together
     Controller* controller;
@@ -335,7 +335,7 @@ void GameWorld::AddOjectAtLocation(const Point3D& pos ,ObjectType type,long inde
 
 void GameWorld::PopulateWorld(void)
 {
-    printf("Populating WOrkd \n");
+    //printf("Populating WOrkd \n");
 	// Collect Items
 	for(int i=0;i<collLocatorCount;i++){
 		ReqestOjectAtLocation(collLocatorList[i]->GetNodePosition(),kCollectEntity ,-1);

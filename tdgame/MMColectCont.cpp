@@ -104,7 +104,7 @@ void CollectableController::MoveController(void)
 
 void CollectableController::ActivateController(Node *initiator, Node *trigger)
 {
-    printf("I GOR ACTIVATED \n");
+    //printf("I GOR ACTIVATED \n");
 
 	TheMessageMgr->SendMessageAll(ControllerMessage(kCollectableMessageCollect, GetControllerIndex()));
 }
@@ -196,7 +196,7 @@ void CollectableController::ReceiveMessage(const ControllerMessage *message)
 void CollectableController::SendInitialStateMessages(Player *player) const
 {
 	//player->SendMessage(CollectableStateMessage(GetControllerIndex(), GetTargetNode()->NodeEnabled()));
-    printf("Collect Send Initial State Message CALLED \n");
+    //printf("Collect Send Initial State Message CALLED \n");
     
     
     const Point3D& pos = GetTargetNode()->GetWorldPosition();

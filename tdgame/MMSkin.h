@@ -47,7 +47,20 @@ namespace MMGame
         Widget                          scoreGroup;
         Widget                          weaponsGroup;
 
-	 TextWidget                      *myText;
+		TextWidget                      *myText;
+
+		// Modifiable Widgets
+
+		ImageWidget						*healthBackground;
+		ImageWidget						*towerImage;
+		ProgressWidget					*healthProgress;
+		TextWidget						*moneyText;
+
+		// Static Widgets
+
+		// towerDisplay to be split into modifiable IconButtonWidgets
+		Widget							*towerDisplay;
+		Widget							*moneyDisplay;
         
         static ColorRGBA CalculateBarColor(float value);
         
@@ -62,7 +75,7 @@ namespace MMGame
         void MoveWidget(void);
         
         void UpdateDisplayPosition(void);
-        
+		void UpdatePlayerHealth(void);
         
          void ShowMessageText(const char* text);
         

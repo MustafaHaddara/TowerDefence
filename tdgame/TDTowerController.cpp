@@ -147,7 +147,7 @@ namespace MMGame {
         } else if (message->GetControllerMessageType() == kTowerShootMessage) {
             const TowerShootMessage *m = static_cast<const TowerShootMessage *>(message);
             Vector3D shootTarget = m->getTarget();
-            printf("firing in direction %f %f %f\n", shootTarget.x, shootTarget.y, shootTarget.z);
+            //printf("firing in direction %f %f %f\n", shootTarget.x, shootTarget.y, shootTarget.z);
         } else {
             Controller::ReceiveMessage(message);
         }

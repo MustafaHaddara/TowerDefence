@@ -433,8 +433,8 @@ ControllerMessage *FighterController::CreateMessage(ControllerMessageType type) 
 	return (GameCharacterController::CreateMessage(type));
 }
 
-void FighterController::ReceiveMessage(const ControllerMessage *message)
-{   printf("ray Receive Message \n");
+void FighterController::ReceiveMessage(const ControllerMessage *message) {
+    printf("ray Receive Message \n");
 	switch (message->GetControllerMessageType())
 	{
 		case kFighterMessageBeginMovement:

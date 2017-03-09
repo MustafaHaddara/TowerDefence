@@ -33,6 +33,7 @@ namespace MMGame
         ~TowerController();
         void PreprocessController(void) override;
         void MoveController(void) override;
+        Boolean GetTargetPoint(int32 range, Vector3D *out);
         ControllerMessage *CreateMessage(ControllerMessageType type) const override;
         void ReceiveMessage(const ControllerMessage *message) override;
         

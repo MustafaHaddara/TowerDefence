@@ -7,6 +7,7 @@
 //
 
 #include "TDTowerController.h"
+#include "MMGameWorld.h"
 
 #include "TSController.h"
 #include "TSCameras.h"
@@ -58,18 +59,8 @@ namespace MMGame {
         if (Tombstone::TheMessageMgr->GetServerFlag()) {
             myCount += TheTimeMgr->GetDeltaTime();
 
-            /* To fire at camera */
-            World *myWorld = TheWorldMgr->GetWorld();
-            const FrustumCamera *myCamera =	myWorld->GetWorldCamera();
-            Point3D targetPoint = myCamera->GetNearPlaneCenter();
-
-            Point3D startPos = turretBarrel->GetWorldPosition();
-            Vector3D view = (targetPoint - startPos);
-            float x = view.x, y = view.y, z = view.z;
-            float distance = Sqrt(x * x + y * y + z * z);
-            view = view.Normalize();
-            
-            if (distance < range) {
+            Vector3D view = Vector3D(0,0,0);
+            if (GetTargetPoint(range, &view)) {
                 //interpolate between the current viewing direction and the target viewing direction.
                 //If you use say 40.0 instead of 20.0 then it will move twice as slowly.
                 Vector3D updatedView = Vector3D(originalView.x+(view.x-originalView.x)/40.0f,
@@ -83,11 +74,43 @@ namespace MMGame {
                 // Fire on every SHOOT_DURATION milliseconds
                 if (myCount >= SHOOT_DURATION) {
                     myCount = 0;
+                    Point3D targetPoint = Point3D(0,0,0);
                     // Fire
                     TheMessageMgr->SendMessageAll(TowerShootMessage(kTowerShootMessage, targetPoint, GetControllerIndex()));
                 }
             }
         }
+    }
+    
+    Boolean TowerController::GetTargetPoint(int32 max_dist, Vector3D *out) {
+        GameWorld *gw = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
+        Node** minions = gw->GetMinions();
+        
+        Point3D startPos = turretBarrel->GetWorldPosition();
+        
+        for (int i=0; i<gw->GetNumMinions(); i++) {
+            Point3D targetPoint = minions[i]->GetWorldPosition();
+            Box3D *box = new Box3D();
+            if (!minions[i]->CalculateBoundingBox(box)) {
+                // whelp this is a stupid error
+                // should never happen
+                return false;
+            }
+
+            targetPoint = targetPoint + (2*box->GetCenter()); // I have no idea why multiplying by 2 makes the tracking look better
+
+            Vector3D view = (targetPoint - startPos);
+            float x = view.x, y = view.y, z = view.z;
+            float distance = Sqrt(x * x + y * y + z * z);
+            if (distance < max_dist) {
+                view = view.Normalize();
+                out->x = view.x;
+                out->y = view.y;
+                out->z = view.z;
+                return true;
+            }
+        }
+        return false;
     }
     
     ControllerMessage *TowerController::CreateMessage(ControllerMessageType type) const {

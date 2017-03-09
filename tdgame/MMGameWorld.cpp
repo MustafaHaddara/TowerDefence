@@ -49,6 +49,7 @@ WorldResult GameWorld::PreprocessWorld(void)
     
     spawnLocatorCount = 0;
     collLocatorCount = 0;
+    minionCount = 0;
     CollectZoneMarkers(GetRootNode());
     printf("WE found %d coll Locators \n",collLocatorCount);
     
@@ -82,6 +83,20 @@ void GameWorld::CollectZoneMarkers(Zone *zone)
         }
         
         marker = next;
+    }
+
+    Node *child = GetRootNode()->GetFirstSubnode();
+    while (child) {
+        Controller *c = child->GetController();
+        if (c != nullptr && c->GetControllerType() == kControllerMinion) {
+            if (minionCount > MAX_NUM_MINIONS) {
+                printf("too many minions!");
+                return;
+            }
+            minionList[minionCount] = child;
+            minionCount++;
+        }
+        child=child->GetNextSubnode();
     }
     
     Zone *subzone = zone->GetFirstSubzone();

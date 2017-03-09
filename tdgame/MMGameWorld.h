@@ -26,9 +26,12 @@ private:
     
     int32					spawnLocatorCount;
     int32					collLocatorCount;
+    int32                   minionCount;
+    static const int32      MAX_NUM_MINIONS = 32; // assuming we can only have 16 minions at a time derp
     
     List<Marker>			spawnLocatorList;
     List<Marker>			collLocatorList;
+    Node*                   minionList[MAX_NUM_MINIONS];
     
     SpectatorCamera			spectatorCamera;
     FirstPersonCamera		firstPersonCamera;
@@ -92,6 +95,14 @@ public:
     void SetBloodIntensity(float blood)
     {
         bloodIntensity = Fmin(blood, 1.0F);
+    }
+    
+    Node** GetMinions(void) {
+        return minionList;
+    }
+    
+    int32 GetNumMinions(void) {
+        return minionCount;
     }
     
     WorldResult PreprocessWorld(void) override;

@@ -60,7 +60,7 @@ namespace MMGame {
             target = target->GetConnectedNode("next_in_path"); // next_in_path
         }
         if (target == nullptr) {
-            printf("completed motion\n");
+            //printf("completed motion\n");
         }
     }
     

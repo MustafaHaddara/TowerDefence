@@ -186,16 +186,16 @@ void Game::HandleJoinCommand(Command *command, const char *text)
 
     
     TheEngine->Report(str, kReportError);
-    //TheNetworkMgr->SetPortNumber(kGamePort);
-    //TheNetworkMgr->SetBroadcastPortNumber(kGamePort);
-    //TheNetworkMgr->Initialize();
+    TheNetworkMgr->SetPortNumber(kGamePort);
+    TheNetworkMgr->SetBroadcastPortNumber(kGamePort);
+    TheNetworkMgr->Initialize();
     
     // Now we're just going to (try to) connect to the entered address.
     NetworkAddress local_addr = TheNetworkMgr->GetLocalAddress();
     local_addr.SetPort(kGamePort);
     
-    TheMessageMgr->Connect(local_addr);
-    //TheMessageMgr->Connect(address);
+//    TheMessageMgr->Connect(local_addr);
+    TheMessageMgr->Connect(address);
 }
 
 

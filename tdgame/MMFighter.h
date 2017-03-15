@@ -141,7 +141,7 @@ namespace MMGame
 	class FighterController : public GameCharacterController
 	{
 		private:
-
+			int32					health;
 			unsigned_int32			fighterFlags;
 			Link<Player>			fighterPlayer;
  
@@ -176,7 +176,7 @@ namespace MMGame
 
 			Node					*mountNode;
 			Light					*flashlight;
-
+			
 			MergeAnimator			*rootAnimator;
 			MergeAnimator			*mergeAnimator;
 			BlendAnimator			*blendAnimator;
@@ -259,7 +259,15 @@ namespace MMGame
 			}
 
 		public:
+			int32 GetHealth(void)
+			{
+				return(health);
+			}
 
+			void setHealth(int32 newHealth)
+			{
+				health = newHealth;
+			}
             void fireLaser(void);
         
 			FighterController(ControllerType type);

@@ -91,13 +91,14 @@ Game::Game() :
 	TheInputMgr->SetEscapeCallback(&EscapeCallback, this);
 
 	TheWorldMgr->SetWorldCreator(&CreateWorld);
-
+	TheMessageMgr->SetPlayerCreator(&CreatePlayer);
 	gameFlags = 0;
 
 	currentWorldName[0] = 0;
 
 
 	TheInterfaceMgr->SetInputManagementMode(kInputManagementAutomatic);
+	DisplayBoard::OpenBoard();
 
 }
 
@@ -515,7 +516,8 @@ Message *Game::CreateMessage(MessageType type, Decompressor& data) const
             
             return(new ClientRequestMessage(type));
 
-            
+		case kMessageHealth:
+			return(new UpdateHealthMessage);
             
     }
     

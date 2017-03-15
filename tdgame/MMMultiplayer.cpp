@@ -607,10 +607,6 @@ bool ClientRequestMessage::HandleMessage(Player *sender) const
         //}
     //}
 }
-void ClientRequestMessage::CompressMessage(Compressor& data) const
-{
-	data << myData;
-}
 
 
 
@@ -647,9 +643,14 @@ bool UpdateHealthMessage::HandleMessage(Player* sender) const
 	Player *player = TheMessageMgr->GetLocalPlayer();
 	if (player)
 	{
-		if (TheDisplayBoard)
+		FighterController *controller = static_cast<const GamePlayer *>(player)->GetPlayerController();
+		if (controller)
 		{
-			TheDisplayBoard->UpdateHealthBar(newHealth);
+			if (TheDisplayBoard)
+			{
+				controller->setHealth(newHealth);
+				TheDisplayBoard->UpdatePlayerHealth();
+			}
 		}
 	}
 	return(true);

@@ -6,7 +6,7 @@
 
 #include "MMSkin.h"
 #include "MMGame.h"
-
+#include "MMFighter.h"
 
 using namespace MMGame;
 
@@ -153,10 +153,15 @@ void DisplayBoard::UpdatePlayerHealth(void)
 	const Player *player = TheMessageMgr->GetLocalPlayer();
 	if (player)
 	{
-		int32 health = 50;
-		healthProgress = static_cast<ProgressWidget*>(FindWidget("HealthBar"));
-		healthProgress->SetValue(health);
-		moneyText->SetText("5000");
+		FighterController *controller = static_cast<const GamePlayer *>(player)->GetPlayerController();
+		if (controller)
+		{
+			int32 health = controller->GetHealth();
+			healthProgress = static_cast<ProgressWidget*>(FindWidget("HealthBar"));
+			healthProgress->SetValue(health);
+			moneyText->SetText("5000");
+
+		}
 	}
 }
 

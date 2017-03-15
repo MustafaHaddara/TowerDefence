@@ -882,7 +882,33 @@ public:
     }
 };
 
-    
+class UpdateHealthMessage : public Message
+{
+	friend class Game;
+
+private:
+
+	int32 newHealth;
+
+		UpdateHealthMessage();
+
+public:
+
+	UpdateHealthMessage(int32 inputHealth);
+	~UpdateHealthMessage();
+
+
+	void CompressMessage(Compressor& data) const override;
+	bool DecompressMessage(Decompressor& data) override;
+
+	bool HandleMessage(Player *sender) const override;
+
+
+	float GetNewHealth(void) const
+	{
+		return (newHealth);
+	}
+};
 
     
     

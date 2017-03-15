@@ -611,7 +611,8 @@ void FighterController::EnterWorld(World *world, const Point3D& worldPosition)
 	}
      */
 }
-
+// fighterController => instance of player
+// 
 CharacterStatus FighterController::Damage(Fixed damage, unsigned_int32 flags, GameCharacterController *attacker, const Point3D *position, const Vector3D *force)
 {
 		return (kCharacterUnaffected);

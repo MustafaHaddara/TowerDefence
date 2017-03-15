@@ -607,8 +607,50 @@ bool ClientRequestMessage::HandleMessage(Player *sender) const
         //}
     //}
 }
+void ClientRequestMessage::CompressMessage(Compressor& data) const
+{
+	data << myData;
+}
 
 
 
 
 // ZUXSVMT
+UpdateHealthMessage::UpdateHealthMessage() : Message(kMessageHealth)
+{
+}
+
+UpdateHealthMessage::UpdateHealthMessage(int32 inputHealth) : Message(kMessageHealth)
+{
+	newHealth = inputHealth;
+}
+
+UpdateHealthMessage::~UpdateHealthMessage()
+{
+	
+}
+
+void UpdateHealthMessage::CompressMessage(Compressor& data) const
+{
+	data << int(newHealth);
+}
+
+bool UpdateHealthMessage::DecompressMessage(Decompressor& data)
+{
+	data >> newHealth;
+	return(true);
+}
+
+
+bool UpdateHealthMessage::HandleMessage(Player* sender) const
+{
+	Player *player = TheMessageMgr->GetLocalPlayer();
+	if (player)
+	{
+		if (TheDisplayBoard)
+		{
+			TheDisplayBoard->UpdateHealthBar(newHealth);
+		}
+	}
+	return(true);
+}

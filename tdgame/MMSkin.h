@@ -48,12 +48,14 @@ namespace MMGame
         Widget                          weaponsGroup;
 
 		TextWidget                      *myText;
+		TextWidget                      *baseText;
 
 		// Modifiable Widgets
 
 		ImageWidget						*healthBackground;
 		ImageWidget						*towerImage;
 		ProgressWidget					*healthProgress;
+		ProgressWidget					*baseProgress;
 		TextWidget						*moneyText;
 
 		// Static Widgets
@@ -78,7 +80,7 @@ namespace MMGame
 		void UpdatePlayerHealth(void);
         
          void ShowMessageText(const char* text);
-        
+		 void UpdateBaseHealth(int32 health);
     };
 
     extern DisplayBoard *TheDisplayBoard;

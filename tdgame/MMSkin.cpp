@@ -32,7 +32,10 @@ DisplayBoard::DisplayBoard() :  Global<DisplayBoard>(TheDisplayBoard)
 	myText->SetWidgetColor(ColorRGBA(1.0f, 1.0f, 1.0f)); // WHITE
 	myText->SetWidgetPosition(Point3D(50, 50, 0));
     
-    
+	baseText = new TextWidget(Vector2D(80.0F, 16.0F), "Base Health:");
+	baseText->SetFont("font/Bold");
+	baseText->SetWidgetColor(ColorRGBA(1.0f, 1.0f, 1.0f)); // WHITE
+	
 
 
 	// Adds widget to the screen
@@ -54,6 +57,12 @@ DisplayBoard::DisplayBoard() :  Global<DisplayBoard>(TheDisplayBoard)
 	healthProgress->SetValue(100);
 	healthProgress->SetWidgetColor(ColorRGBA(0.05f, 0.05f, 0.05f));
 
+	baseProgress = new ProgressWidget(Vector2D(296.0f, 18.0f));
+	baseProgress->SetWidgetKey("BaseHealth");
+	baseProgress->SetMaxValue(100);
+	baseProgress->SetValue(100);
+	baseProgress->SetWidgetColor(ColorRGBA(0.05f, 0.05f, 0.05f));
+
 	towerImage = new ImageWidget(Vector2D(64.0f, 64.0f));
 	towerImage->SetWidgetKey("TowerImage");
 	towerImage->SetTexture(0, "textures/tower");
@@ -69,9 +78,11 @@ DisplayBoard::DisplayBoard() :  Global<DisplayBoard>(TheDisplayBoard)
 	AppendSubnode(towerDisplay);
 	AppendSubnode(healthBackground);
 	AppendSubnode(healthProgress);
+	AppendSubnode(baseProgress);
 	AppendSubnode(towerImage);
 	AppendSubnode(moneyDisplay);
 	AppendSubnode(moneyText);
+	AppendSubnode(baseText);
 
 	UpdateDisplayPosition();
 }
@@ -118,9 +129,19 @@ void DisplayBoard::UpdateDisplayPosition(void)
 		, 48.0F
 		, 0.0f));
 
+	baseText->SetWidgetPosition(Point3D(
+		displayWidth * 0.5F - 500.0F * 0.5F
+		, 1000.0F
+		, 0.0f));
+
 	healthProgress->SetWidgetPosition(Point3D(
 		displayWidth * 0.5F - 296.0F * 0.5F
 		, 50.0F
+		, 0.0f));
+
+	baseProgress->SetWidgetPosition(Point3D(
+		displayWidth * 0.5F - 296.0F * 0.5F
+		, 1000.0F
 		, 0.0f));
 
 	towerImage->SetWidgetPosition(Point3D(
@@ -165,4 +186,8 @@ void DisplayBoard::UpdatePlayerHealth(void)
 	}
 }
 
-
+void DisplayBoard::UpdateBaseHealth(int32 health)
+{
+	baseProgress = static_cast<ProgressWidget*>(FindWidget("BaseHealth"));
+	baseProgress->SetValue(health);
+}

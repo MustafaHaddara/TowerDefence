@@ -655,3 +655,48 @@ bool UpdateHealthMessage::HandleMessage(Player* sender) const
 	}
 	return(true);
 }
+
+
+UpdateBaseHealthMessage::UpdateBaseHealthMessage() : Message(kMessageHealth)
+{
+}
+
+UpdateBaseHealthMessage::UpdateBaseHealthMessage(int32 inputHealth, int32 conindex) : Message(kMessageHealth)
+{
+	controllerindex = conindex;
+	newHealth = inputHealth;
+}
+
+UpdateBaseHealthMessage::~UpdateBaseHealthMessage()
+{
+
+}
+
+void UpdateBaseHealthMessage::CompressMessage(Compressor& data) const
+{
+	data << int(newHealth);
+	data << int(controllerindex);
+}
+
+bool UpdateBaseHealthMessage::DecompressMessage(Decompressor& data)
+{
+	data >> newHealth;
+	data >> controllerindex;
+	return(true);
+}
+
+
+bool UpdateBaseHealthMessage::HandleMessage(Player* sender) const
+{
+	Controller *controller = TheWorldMgr->GetWorld()->GetController(controllerindex);
+//	BaseController *base = static_cast<const BaseController *>(controller);
+	if (controller)
+	{
+		if (TheDisplayBoard)
+		{
+//			base->setHealth(newHealth);
+	//		TheDisplayBoard->UpdateBaseHealth(base->getHealth());
+		}
+	}
+	return(true);
+}

@@ -105,10 +105,9 @@ namespace MMGame {
             case kMinionShotMessage: {
                 const MinionShotMessage *m = static_cast<const MinionShotMessage *>(message);
                 health -= m->GetDamage();
-                printf("minion #%d has %d health\n", id, health);
+//                printf("minion #%d has %d health\n", id, health);
                 if (health == 0) {
                     // TODO send a game message object and get the server to do this
-                    printf("minion %d is dead\n", id);
                     delete GetTargetNode();
                 }
             }

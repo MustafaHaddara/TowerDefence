@@ -48,9 +48,6 @@ private:
     
     static ProximityResult RecordSplashDamage(Node *node, const Point3D& center, float radius, void *cookie);
     
-    
-    
-    
 public:
     
     GameWorld(const char *name);
@@ -97,9 +94,7 @@ public:
         bloodIntensity = Fmin(blood, 1.0F);
     }
     
-    Node** GetMinions(void) {
-        return minionList;
-    }
+    Node** GetMinions(void);
     
     int32 GetNumMinions(void) {
         return minionCount;
@@ -135,6 +130,8 @@ public:
 
 
     void PopulateWorld(void);
+    
+    void DeleteMinion(int32 minionId);
     
 };
 

@@ -607,8 +607,3 @@ bool ClientRequestMessage::HandleMessage(Player *sender) const
         //}
     //}
 }
-
-
-
-
-// ZUXSVMT

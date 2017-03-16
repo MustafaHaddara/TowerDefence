@@ -163,7 +163,6 @@ namespace MMGame
 
 	};
 
-
 	extern Game *TheGame;
 }
 

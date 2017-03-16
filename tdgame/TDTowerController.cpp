@@ -60,7 +60,8 @@ namespace MMGame {
             myCount += TheTimeMgr->GetDeltaTime();
 
             Vector3D view = Vector3D(0,0,0);
-            if (GetTargetPoint(range, &view)) {
+            MinionController *mController = GetTargetPoint(RANGE, &view);
+            if (mController) {
                 //interpolate between the current viewing direction and the target viewing direction.
                 //If you use say 40.0 instead of 20.0 then it will move twice as slowly.
                 Vector3D updatedView = Vector3D(originalView.x+(view.x-originalView.x)/40.0f,
@@ -74,27 +75,28 @@ namespace MMGame {
                 // Fire on every SHOOT_DURATION milliseconds
                 if (myCount >= SHOOT_DURATION) {
                     myCount = 0;
-                    Point3D targetPoint = Point3D(0,0,0);
                     // Fire
-                    TheMessageMgr->SendMessageAll(TowerShootMessage(kTowerShootMessage, targetPoint, GetControllerIndex()));
+                    mController->DealDamage(DAMAGE_DEALT);
                 }
             }
         }
     }
     
-    bool TowerController::GetTargetPoint(int32 max_dist, Vector3D *out) {
+    MinionController* TowerController::GetTargetPoint(int32 max_dist, Vector3D *out) {
         GameWorld *gw = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
         Node** minions = gw->GetMinions();
         
         Point3D startPos = turretBarrel->GetWorldPosition();
         
         for (int i=0; i<gw->GetNumMinions(); i++) {
+            if (minions[i] == nullptr) continue;
             Point3D targetPoint = minions[i]->GetWorldPosition();
             Box3D *box = new Box3D();
-            if (!minions[i]->CalculateBoundingBox(box)) {
+            MinionController *mc = static_cast<MinionController *>(minions[i]->GetController());
+            if (mc && !minions[i]->CalculateBoundingBox(box)) {
                 // whelp this is a stupid error
                 // should never happen
-                return false;
+                return nullptr;
             }
 
             targetPoint = targetPoint + (2*box->GetCenter()); // I have no idea why multiplying by 2 makes the tracking look better
@@ -107,20 +109,16 @@ namespace MMGame {
                 out->x = view.x;
                 out->y = view.y;
                 out->z = view.z;
-                return true;
+                return mc;
             }
         }
-        return false;
+        return nullptr;
     }
-    
+
     ControllerMessage *TowerController::CreateMessage(ControllerMessageType type) const {
-        switch (type)
-        {
+        switch (type) {
             case kTowerRotateMessage:
                 return new TowerRotateMessage(type, GetControllerIndex());
-                
-            case kTowerShootMessage:
-                return new TowerShootMessage(type, GetControllerIndex());
         }
         
         return (Controller::CreateMessage(type));
@@ -143,11 +141,7 @@ namespace MMGame {
             target->SetNodeMatrix3D(updatedView, -right, -down);
             // Invalidate the target node so that it gets updated properly
             target->InvalidateNode();
-            
-        } else if (message->GetControllerMessageType() == kTowerShootMessage) {
-            const TowerShootMessage *m = static_cast<const TowerShootMessage *>(message);
-            Vector3D shootTarget = m->getTarget();
-            //printf("firing in direction %f %f %f\n", shootTarget.x, shootTarget.y, shootTarget.z);
+
         } else {
             Controller::ReceiveMessage(message);
         }
@@ -184,35 +178,5 @@ namespace MMGame {
         
         return false;
     }
-    
-    TowerShootMessage::TowerShootMessage(ControllerMessageType type, int32 index): Tombstone::ControllerMessage(type, index) {
-    
-    }
-    
-    TowerShootMessage::TowerShootMessage(ControllerMessageType type, const Point3D& trgt, int32 index): Tombstone::ControllerMessage(type, index) {
-        target = trgt;
-    }
-    
-    TowerShootMessage::~TowerShootMessage() {}
-    
-    void TowerShootMessage::CompressMessage(Compressor& data) const {
-        ControllerMessage::CompressMessage(data);
-        
-        data << target.x;
-        data << target.y;
-        data << target.z;
-    
-    }
-    
-    bool TowerShootMessage::DecompressMessage(Decompressor& data) {
-        if (ControllerMessage::DecompressMessage(data)) {
-            data >> target.x;
-            data >> target.y;
-            data >> target.z;
-            
-            return true;
-        }
-        
-        return false;
-    }
+
 }

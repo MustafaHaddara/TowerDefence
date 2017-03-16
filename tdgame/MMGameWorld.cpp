@@ -85,20 +85,6 @@ void GameWorld::CollectZoneMarkers(Zone *zone)
         marker = next;
     }
 
-    Node *child = GetRootNode()->GetFirstSubnode();
-    while (child) {
-        Controller *c = child->GetController();
-        if (c != nullptr && c->GetControllerType() == kControllerMinion) {
-            if (minionCount > MAX_NUM_MINIONS) {
-                //printf("too many minions!");
-                return;
-            }
-            minionList[minionCount] = child;
-            minionCount++;
-        }
-        child=child->GetNextSubnode();
-    }
-    
     Zone *subzone = zone->GetFirstSubzone();
     while (subzone)
     {
@@ -339,9 +325,39 @@ void GameWorld::PopulateWorld(void)
 	for(int i=0;i<collLocatorCount;i++){
 		ReqestOjectAtLocation(collLocatorList[i]->GetNodePosition(),kCollectEntity ,-1);
 	}
-
-
 }
 
+void GameWorld::DeleteMinion(int32 minionId) {
+    GetMinions();
+    for (int i=0; i<minionCount; i++) {
+        Node *minionNode = minionList[i];
+        if (minionNode != nullptr) {
+            MinionController *mc = static_cast<MinionController *>(minionNode->GetController());
+            if (mc->GetId() == minionId) {
+                minionList[i] = nullptr;
+                minionNode->GetSuperNode()->RemoveSubnode(minionNode);
+                delete minionNode;
+            }
+        }
+    }
+}
 
+Node** GameWorld::GetMinions() {
+    Node *child = GetRootNode()->GetFirstSubnode();
+    minionCount = 0;
+    while (child) {
+        Controller *c = child->GetController();
+        if (c != nullptr && c->GetControllerType() == kControllerMinion) {
+            if (minionCount > MAX_NUM_MINIONS) {
+                printf("too many minions!");
+                return;
+            }
+            minionList[minionCount] = child;
+            minionCount++;
+        }
+        child=child->GetNextSubnode();
+    }
+    return minionList;
+
+}
 

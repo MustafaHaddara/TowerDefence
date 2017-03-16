@@ -515,16 +515,20 @@ Message *Game::CreateMessage(MessageType type, Decompressor& data) const
             
             return(new ClientRequestMessage(type));
 
-            
+//        case kMessageMinionDead:
+//            return new MinionDeadMessage();
             
     }
     
     return (nullptr);
 }
 
-void Game::ReceiveMessage(Player *sender, const NetworkAddress& address, const Message *message)
-{
-    
+void Game::ReceiveMessage(Player *sender, const NetworkAddress& address, const Message *message) {
+//    switch (message->GetMessageType()) {
+//        case kMessageMinionDead:
+//            printf("recieved minion dead\n");
+//            break;
+//    }
 }
 
 void Game::SpawnPlayer(Player *player)
@@ -552,5 +556,3 @@ void Game::SpawnPlayer(Player *player)
 void Game::ApplicationTask(void)
 {
 }
-
-

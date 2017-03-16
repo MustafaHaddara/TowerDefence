@@ -86,7 +86,7 @@ namespace MMGame
 		kMessageClientVoiceReceiveStart,
 		kMessageClientVoiceReceiveStop,
         kMessageCreateCharacter, // ADDED THIS
-        kMessageRequestAvantar
+        kMessageRequestAvantar,
 	};
 
 
@@ -943,5 +943,3 @@ public:
 }
 
 #endif
-
-// ZUXSVMT

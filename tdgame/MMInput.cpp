@@ -165,9 +165,8 @@ void FireAction::HandleEngage(void)
 			if ((!interactionNode) || (interactionNode->GetNodeType() != kNodeEffect))
 			{
 				// No panel effect, so fire the weapon.
-
 				ClientFiringMessage message((GetActionType() == kActionFirePrimary) ? kMessageClientFiringPrimaryBegin : kMessageClientFiringSecondaryBegin, controller->GetLookAzimuth(), controller->GetLookAltitude());
-				TheMessageMgr->SendMessage(kPlayerServer, message);
+				TheMessageMgr->SendMessage(player->GetPlayerKey(), message);
 			}
 			else
 			{

@@ -21,12 +21,15 @@ namespace MMGame {
     
     using Tombstone::ControllerType;
     
+    int32 MinionController::LATEST_ID = 0;
+    
     MinionController::MinionController() : Controller(kControllerMinion) {
-        
+        id = LATEST_ID;
+        LATEST_ID++;
     }
     
     MinionController::~MinionController() {
-    
+        
     }
     
     void MinionController::PreprocessController(void) {
@@ -65,33 +68,53 @@ namespace MMGame {
         }
     }
     
+    void MinionController::DealDamage(int32 damage) {
+        MinionShotMessage *msg = new MinionShotMessage(kMinionShotMessage, damage, id, GetControllerIndex());
+        TheMessageMgr->SendMessageAll(*msg);
+    }
+    
     ControllerMessage *MinionController::CreateMessage(ControllerMessageType type) const {
         switch (type) {
             case kMinionMoveMessage:
                 return new MinionMoveMessage(type, GetControllerIndex());
+            case kMinionShotMessage:
+                return new MinionShotMessage(type, GetControllerIndex());
         }
     
     }
     
     void MinionController::ReceiveMessage(const ControllerMessage *message) {
-        if (message->GetControllerMessageType() == kMinionMoveMessage) {
-            const MinionMoveMessage *m = static_cast<const MinionMoveMessage *>(message);
-            Point3D trgt = m->getTarget();
-            Node *attached = GetTargetNode();
-            Point3D current = attached->GetNodePosition();
-            Vector3D diff = trgt - current;
-            if (Magnitude(diff) < STEP_SIZE) {
-                GetNextTarget();
-                return;
+        switch (message->GetControllerMessageType()) {
+            case kMinionMoveMessage: {
+                const MinionMoveMessage *m = static_cast<const MinionMoveMessage *>(message);
+                Point3D trgt = m->getTarget();
+                Node *attached = GetTargetNode();
+                Point3D current = attached->GetNodePosition();
+                Vector3D diff = trgt - current;
+                if (Magnitude(diff) < STEP_SIZE) {
+                    GetNextTarget();
+                    return;
+                }
+                diff.Normalize();
+                diff = diff * STEP_SIZE;
+                Point3D step = current + diff;
+                
+                attached->SetNodePosition(step);
+                attached->InvalidateNode();
+                break;
             }
-            diff.Normalize();
-            diff = diff * STEP_SIZE;
-            Point3D step = current + diff;
-            
-            attached->SetNodePosition(step);
-            attached->InvalidateNode();
-        } else {
-            Controller::ReceiveMessage(message);
+            case kMinionShotMessage: {
+                const MinionShotMessage *m = static_cast<const MinionShotMessage *>(message);
+                health -= m->GetDamage();
+//                printf("minion #%d has %d health\n", id, health);
+                if (health == 0) {
+                    // TODO send a game message object and get the server to do this
+                    delete GetTargetNode();
+                }
+            }
+            default: {
+                Controller::ReceiveMessage(message);
+            }
         }
     }
     
@@ -133,5 +156,65 @@ namespace MMGame {
         
         return false;
     }
+    
+    MinionShotMessage::MinionShotMessage(ControllerMessageType type, int32 index): Tombstone::ControllerMessage(type, index) {
+        
+    }
+    
+    MinionShotMessage::MinionShotMessage(ControllerMessageType type, int32 dmg, int32 mId, int32 index): Tombstone::ControllerMessage(type, index) {
+        damage = dmg;
+        minionId = mId;
+    }
+    
+    MinionShotMessage::~MinionShotMessage() {
+        
+    }
+    
+    void MinionShotMessage::CompressMessage(Compressor& data) const {
+        ControllerMessage::CompressMessage(data);
+        
+        data << damage;
+        data << minionId;
+    }
+    
+    bool MinionShotMessage::DecompressMessage(Decompressor& data) {
+        if (ControllerMessage::DecompressMessage(data)) {
+            data >> damage;
+            data >> minionId;
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
+    MinionDeadMessage::MinionDeadMessage(int32 flags): Tombstone::Message(kMessageMinionDead, flags) {
+        
+    }
+    
+    MinionDeadMessage::MinionDeadMessage(int32 mId, int32 flags): Tombstone::Message(kMessageMinionDead, flags) {
+        minionId = mId;
+    }
+    
+    MinionDeadMessage::~MinionDeadMessage() {
+        
+    }
+    
+    void MinionDeadMessage::CompressMessage(Compressor& data) const {
+        Message::CompressMessage(data);
+        
+        data << minionId;
+    }
+    
+    bool MinionDeadMessage::DecompressMessage(Decompressor& data) {
+        if (Message::DecompressMessage(data)) {
+            data >> minionId;
+            return true;
+        }
+        return false;
+    }
+    
+    void MinionDeadMessage::HandleMessage(Player *sender) {
 
+    }
 }

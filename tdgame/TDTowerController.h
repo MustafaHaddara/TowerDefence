@@ -2,6 +2,7 @@
 #define SimpleTower_h
 
 #include "TSController.h"
+#include "TDMinionController.h"
 
 namespace MMGame
 {
@@ -22,7 +23,9 @@ namespace MMGame
     private:
         
         const int       SHOOT_DURATION = 1000 * 2;  // Fire every 2 seconds
-        const float     range = 30.0f;              // Range within aiming
+        const float     RANGE = 30.0f;              // Range within aiming
+        const int       DAMAGE_DEALT = 20;          // Damage per shot
+        
         int             myCount;                    // for firing
         Transform4D     originalTransform;          // The target's original transform
         Vector3D        originalView;               // The direction turret is facing before any rotation
@@ -33,13 +36,12 @@ namespace MMGame
         ~TowerController();
         void PreprocessController(void) override;
         void MoveController(void) override;
-        bool GetTargetPoint(int32 range, Vector3D *out);
+        MinionController* GetTargetPoint(int32 range, Vector3D *out);
         ControllerMessage *CreateMessage(ControllerMessageType type) const override;
         void ReceiveMessage(const ControllerMessage *message) override;
         
         enum {
             kTowerRotateMessage,
-            kTowerShootMessage
         };
         
     };
@@ -64,27 +66,7 @@ namespace MMGame
         void CompressMessage(Compressor& data) const override;
         bool DecompressMessage(Decompressor& data) override;
     };
-    
-    class TowerShootMessage : public ControllerMessage {
-        friend class TowerController;
-        
-    private:
-        
-        Point3D target;
-        
-    public:
-        
-        TowerShootMessage(ControllerMessageType type, int32 index);
-        TowerShootMessage(ControllerMessageType type, const Point3D& trgt, int32 index);
-        ~TowerShootMessage();
-        
-        Point3D getTarget() const {
-            return target;
-        }
-        
-        void CompressMessage(Compressor& data) const override;
-        bool DecompressMessage(Decompressor& data) override;
-    };
+
 }
 
 #endif

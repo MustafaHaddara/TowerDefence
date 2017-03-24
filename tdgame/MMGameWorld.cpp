@@ -16,14 +16,7 @@
 #include "MMColectCont.h"
 #include "MMPhysEntity.h"
 
-
-
-
-
 using namespace MMGame;
-
-
-
 
 GameWorld::GameWorld(const char *name) :
 World(name),
@@ -302,6 +295,7 @@ void GameWorld::AddOjectAtLocation(const Point3D& pos ,ObjectType type,long inde
             controller=new PhysEntity();
             model = Model::NewModel("models/model1");
             break;
+            
     }
     
     // SET THE CONTROLLER KEY

@@ -157,9 +157,6 @@ void FighterController::PreprocessController(void)
 
 	Model *model = GetTargetNode();
 	model->AppendSubnode(mountNode);
-    
-    
-    
 
 	rootAnimator = new MergeAnimator(model);
 	mergeAnimator = new MergeAnimator(model);

@@ -60,7 +60,26 @@ namespace MMGame {
     
     void MinionController::GetNextTarget() {
         if (target != nullptr) {
-            target = target->GetConnectedNode("next_in_path"); // next_in_path
+            Connector *c = static_cast<Connector*>(target->GetHub()->GetFirstOutgoingRelation());
+            
+            int num_paths = 1;
+            while (c != nullptr) {
+                c = static_cast<Connector*>(c->GetNextOutgoingRelation());
+                num_paths++;
+            }
+            
+            if (num_paths == 1) {
+                return;
+            }
+            
+            int path_chosen = rand() % num_paths;
+            c = static_cast<Connector*>(target->GetHub()->GetFirstOutgoingRelation());
+            while (path_chosen > 0) {
+                target = c->GetConnectorTarget();
+                c = static_cast<Connector*>(c->GetNextOutgoingRelation());
+                path_chosen--;
+            }
+
         }
         if (target == nullptr) {
             //printf("completed motion\n");

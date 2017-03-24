@@ -80,7 +80,6 @@ namespace MMGame
         kSoldierEntity      ='csol',  // THE AVATAR
         kCollectEntity      ='ccol',  // SOMETHING WE CAN COLLECT
         kPhysEntiy          ='cphy',  // SOMETHING WITH PHYSICS
-//        kMinionEntity       ='mini',  // MINION
     };
 }
 

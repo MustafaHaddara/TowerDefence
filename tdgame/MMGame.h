@@ -38,6 +38,7 @@
 
 #include "TDTowerController.h"
 #include "TDMinionController.h"
+#include "TDMinionSpawnController.h"
 
 
 namespace MMGame
@@ -65,11 +66,13 @@ namespace MMGame
 
 			//DisplayEventHandler								displayEventHandler;
             ModelRegistration     soldierModelReg;
+            ModelRegistration     minionModelReg;
             ModelRegistration     appleModelRegistration;
 
 			//ControllerReg<GameRigidBodyController>			gameRigidBodyControllerRegistration;
             ControllerReg<TowerController> towerControllerRegistration;
             ControllerReg<MinionController> minionControllerRegistration;
+            ControllerReg<MinionSpawnController> minionSpawnControllerRegistration;
 
 			LocatorRegistration								spawnLocatorRegistration;
 			LocatorRegistration								collLocatorRegistration;

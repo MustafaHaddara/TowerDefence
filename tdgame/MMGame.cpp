@@ -45,6 +45,7 @@ Game::Game() :
         collLocatorRegistration(kLocatorColl, "Coll Mark"),
         physLocatorRegistration(kLocatorPys, "Phys Mark"),
         soldierModelReg(kModelSoldier, nullptr, "soldier/Soldier", kModelPrecache | kModelPrivate, kControllerSoldier),
+        minionModelReg(kModelMinion, nullptr, "zombie/Zombie", kModelPrecache | kModelPrivate, kControllerSoldier),
         appleModelRegistration(kModelApple,nullptr, "health/Apple", 0, kControllerCollectable),
         //soldierModelReg(kModelSoldier, nullptr, "GUS/gus", kModelPrecache | kModelPrivate, kControllerSoldier),
 
@@ -52,6 +53,7 @@ Game::Game() :
 
         towerControllerRegistration(kControllerTower, "Tower"),
         minionControllerRegistration(kControllerMinion, "Minion"),
+        minionSpawnControllerRegistration(kControllerMinionSpawn, "Minion Spawn"),
 
 		hostCommandObserver(this, &Game::HandleHostCommand),
 		joinCommandObserver(this, &Game::HandleJoinCommand),

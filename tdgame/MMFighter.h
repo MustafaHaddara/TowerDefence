@@ -39,7 +39,8 @@ namespace MMGame
 
        enum : ModelType
         {
-                kModelSoldier                   = 'sold'
+                kModelSoldier                   = 'sold',
+                kModelMinion                    = 'mmin'
         };
     
     enum{

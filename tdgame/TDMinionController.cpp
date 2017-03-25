@@ -27,6 +27,10 @@ namespace MMGame {
         LATEST_ID++;
     }
     
+    MinionController::MinionController(Node* t):MinionController() {
+        target = t;
+    }
+    
     MinionController::~MinionController() {
         
     }
@@ -34,17 +38,19 @@ namespace MMGame {
     void MinionController::PreprocessController(void) {
         Controller::PreprocessController();
         
-        Node *root = GetTargetNode();
+        if (target == nullptr) {
+            Node *root = GetTargetNode();
 
-        Tombstone::Marker *marker = root->GetOwningZone()->GetFirstMarker();
-        while (marker) {
-            if ((marker->GetMarkerType() == kMarkerLocator) && (marker->NodeEnabled())) {
-                LocatorMarker *locator = static_cast<LocatorMarker *>(marker);
-                if (locator->GetLocatorType() == kLocatorMinionSpawn) {
-                    target = marker;
-                    break;
+            Tombstone::Marker *marker = root->GetOwningZone()->GetFirstMarker();
+            while (marker) {
+                if ((marker->GetMarkerType() == kMarkerLocator) && (marker->NodeEnabled())) {
+                    LocatorMarker *locator = static_cast<LocatorMarker *>(marker);
+                    if (locator->GetLocatorType() == kLocatorMinionSpawn) {
+                        target = marker;
+                        break;
+                    }
+                    marker = marker->GetNextListElement();
                 }
-                marker = marker->GetNextListElement();
             }
         }
     }

@@ -40,6 +40,7 @@ namespace MMGame
         static int32 LATEST_ID;
         
         MinionController();
+        MinionController(Node* t);
         ~MinionController();
         void PreprocessController(void) override;
         void MoveController(void) override;

@@ -412,18 +412,15 @@ ControllerMessage *FighterController::CreateMessage(ControllerMessageType type) 
 {
 	switch (type)
 	{
-            case kFighterMessageBeginMovement:
-            case kFighterMessageEndMovement:
-            case kFighterMessageChangeMovement:
+        case kFighterMessageBeginMovement:
+        case kFighterMessageEndMovement:
+        case kFighterMessageChangeMovement:
+            return (new FighterMovementMessage(type, GetControllerIndex()));
 
-			return (new FighterMovementMessage(type, GetControllerIndex()));
-
-			case kFighterMessageDeath:
-
-			return (new ControllerMessage(kFighterMessageDeath, GetControllerIndex()));
-            
-            case kFireLaser:
-           
+        case kFighterMessageDeath:
+            return (new ControllerMessage(kFighterMessageDeath, GetControllerIndex()));
+        
+        case kFireLaser:
             return(new ControllerMessage(kFireLaser, GetControllerIndex()));
 	}
 

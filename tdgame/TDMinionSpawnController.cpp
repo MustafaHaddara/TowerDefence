@@ -72,6 +72,8 @@ namespace MMGame {
             
             // Put the model in the world at the locator's position.
             Node* node = model;
+            Transform4D scaled = node->GetNodeTransform().MakeScale(3);
+            node->SetNodeTransform(scaled);
             Point3D pos = GetTargetNode()->GetNodePosition();
             node->SetNodePosition(pos);
             TheWorldMgr->GetWorld()->AddNewNode(node);

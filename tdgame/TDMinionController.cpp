@@ -15,6 +15,8 @@
 
 #include "MMBase.h"
 
+#include <stdlib.h>
+
 namespace MMGame {
     using namespace Tombstone;
     

@@ -4,7 +4,6 @@
 //
 //  Created by Mustafa Haddara on 2017-03-06.
 //
-//
 
 #include "TDMinionController.h"
 
@@ -14,8 +13,6 @@
 #include "TSZones.h"
 
 #include "MMBase.h"
-
-#include <stdlib.h>
 
 namespace MMGame {
     using namespace Tombstone;
@@ -80,7 +77,7 @@ namespace MMGame {
                 return;
             }
             
-            int path_chosen = rand() % num_paths;
+            int path_chosen = Tombstone::Math::RandomInteger(num_paths);
             c = static_cast<Connector*>(target->GetHub()->GetFirstOutgoingRelation());
             while (path_chosen > 0) {
                 target = c->GetConnectorTarget();

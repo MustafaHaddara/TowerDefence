@@ -30,6 +30,7 @@ namespace MMGame
         Transform4D     originalTransform;          // The target's original transform
         Vector3D        originalView;               // The direction turret is facing before any rotation
         Node			*turretBarrel;              // Marker on Turret Model from which to shoot
+        Node*           currentTarget = nullptr;
         
     public:
         TowerController();
@@ -39,6 +40,7 @@ namespace MMGame
         MinionController* GetTargetPoint(int32 range, Vector3D *out);
         ControllerMessage *CreateMessage(ControllerMessageType type) const override;
         void ReceiveMessage(const ControllerMessage *message) override;
+        bool OrientationToMinion(Node* minion, int32 max_dist, Vector3D* out);
         
         enum {
             kTowerRotateMessage,

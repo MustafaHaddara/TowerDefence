@@ -86,33 +86,43 @@ namespace MMGame {
         GameWorld *gw = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
         Node** minions = gw->GetMinions();
         
-        Point3D startPos = turretBarrel->GetWorldPosition();
+        // if we're tracking something already
+        if (currentTarget != nullptr) {
+            if (OrientationToMinion(currentTarget, max_dist, out)) {
+                MinionController *mc = static_cast<MinionController *>(currentTarget->GetController());
+                return mc;
+            } else {
+                // minion got out of our range
+                currentTarget = nullptr;
+            }
+        }
         
         for (int i=0; i<gw->GetNumMinions(); i++) {
             if (minions[i] == nullptr) continue;
-            Point3D targetPoint = minions[i]->GetWorldPosition();
-            Box3D *box = new Box3D();
-            MinionController *mc = static_cast<MinionController *>(minions[i]->GetController());
-            if (mc && !minions[i]->CalculateBoundingBox(box)) {
-                // whelp this is a stupid error
-                // should never happen
-                return nullptr;
-            }
-
-            targetPoint = targetPoint + (2*box->GetCenter()); // I have no idea why multiplying by 2 makes the tracking look better
-
-            Vector3D view = (targetPoint - startPos);
-            float x = view.x, y = view.y, z = view.z;
-            float distance = Sqrt(x * x + y * y + z * z);
-            if (distance < max_dist) {
-                view = view.Normalize();
-                out->x = view.x;
-                out->y = view.y;
-                out->z = view.z;
+            if (OrientationToMinion(minions[i], max_dist, out)) {
+                MinionController *mc = static_cast<MinionController *>(currentTarget->GetController());
                 return mc;
             }
         }
         return nullptr;
+    }
+    
+    bool TowerController::OrientationToMinion(Node* minion, int32 max_dist, Vector3D* out) {
+        Point3D startPos = turretBarrel->GetWorldPosition();
+        
+        Point3D targetPoint = minion->GetWorldPosition();
+        
+        Vector3D view = (targetPoint - startPos);
+        float distance = Magnitude(view);
+        if (distance < max_dist) {
+            view = view.Normalize();
+            out->x = view.x;
+            out->y = view.y;
+            out->z = view.z;
+            currentTarget = minion;
+            return true;
+        }
+        return false;
     }
 
     ControllerMessage *TowerController::CreateMessage(ControllerMessageType type) const {

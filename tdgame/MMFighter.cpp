@@ -803,7 +803,9 @@ void FighterController::fireLaser(void)
 			contactedPlayerController->Damage(10, 0, 0, 0, 0);
 		}
 		if (rigidBodyType == kRigidBodyTower) {
+			//rigidbody controller is a towercontroller
 			TowerController *contactedTowerController = static_cast<TowerController *>(rigidBodyController);
+			//calling tower takedamge method from tdtowercontroller
 			contactedTowerController->towerTakeDamage(10);
 		}
 		if (rigidBodyType == kRigidBodyBase) {

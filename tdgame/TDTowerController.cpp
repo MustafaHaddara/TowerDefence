@@ -61,7 +61,7 @@ namespace MMGame {
 		// 
 
 		health = health - damage;
-		// take damage only called by the server.
+		// take damage only called by the server. 
 		TheMessageMgr->SendMessageAll(UpdateTowerHealthMessage(health, GetControllerIndex()));
 	}
     void TowerController::MoveController(void) {

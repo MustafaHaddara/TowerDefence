@@ -6,7 +6,6 @@
 #include "TDMinionController.h"
 
 #include "MMColectCont.h"
-#include "MMPhysEntity.h"
 
 using namespace BaseInvaders;
 

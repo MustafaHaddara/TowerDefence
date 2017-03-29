@@ -1,5 +1,5 @@
-#ifndef C4_MMSkin_h
-#define C4_MMSkin_h
+#ifndef C4_TDSkin_h
+#define C4_TDSkin_h
 
 #include "TSInterface.h"
 

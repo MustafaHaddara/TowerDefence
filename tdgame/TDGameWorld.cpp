@@ -1,11 +1,11 @@
-#include "MMGameWorld.h"
+#include "TDGameWorld.h"
 
-#include "MMMultiPLayer.h"
-#include "MMGamePlayer.h"
-#include "MMFighter.h"
+#include "TDMultiPLayer.h"
+#include "TDGamePlayer.h"
+#include "TDFighter.h"
 #include "TDMinionController.h"
 
-#include "MMColectCont.h"
+#include "TDColectCont.h"
 
 using namespace BaseInvaders;
 

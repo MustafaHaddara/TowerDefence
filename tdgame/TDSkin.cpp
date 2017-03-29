@@ -1,5 +1,5 @@
-#include "MMSkin.h"
-#include "MMGame.h"
+#include "TDSkin.h"
+#include "TDGame.h"
 
 using namespace BaseInvaders;
 

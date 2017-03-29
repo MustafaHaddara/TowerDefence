@@ -1,8 +1,8 @@
-#ifndef MMMultiplayer_h
-#define MMMultiplayer_h
+#ifndef TDMultiplayer_h
+#define TDMultiplayer_h
 
 
-#include "MMCharacter.h"
+#include "TDCharacter.h"
 
 namespace BaseInvaders
 {

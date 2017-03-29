@@ -1,9 +1,9 @@
-#ifndef MMInput_h
-#define MMInput_h
+#ifndef TDInput_h
+#define TDInput_h
 
 
 #include "TSInput.h"
-#include "MMBase.h"
+#include "TDBase.h"
 
 
 namespace BaseInvaders

@@ -12,8 +12,8 @@
 #include "TSEngine.h"
 
 
-#include "MMInput.h"
-#include "MMSkin.h"
+#include "TDInput.h"
+#include "TDSkin.h"
 
 #include "TDTowerController.h"
 #include "TDMinionController.h"
@@ -27,7 +27,7 @@ namespace BaseInvaders
     class GameWorld;
 
 
-	#if MMCHEATS
+	#if TDCHEATS
 
 		enum
 		{

@@ -1,8 +1,8 @@
-#include "MMMultiplayer.h"
-#include "MMGame.h"
+#include "TDMultiplayer.h"
+#include "TDGame.h"
 
-#include "MMFighter.h"
-#include "MMGameWorld.h"
+#include "TDFighter.h"
+#include "TDGameWorld.h"
 
 using namespace BaseInvaders;
 

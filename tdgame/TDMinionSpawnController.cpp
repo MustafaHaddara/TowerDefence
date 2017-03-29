@@ -7,8 +7,8 @@
 #include "TSZones.h"
 #include "TSWorld.h"
 
-#include "MMBase.h"
-#include "MMFighter.h"
+#include "TDBase.h"
+#include "TDFighter.h"
 
 namespace BaseInvaders {
     using namespace Tombstone;

@@ -1,11 +1,11 @@
-#ifndef MMBase_h
-#define MMBase_h
+#ifndef TDBase_h
+#define TDBase_h
 
 #include "TSSound.h"
 #include "TSZones.h"
 #include "TSApplication.h"
 
-#define MMCHEATS	1
+#define TDCHEATS	1
 
 extern "C"
 {

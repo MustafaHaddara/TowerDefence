@@ -1,9 +1,9 @@
-#ifndef MMCameras_h
-#define MMCameras_h
+#ifndef TDCameras_h
+#define TDCameras_h
 
 #include "TSCameras.h"
 #include "TSModels.h"
-#include "MMBase.h"
+#include "TDBase.h"
 
 namespace BaseInvaders
 {

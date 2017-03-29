@@ -10,7 +10,7 @@
 #include "TSInput.h"
 #include "TSEngine.h"
 
-#include "MMFighter.h"
+#include "TDFighter.h"
 
 
 namespace BaseInvaders

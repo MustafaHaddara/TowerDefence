@@ -129,6 +129,10 @@ namespace MMGame {
             case kMinionShotMessage: {
                 const MinionShotMessage *m = static_cast<const MinionShotMessage *>(message);
                 health -= m->GetDamage();
+                
+                Node* model = GetTargetNode();
+                Transform4D scaled = model->GetNodeTransform();
+                model->SetNodeTransform(scaled * scaled.MakeScale(0.95));
 //                printf("minion #%d has %d health\n", id, health);
                 if (health == 0) {
                     // TODO send a game message object and get the server to do this

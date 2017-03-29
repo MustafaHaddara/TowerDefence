@@ -83,9 +83,6 @@ namespace MMGame {
     }
     
     MinionController* TowerController::GetTargetPoint(int32 max_dist, Vector3D *out) {
-        GameWorld *gw = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
-        Node** minions = gw->GetMinions();
-        
         // if we're tracking something already
         if (currentTarget != nullptr) {
             if (OrientationToMinion(currentTarget, max_dist, out)) {
@@ -96,6 +93,9 @@ namespace MMGame {
                 currentTarget = nullptr;
             }
         }
+        
+        GameWorld *gw = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
+        Node** minions = gw->GetMinions();
         
         for (int i=0; i<gw->GetNumMinions(); i++) {
             if (minions[i] == nullptr) continue;

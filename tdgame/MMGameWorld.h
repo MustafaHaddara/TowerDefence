@@ -27,7 +27,7 @@ private:
     int32					spawnLocatorCount;
     int32					collLocatorCount;
     int32                   minionCount;
-    static const int32      MAX_NUM_MINIONS = 32; // assuming we can only have 16 minions at a time derp
+    static const int32      MAX_NUM_MINIONS = 64; // ideally this would be a linkedlist so that we could have an unlimited number of minions but tombstone is trash so we can't use stl::list or stl::vector or Tombstone::List or Tombstone::Array 
     
     List<Marker>			spawnLocatorList;
     List<Marker>			collLocatorList;

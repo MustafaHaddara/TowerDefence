@@ -10,10 +10,203 @@
 
 using namespace MMGame;
 
+MainWindow::MainWindow() :
+	Window("panels/Splash"),
+	Global<MainWindow>(TheMainWindow)
+{
+}
 
+MainWindow::~MainWindow()
+{
+}
 
-DisplayBoard *MMGame::TheDisplayBoard = nullptr;
+void MainWindow::OpenWindow(void)
+{
+	if (TheMainWindow)
+	{
+		TheInterfaceMgr->SetActiveWindow(TheMainWindow);
+	}
+	else
+	{
+		TheGame->AddWindow(new MainWindow);
+	}
+}
 
+void MainWindow::ReturnToGame(void)
+{
+	World *world = TheWorldMgr->GetWorld();
+	if (world)
+	{
+		world->SetWorldFlags(world->GetWorldFlags() & ~kWorldPaused);
+	}
+
+	TheTimeMgr->SetWorldTimeMultiplier(1.0F);
+}
+
+void MainWindow::HandleSinglePlayerWindowClose(Window *window, void *cookie)
+{
+	OpenWindow();
+}
+
+//void MainWindow::HandleHostGameWindowClose(StartWindow *window, void *cookie)
+//{
+//	OpenWindow();
+//}
+
+//void MainWindow::HandleJoinGameWindowClose(JoinGameWindow *window, void *cookie)
+//{
+//	OpenWindow();
+//}
+
+void MainWindow::PreprocessWidget(void)
+{
+	Window::PreprocessWidget();
+
+	newButton = static_cast<TextButtonWidget *>(FindWidget("New"));
+	loadButton = static_cast<TextButtonWidget *>(FindWidget("Load"));
+	saveButton = static_cast<TextButtonWidget *>(FindWidget("Save"));
+	exitButton = static_cast<TextButtonWidget *>(FindWidget("Exit"));
+
+	hostButton = static_cast<TextButtonWidget *>(FindWidget("Host"));
+	joinButton = static_cast<TextButtonWidget *>(FindWidget("Join"));
+
+	playerButton = static_cast<TextButtonWidget *>(FindWidget("Player"));
+	controlsButton = static_cast<TextButtonWidget *>(FindWidget("Controls"));
+	graphicsButton = static_cast<TextButtonWidget *>(FindWidget("Graphics"));
+	audioButton = static_cast<TextButtonWidget *>(FindWidget("Audio"));
+
+	creditsButton = static_cast<TextButtonWidget *>(FindWidget("Credits"));
+	quitButton = static_cast<TextButtonWidget *>(FindWidget("Quit"));
+
+	currentButton = nullptr;
+	SetCurrentButton(newButton);
+
+	World *world = TheWorldMgr->GetWorld();
+	if (world)
+	{
+		if (!TheMessageMgr->GetMultiplayerFlag())
+		{
+			saveButton->EnableWidget();
+
+			world->SetWorldFlags(world->GetWorldFlags() | kWorldPaused);
+			TheTimeMgr->SetWorldTimeMultiplier(0.0F);
+		}
+	}
+	else
+	{
+		TheInterfaceMgr->GetStrip()->ShowWidget();
+	}
+}
+
+void MainWindow::SetCurrentButton(TextButtonWidget *button)
+{
+	TextButtonWidget *previousButton = currentButton;
+	if (previousButton)
+	{
+		Mutator *mutator = previousButton->GetFirstMutator();
+		if (mutator)
+		{
+			mutator->SetMutatorState(kMutatorDisabled);
+			previousButton->SetDynamicWidgetColor(previousButton->GetWidgetColor(kWidgetColorDefault));
+		}
+
+		Sound *sound = new Sound;
+		sound->LoadSound("game/Menu");
+		sound->PlaySound();
+	}
+
+	currentButton = button;
+
+	Mutator *mutator = button->GetFirstMutator();
+	if (mutator)
+	{
+		mutator->SetMutatorState(0);
+	}
+}
+
+bool MainWindow::HandleKeyboardEvent(const KeyboardEventData *eventData)
+{
+	if (eventData->eventType == kEventKeyDown)
+	{
+		unsigned_int32 keyCode = eventData->keyCode;
+
+		if (keyCode == kKeyCodeEscape)
+		{
+			delete this;
+			ReturnToGame();
+			return (true);
+		}
+
+		const World *world = TheWorldMgr->GetWorld();
+		TextButtonWidget *button = currentButton;
+
+		if (keyCode == kKeyCodeEnter)
+		{
+			if (button)
+			{
+				button->ActivateWidget();
+			}
+
+			return (true);
+		}
+
+		if (keyCode == kKeyCodeLeftArrow)
+		{
+			if (world)
+				return(true);
+			if (button == newButton)
+			{
+				SetCurrentButton(quitButton);
+			}
+			else if (button == quitButton)
+			{
+				SetCurrentButton(newButton);
+			}			
+
+			return (true);
+		}
+
+		if (keyCode == kKeyCodeRightArrow)
+		{
+			if (world)
+				return(true);
+			if (button == newButton)
+			{
+				SetCurrentButton(quitButton);
+			}
+			else if (button == quitButton)
+			{
+				SetCurrentButton(newButton);
+			}
+
+			return (true);
+		}
+	}
+
+	return (Window::HandleKeyboardEvent(eventData));
+}
+
+void MainWindow::HandleWidgetEvent(Widget *widget, const WidgetEventData *eventData)
+{
+	if (eventData->eventType == kEventWidgetActivate)
+	{
+		Sound *sound = new Sound;
+		sound->LoadSound("game/Select");
+		sound->PlaySound();
+
+		if (widget == newButton)
+		{
+			TheGame->LoadWorld("cap2");
+			//SinglePlayerWindow::OpenWindow();
+			//TheSinglePlayerWindow->SetCompletionCallback(&HandleSinglePlayerWindowClose);
+			delete this;
+		}
+		else if (widget == quitButton)
+		{
+			TheEngine->Quit();
+		}
+	}
+}
 
 
 void DisplayBoard::ShowMessageText(const char* text)
@@ -23,26 +216,33 @@ void DisplayBoard::ShowMessageText(const char* text)
 
 
 
-DisplayBoard::DisplayBoard() :  Global<DisplayBoard>(TheDisplayBoard)
+DisplayBoard::DisplayBoard() : Global<DisplayBoard>(TheDisplayBoard)
 {
-        
-
     myText = new TextWidget(Vector2D(80.0F, 16.0F), "Test");
-	myText->SetFont("font/Bold");
+	myText->SetFont("fonts/berlinsans");
 	myText->SetWidgetColor(ColorRGBA(1.0f, 1.0f, 1.0f)); // WHITE
 	myText->SetWidgetPosition(Point3D(50, 50, 0));
-    
-    
-
 
 	// Adds widget to the screen
 	TheInterfaceMgr->AddWidget(myText);
 
 	// New UI Code
 
-	towerDisplay = new Widget();
-	towerDisplay->LoadPanel("panels/towers");
-	TheInterfaceMgr->AddWidget(towerDisplay);
+	towerOne = new IconButtonWidget(Vector2D(64.0f, 64.0f), "TowerOne");
+	towerOne->SetTexture(0, "textures/TowerButton1");
+	towerOne->SetIconButtonFlags(kIconButtonSticky);
+	//towerOne->SetWidgetColor(ColorRGBA(1.0f, 0.0f, 0.0f), kWidgetColorButton);
+	TheInterfaceMgr->AddWidget(towerOne);
+
+	towerTwo = new IconButtonWidget(Vector2D(64.0f, 64.0f), "TowerTwo");
+	towerTwo->SetTexture(0, "textures/TowerButton2");
+	towerTwo->SetIconButtonFlags(kIconButtonSticky);
+	TheInterfaceMgr->AddWidget(towerTwo);
+
+	towerThree = new IconButtonWidget(Vector2D(64.0f, 64.0f), "TowerThree");
+	towerThree->SetTexture(0, "textures/TowerButton3");
+	towerThree->SetIconButtonFlags(kIconButtonSticky);
+	TheInterfaceMgr->AddWidget(towerThree);
 
 	healthBackground = new ImageWidget(Vector2D(300.0f, 22.0f));
 	healthBackground->SetWidgetKey("HealthBackground");
@@ -52,7 +252,7 @@ DisplayBoard::DisplayBoard() :  Global<DisplayBoard>(TheDisplayBoard)
 	healthProgress->SetWidgetKey("HealthBar");
 	healthProgress->SetMaxValue(100);
 	healthProgress->SetValue(100);
-	healthProgress->SetWidgetColor(ColorRGBA(0.05f, 0.05f, 0.05f));
+	healthProgress->SetWidgetColor(ColorRGBA(0.04f, 0.04f, 0.04f));
 
 	towerImage = new ImageWidget(Vector2D(64.0f, 64.0f));
 	towerImage->SetWidgetKey("TowerImage");
@@ -66,7 +266,9 @@ DisplayBoard::DisplayBoard() :  Global<DisplayBoard>(TheDisplayBoard)
 	moneyText->SetWidgetKey("Money");
 	moneyText->SetTextAlignment(kTextAlignRight);
 
-	AppendSubnode(towerDisplay);
+	AppendSubnode(towerOne);
+	AppendSubnode(towerTwo);
+	AppendSubnode(towerThree);
 	AppendSubnode(healthBackground);
 	AppendSubnode(healthProgress);
 	AppendSubnode(towerImage);
@@ -101,9 +303,7 @@ void DisplayBoard::Preprocess(void)
 
 void DisplayBoard::MoveWidget(void)
 {
-
-
-        Board::MoveWidget();
+	Board::MoveWidget();
 }
 
 
@@ -128,8 +328,18 @@ void DisplayBoard::UpdateDisplayPosition(void)
 		, 28.0F
 		, 0.0f));
 
-	towerDisplay->SetWidgetPosition(Point3D(
-		displayWidth * 0.5F - 512.0F * 0.5F
+	towerOne->SetWidgetPosition(Point3D(
+		displayWidth * 0.5F - 64.0F * 0.5F - 64.0F - 16.0F
+		, displayHeight * 0.9F - 100.0F * 0.5F
+		, 0.0F));
+
+	towerTwo->SetWidgetPosition(Point3D(
+		displayWidth * 0.5F - 64.0F * 0.5F
+		, displayHeight * 0.9F - 100.0F * 0.5F
+		, 0.0F));
+
+	towerThree->SetWidgetPosition(Point3D(
+		displayWidth * 0.5F - 64.0F * 0.5F + 64.0F + 16.0F
 		, displayHeight * 0.9F - 100.0F * 0.5F
 		, 0.0F));
 
@@ -160,4 +370,42 @@ void DisplayBoard::UpdatePlayerHealth(void)
 	}
 }
 
+void DisplayBoard::SelectTowerOne(void)
+{
+	if (towerOne->GetValue() == 0)
+	{
+		towerOne->SetValue(1);
+	}
+	else
+	{
+		towerOne->SetValue(0);
+	}
+}
 
+void DisplayBoard::SelectTowerTwo(void)
+{
+	if (towerTwo->GetValue() == 0)
+	{
+		towerTwo->SetValue(1);
+	}
+	else
+	{
+		towerTwo->SetValue(0);
+	}
+}
+
+void DisplayBoard::SelectTowerThree(void)
+{
+	if (towerThree->GetValue() == 0)
+	{
+		towerThree->SetValue(1);
+	}
+	else
+	{
+		towerThree->SetValue(0);
+	}
+}
+
+DisplayBoard *MMGame::TheDisplayBoard = nullptr;
+MainWindow *MMGame::TheMainWindow = nullptr;
+SinglePlayerWindow *MMGame::TheSinglePlayerWindow = nullptr;

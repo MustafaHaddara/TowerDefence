@@ -101,6 +101,9 @@ Game::Game() :
 
 	TheInterfaceMgr->SetInputManagementMode(kInputManagementAutomatic);
 
+	// Show splash
+	MainWindow::OpenWindow();
+
 }
 
 Game::~Game()
@@ -219,7 +222,6 @@ EngineResult Game::HostMultiplayerGame(const char *name, unsigned_int32 flags)
 		result = TheWorldMgr->LoadWorld(name);
 		if (result == kWorldOkay)
 		{
-            
             //printf("World Loaded \n");
             GameWorld *world = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
 			//multiplayerFlags = flags;

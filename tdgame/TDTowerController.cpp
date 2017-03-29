@@ -7,7 +7,7 @@
 //
 
 #include "TDTowerController.h"
-#include "MMGameWorld.h"
+#include "TDGameWorld.h"
 
 #include "TSController.h"
 #include "TSCameras.h"
@@ -16,7 +16,7 @@
 #include "TSWorld.h"
 #include "TSZones.h"
 
-namespace MMGame {
+namespace TDGame {
     using namespace Tombstone;
 
     using Tombstone::ControllerType;

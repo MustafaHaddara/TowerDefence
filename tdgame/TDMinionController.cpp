@@ -12,9 +12,9 @@
 #include "TSMarkers.h"
 #include "TSZones.h"
 
-#include "MMBase.h"
+#include "TDBase.h"
 
-namespace MMGame {
+namespace TDGame {
     using namespace Tombstone;
     
     using Tombstone::ControllerType;

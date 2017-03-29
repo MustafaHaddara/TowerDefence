@@ -12,15 +12,15 @@
 //=============================================================
 
 
-#include "MMInput.h"
-#include "MMGame.h"
-#include "MMMultiPlayer.h"
+#include "TDInput.h"
+#include "TDGame.h"
+#include "TDMultiPlayer.h"
 
-#include "MMFighter.h"
-#include "MMGameWorld.h"
+#include "TDFighter.h"
+#include "TDGameWorld.h"
 
 
-using namespace MMGame;
+using namespace TDGame;
 
 
 MovementAction::MovementAction(ActionType type, unsigned_int32 moveFlag, unsigned_int32 specFlag) : Action(type)

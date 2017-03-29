@@ -12,15 +12,15 @@
 //=============================================================
 
 
-#include "MMCameras.h"
-//#include "MMGame.h"
-#include "MMFighter.h"
+#include "TDCameras.h"
+//#include "TDGame.h"
+#include "TDFighter.h"
 
 
-using namespace MMGame;
+using namespace TDGame;
 
 
-const float MMGame::kCameraPositionHeight = 1.6F;
+const float TDGame::kCameraPositionHeight = 1.6F;
 
 
 ModelCamera::ModelCamera() : FrustumCamera(1.0F, 1.0F)

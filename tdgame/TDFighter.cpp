@@ -15,12 +15,12 @@
 //=============================================================
 
 
-#include "MMFighter.h"
-#include "MMGame.h"
-#include "MMCameras.h"
+#include "TDFighter.h"
+#include "TDGame.h"
+#include "TDCameras.h"
 
 
-using namespace MMGame;
+using namespace TDGame;
 
 
 namespace

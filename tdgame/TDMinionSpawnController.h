@@ -11,7 +11,7 @@
 
 #include "TSController.h"
 
-namespace MMGame
+namespace TDGame
 {
     using namespace Tombstone;
     

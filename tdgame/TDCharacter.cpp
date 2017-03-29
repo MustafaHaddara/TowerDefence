@@ -12,10 +12,10 @@
 //=============================================================
 
 
-#include "MMCharacter.h"
+#include "TDCharacter.h"
 
 
-using namespace MMGame;
+using namespace TDGame;
 
 
 namespace

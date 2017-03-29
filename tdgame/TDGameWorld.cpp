@@ -1,22 +1,21 @@
 //
-//  MMGameWorld.cpp
+//  TDGameWorld.cpp
 //
 //  Created by Martin on 2016-10-04.
 //
 //
 
-#include "MMGameWorld.h"
+#include "TDGameWorld.h"
 
 
-#include "MMMultiPLayer.h"
-#include "MMGamePlayer.h"
-#include "MMFighter.h"
+#include "TDMultiPLayer.h"
+#include "TDGamePlayer.h"
+#include "TDFighter.h"
 #include "TDMinionController.h"
 
-#include "MMColectCont.h"
-#include "MMPhysEntity.h"
+#include "TDColectCont.h"
 
-using namespace MMGame;
+using namespace TDGame;
 
 GameWorld::GameWorld(const char *name) :
 World(name),
@@ -177,7 +176,6 @@ void GameWorld::SetFocalLength(float focal)
 #define TYPE_NAME(type) \
 (kSoldierEntity       == type ? "kSoldierEntity"    :  \
 (kCollectEntity     == type ? "kCollectEntity"   :  \
-(kPhysEntiy   == type ? "kPhysEntiy"  : \
 (0 == type ? "yellow" : "unknown"))))
 
 
@@ -288,11 +286,6 @@ void GameWorld::AddOjectAtLocation(const Point3D& pos ,ObjectType type,long inde
             controller=new CollectableController();
             //Model *model = Model::GetModel(kModelApple);
             // WE CAN LOAD MODELS AT RUNTIM TOO
-            model = Model::NewModel("models/model1");
-            break;
-            
-        case kPhysEntiy:
-            controller=new PhysEntity();
             model = Model::NewModel("models/model1");
             break;
             

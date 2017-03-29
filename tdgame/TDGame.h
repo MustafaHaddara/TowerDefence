@@ -14,8 +14,8 @@
 //=============================================================
 
 
-#ifndef MMGame_h
-#define MMGame_h
+#ifndef TDGame_h
+#define TDGame_h
 
 
 #include "TSWorld.h"
@@ -28,27 +28,27 @@
 #include "TSEngine.h"
 
 
-#include "MMInput.h"
-#include "MMSkin.h"
-//#include "MMCameras.h"
-//#include "MMFighter.h"
+#include "TDInput.h"
+#include "TDSkin.h"
+//#include "TDCameras.h"
+//#include "TDFighter.h"
 
-//#include "MMGameWorld.h"
-//#include "MMGamePlayer.h"
+//#include "TDGameWorld.h"
+//#include "TDGamePlayer.h"
 
 #include "TDTowerController.h"
 #include "TDMinionController.h"
 #include "TDMinionSpawnController.h"
 
 
-namespace MMGame
+namespace TDGame
 {
 	using namespace Tombstone;
     
     class GameWorld;
 
 
-	#if MMCHEATS
+	#if TDCHEATS
 
 		enum
 		{

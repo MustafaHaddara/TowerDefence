@@ -7,12 +7,12 @@
 
 #include "TSTriggers.h"
 
-#include "MMCharacter.h"
+#include "TDCharacter.h"
 
 
 
 
-namespace MMGame
+namespace TDGame
 {
         using namespace Tombstone;
     

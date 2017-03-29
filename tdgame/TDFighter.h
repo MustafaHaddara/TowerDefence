@@ -15,22 +15,22 @@
 //=============================================================
 
 
-#ifndef MMFighter_h
-#define MMFighter_h
+#ifndef TDFighter_h
+#define TDFighter_h
 
 
 #include "TSWorld.h"
 
-#include "MMMultiplayer.h"
-#include "MMCharacter.h"
-#include "MMGamePlayer.h"
+#include "TDMultiplayer.h"
+#include "TDCharacter.h"
+#include "TDGamePlayer.h"
 
 
 
 
 
 
-namespace MMGame
+namespace TDGame
 {
 	using namespace Tombstone;
     
@@ -440,7 +440,7 @@ namespace MMGame
             void AnimateFighter(void); // WAS VIRTUAL
         
         
-        //MM
+        //TD
         void SetPlayerKey(int key){
             playerkey=key;
         }

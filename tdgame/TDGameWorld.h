@@ -1,18 +1,18 @@
 //
-//  MMGameWorld.h
+//  TDGameWorld.h
 //
 //
 //  Created by Martin on 2016-10-04.
 //
 //
 
-#ifndef __Tombstone__MMGameWorld__
-#define __Tombstone__MMGameWorld__
+#ifndef __Tombstone__TDGameWorld__
+#define __Tombstone__TDGameWorld__
 
-#include "MMGame.h"
-#include "MMCameras.h"
+#include "TDGame.h"
+#include "TDCameras.h"
 
-namespace MMGame
+namespace TDGame
 {
     using namespace Tombstone;
 
@@ -137,4 +137,4 @@ public:
 
 }
 
-#endif /* defined(__Tombstone__MMGameWorld__) */
+#endif /* defined(__Tombstone__TDGameWorld__) */

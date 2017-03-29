@@ -16,17 +16,17 @@
 //=============================================================
 
 
-#ifndef MMMultiplayer_h
-#define MMMultiplayer_h
+#ifndef TDMultiplayer_h
+#define TDMultiplayer_h
 
 
-#include "MMCharacter.h"
-//#include "MMGamePlayer.h"
-//#include "MMMultiplayer.h"
-//#include "MMProperties.h"
+#include "TDCharacter.h"
+//#include "TDGamePlayer.h"
+//#include "TDMultiplayer.h"
+//#include "TDProperties.h"
 
 
-namespace MMGame
+namespace TDGame
 {
 	using namespace Tombstone;
 

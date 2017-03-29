@@ -1,12 +1,12 @@
 //
-//  MMGamePlayer.h
+//  TDGamePlayer.h
 //
 //  Created by Martin on 2016-10-04.
 //
 //
 
-#ifndef __Tombstone__MMGamePlayer__
-#define __Tombstone__MMGamePlayer__
+#ifndef __Tombstone__TDGamePlayer__
+#define __Tombstone__TDGamePlayer__
 
 #include "TSWorld.h"
 #include "TSMarkings.h"
@@ -17,10 +17,10 @@
 #include "TSInput.h"
 #include "TSEngine.h"
 
-#include "MMFighter.h"
+#include "TDFighter.h"
 
 
-namespace MMGame
+namespace TDGame
 {
     using namespace Tombstone;
     
@@ -119,4 +119,4 @@ namespace MMGame
 }
 
 
-#endif /* defined(__Tombstone__MMGamePlayer__) */
+#endif /* defined(__Tombstone__TDGamePlayer__) */

@@ -10,18 +10,18 @@
 //=============================================================
 
 
-#ifndef MMCollectControllers_h
-#define  MMCollectControllers_h
+#ifndef TDCollectControllers_h
+#define  TDCollectControllers_h
 
 
 #include "TSTriggers.h"
 
-#include "MMCharacter.h"
+#include "TDCharacter.h"
 
 
 
 
-namespace MMGame 
+namespace TDGame 
 {
 	using namespace Tombstone;
 

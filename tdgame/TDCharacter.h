@@ -12,17 +12,17 @@
 //=============================================================
 
 
-#ifndef MMCharacter_h
-#define MMCharacter_h
+#ifndef TDCharacter_h
+#define TDCharacter_h
 
 
 #include "TSModels.h"
 #include "TSCharacter.h"
 
-#include "MMBase.h"
+#include "TDBase.h"
 
 
-namespace MMGame
+namespace TDGame
 {
 	using namespace Tombstone;
 

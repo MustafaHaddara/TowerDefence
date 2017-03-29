@@ -20,19 +20,19 @@
 #include "TSAudioCapture.h"
 #include "TSWater.h"
 
-#include "MMGame.h"
-#include "MMMultiplayer.h"
-#include "MMCameras.h"
-#include "MMGameWorld.h"
-#include "MMFighter.h"
+#include "TDGame.h"
+#include "TDMultiplayer.h"
+#include "TDCameras.h"
+#include "TDGameWorld.h"
+#include "TDFighter.h"
 
 
 
-using namespace MMGame;
+using namespace TDGame;
 
 
 
-Game *MMGame::TheGame = nullptr;
+Game *TDGame::TheGame = nullptr;
 
 
 

@@ -1,15 +1,3 @@
-//=============================================================
-//
-// Tombstone Engine version 1.0
-
-// CHANGED MVM
-
-// Unauthorized redistribution of source code is strictly
-// prohibited. Violators will be prosecuted.
-//
-//=============================================================
-
-
 #ifndef TDCollectControllers_h
 #define  TDCollectControllers_h
 
@@ -123,5 +111,3 @@ namespace TDGame
 
 
 #endif
-
-// ZUXSVMT

@@ -1,10 +1,3 @@
-//
-//  TDGamePlayer.h
-//
-//  Created by Martin on 2016-10-04.
-//
-//
-
 #ifndef __Tombstone__TDGamePlayer__
 #define __Tombstone__TDGamePlayer__
 

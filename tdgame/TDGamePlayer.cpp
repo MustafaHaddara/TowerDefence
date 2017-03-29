@@ -1,11 +1,3 @@
-//
-//  TDGamePlayer.cpp
-//  Tombstone
-//
-//  Created by Martin on 2016-10-04.
-//
-//
-
 #include "TDGamePlayer.h"
 #include "TDGame.h"
 #include "TDFighter.h"

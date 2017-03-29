@@ -1,9 +1,3 @@
-//
-//  TDSkin.cpp
-//
-
-
-
 #include "TDSkin.h"
 #include "TDGame.h"
 

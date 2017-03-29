@@ -1,11 +1,3 @@
-//
-//  TDTowerController.cpp
-//  Tombstone
-//
-//  Created by Mustafa Haddara on 2017-01-07.
-//
-//
-
 #include "TDTowerController.h"
 #include "TDGameWorld.h"
 

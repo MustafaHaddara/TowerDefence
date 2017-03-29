@@ -1,11 +1,3 @@
-//
-//  TDMinionController.cpp
-//  Tombstone
-//
-//  Created by Mustafa Haddara on 2017-03-06.
-//
-//
-
 #include "TDMinionSpawnController.h"
 #include "TDMinionController.h"
 

@@ -1,10 +1,3 @@
-//
-//  TDGameWorld.cpp
-//
-//  Created by Martin on 2016-10-04.
-//
-//
-
 #include "TDGameWorld.h"
 
 

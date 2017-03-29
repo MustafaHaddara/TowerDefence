@@ -1,8 +1,3 @@
-// MODIFIED my MvM
-
-//=============================================================
-
-
 #include "TDMultiplayer.h"
 #include "TDGame.h"
 

@@ -3,8 +3,7 @@
 
 #include "TSController.h"
 
-namespace BaseInvaders
-{
+namespace TDGame {
     using namespace Tombstone;
     
     // Controller types

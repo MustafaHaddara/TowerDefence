@@ -1,10 +1,3 @@
-//
-//  TDMinionController.cpp
-//  Tombstone
-//
-//  Created by Mustafa Haddara on 2017-03-06.
-//
-
 #include "TDMinionController.h"
 
 #include "TSController.h"
@@ -92,7 +85,7 @@ namespace TDGame {
     }
     
     void MinionController::DealDamage(int32 damage) {
-        MinionShotMessage *msg = new MinionShotMessage(kMinionShotMessage, damage, id, GetControllerIndex());
+        MinionShotMessage *msg = new MinionShotMessage(kMinionShotMessage, damage, GetControllerIndex());
         TheMessageMgr->SendMessageAll(*msg);
     }
     
@@ -188,9 +181,8 @@ namespace TDGame {
         
     }
     
-    MinionShotMessage::MinionShotMessage(ControllerMessageType type, int32 dmg, int32 mId, int32 index): Tombstone::ControllerMessage(type, index) {
+    MinionShotMessage::MinionShotMessage(ControllerMessageType type, int32 dmg, int32 index): Tombstone::ControllerMessage(type, index) {
         damage = dmg;
-        minionId = mId;
     }
     
     MinionShotMessage::~MinionShotMessage() {
@@ -213,35 +205,5 @@ namespace TDGame {
         }
         
         return false;
-    }
-    
-    MinionDeadMessage::MinionDeadMessage(int32 flags): Tombstone::Message(kMessageMinionDead, flags) {
-        
-    }
-    
-    MinionDeadMessage::MinionDeadMessage(int32 mId, int32 flags): Tombstone::Message(kMessageMinionDead, flags) {
-        minionId = mId;
-    }
-    
-    MinionDeadMessage::~MinionDeadMessage() {
-        
-    }
-    
-    void MinionDeadMessage::CompressMessage(Compressor& data) const {
-        Message::CompressMessage(data);
-        
-        data << minionId;
-    }
-    
-    bool MinionDeadMessage::DecompressMessage(Decompressor& data) {
-        if (Message::DecompressMessage(data)) {
-            data >> minionId;
-            return true;
-        }
-        return false;
-    }
-    
-    void MinionDeadMessage::HandleMessage(Player *sender) {
-
     }
 }

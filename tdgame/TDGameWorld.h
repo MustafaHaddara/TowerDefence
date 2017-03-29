@@ -1,11 +1,3 @@
-//
-//  TDGameWorld.h
-//
-//
-//  Created by Martin on 2016-10-04.
-//
-//
-
 #ifndef __Tombstone__TDGameWorld__
 #define __Tombstone__TDGameWorld__
 

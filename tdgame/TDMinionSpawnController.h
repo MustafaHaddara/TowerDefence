@@ -1,11 +1,3 @@
-//
-//  TDMinionController.hpp
-//  Tombstone
-//
-//  Created by Mustafa Haddara on 2017-03-06.
-//
-//
-
 #ifndef TDMinionSpawnController_h
 #define TDMinionSpawnController_h
 
@@ -63,4 +55,4 @@ namespace TDGame
     };
 }
 
-#endif /* TDMinionSpawnController_h */
+#endif

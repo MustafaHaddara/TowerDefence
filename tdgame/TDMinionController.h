@@ -1,17 +1,9 @@
-//
-//  TDMinionController.hpp
-//  Tombstone
-//
-//  Created by Mustafa Haddara on 2017-03-06.
-//
-//
-
 #ifndef TDMinionController_h
 #define TDMinionController_h
 
 #include "TSController.h"
 
-namespace TDGame
+namespace BaseInvaders
 {
     using namespace Tombstone;
     
@@ -25,11 +17,13 @@ namespace TDGame
     enum: MessageType {
         kMinionMoveMessage,
         kMinionShotMessage,
-        kMessageMinionDead,
     };
     
+    /**
+     * \brief MinionController class controls minions
+     */
     class MinionController final : public Controller {
-    
+        
     private:
         const float     STEP_SIZE = 0.1;    // Distance travelled per frame
         int32           health = 100;       // Initial health
@@ -39,27 +33,69 @@ namespace TDGame
     public:
         static int32 LATEST_ID;
         
+        /**
+         * Default constructor
+         */
         MinionController();
+        
+        /**
+         * Constructor with target
+         * \param t Node pointing at the first node in the minion's path
+         */
         MinionController(Node* t);
+        
+        /**
+         * Destructor
+         */
         ~MinionController();
+        
+        /**
+         * PreprocessController
+         * This is called once to initialize the controller
+         */
         void PreprocessController(void) override;
+        
+        /**
+         * MoveController is called once every frame by the Tombstone engine
+         * Here we do all of the processing (on the server) to move the minion to its next node in its path.
+         */
         void MoveController(void) override;
+        
+        /**
+         * GetNextTarget is called once the minion has reached within `STEP_SIZE` of the next node
+         */
         void GetNextTarget(void);
+        
+        /**
+         * \brief Deals damage to the minion
+         * \param damage The amount of damage to deal to the minion
+         * Every minion starts with 100 health. Calling this function subtracts the amount of the damage from the health.
+         */
         void DealDamage(int32 damage);
         
+        /**
+         * \brief Returns the ID of the minion
+         */
         int32 GetId(void) {
             return id;
         }
         
-        bool IsDead() {
-            return health > 0;
-        }
-        
+        /**
+         * \brief Creates a message when recieving messages client-side
+         * \param type Dictates what kind of message to create
+         */
         ControllerMessage *CreateMessage(ControllerMessageType type) const override;
+        
+        /**
+         * \brief Recieves messages
+         */
         void ReceiveMessage(const ControllerMessage *message) override;
         
     };
     
+    /**
+     * Message encapsulating movement instructions for the minions
+     */
     class MinionMoveMessage : public ControllerMessage {
         friend class MinionController;
         
@@ -67,18 +103,43 @@ namespace TDGame
         Point3D target;
         
     public:
+        /**
+         * \brief Base constructor used by Tombstone Engine
+         */
         MinionMoveMessage(ControllerMessageType type, int32 index);
+        
+        /**
+         * \brief Constructor used by Server to signal a change in targets to the minions
+         * \param trgt The new target for the minion
+         */
         MinionMoveMessage(ControllerMessageType type, const Point3D trgt, int32 index);
+        
+        /**
+         * Destructor
+         */
         ~MinionMoveMessage();
         
+        /**
+         * Returns the new target of the minion as encapsulated in the message
+         */
         Point3D getTarget() const {
             return target;
         }
         
+        /**
+         * \brief Serializes message
+         */
         void CompressMessage(Compressor& data) const override;
+        
+        /**
+         * \brief Deserializes message
+         */
         bool DecompressMessage(Decompressor& data) override;
     };
     
+    /**
+     * Message encapsulating telling a client minion that it got shot
+     */
     class MinionShotMessage : public ControllerMessage {
         friend class MinionController;
         
@@ -87,40 +148,36 @@ namespace TDGame
         int32 minionId;
         
     public:
+        /**
+         * \brief Base constructor used by Tombstone Engine
+         */
         MinionShotMessage(ControllerMessageType type, int32 index);
-        MinionShotMessage(ControllerMessageType type, int32 dmg, int32 mId, int32 index);
+        
+        /**
+         * \brief Constructor used by Server to signal a change in targets to the minions
+         * \param dmg The amount of damage dealt to the minion
+         */
+        MinionShotMessage(ControllerMessageType type, int32 dmg, int32 index);
+        
+        /**
+         * Destructor
+         */
         ~MinionShotMessage();
         
         int32 GetDamage() const {
             return damage;
         }
         
-        int32 GetMinionId() const {
-            return minionId;
-        }
-        
+        /**
+         * \brief Serializes message
+         */
         void CompressMessage(Compressor& data) const override;
+        
+        /**
+         * \brief Deserializes message
+         */
         bool DecompressMessage(Decompressor& data) override;
-    };
-    
-    class MinionDeadMessage : public Message {
-    private:
-        int32 minionId;
-        
-    public:
-        MinionDeadMessage(int32 flags=0);
-        MinionDeadMessage(int32 minionId, int32 flags=0);
-        ~MinionDeadMessage();
-        
-        int32 GetMinionId() const {
-            return minionId;
-        }
-        
-        void CompressMessage(Compressor& data) const override;
-        bool DecompressMessage(Decompressor& data) override;
-        
-        void HandleMessage(Player* sender);
     };
 }
 
-#endif /* TDMinionController_h */
+#endif

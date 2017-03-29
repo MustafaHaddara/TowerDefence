@@ -36,7 +36,11 @@ DisplayBoard::DisplayBoard() :  Global<DisplayBoard>(TheDisplayBoard)
 	baseText->SetFont("font/Bold");
 	baseText->SetWidgetColor(ColorRGBA(1.0f, 1.0f, 1.0f)); // WHITE
 	
-
+	winText = new TextWidget(Vector2D(1000.0F, 200.0F), "YOU WIN");
+	winText->SetFont("font/Bold");
+	winText->SetTextScale(15.0);
+	winText->SetWidgetColor(ColorRGBA(1.0f, 0.0f, 1.0f)); // WHITE
+	//TheInterfaceMgr->AddWidget(winText);
 
 	// Adds widget to the screen
 	TheInterfaceMgr->AddWidget(myText);
@@ -59,9 +63,15 @@ DisplayBoard::DisplayBoard() :  Global<DisplayBoard>(TheDisplayBoard)
 
 	baseProgress = new ProgressWidget(Vector2D(296.0f, 18.0f));
 	baseProgress->SetWidgetKey("BaseHealth");
-	baseProgress->SetMaxValue(100);
-	baseProgress->SetValue(100);
+	baseProgress->SetMaxValue(1000);
+	baseProgress->SetValue(1000);
 	baseProgress->SetWidgetColor(ColorRGBA(0.05f, 0.05f, 0.05f));
+
+	towerProgress = new ProgressWidget(Vector2D(296.0f, 18.0f));
+	towerProgress->SetWidgetKey("BaseHealth");
+	towerProgress->SetMaxValue(1000);
+	towerProgress->SetValue(1000);
+	towerProgress->SetWidgetColor(ColorRGBA(0.05f, 0.05f, 0.05f));
 
 	towerImage = new ImageWidget(Vector2D(64.0f, 64.0f));
 	towerImage->SetWidgetKey("TowerImage");
@@ -79,11 +89,14 @@ DisplayBoard::DisplayBoard() :  Global<DisplayBoard>(TheDisplayBoard)
 	AppendSubnode(healthBackground);
 	AppendSubnode(healthProgress);
 	AppendSubnode(baseProgress);
+	AppendSubnode(towerProgress);
 	AppendSubnode(towerImage);
 	AppendSubnode(moneyDisplay);
 	AppendSubnode(moneyText);
 	AppendSubnode(baseText);
-
+	if (youwin == true) {
+		AppendSubnode(winText);
+	}
 	UpdateDisplayPosition();
 }
 
@@ -144,6 +157,16 @@ void DisplayBoard::UpdateDisplayPosition(void)
 		, 1000.0F
 		, 0.0f));
 
+	towerProgress->SetWidgetPosition(Point3D(
+		displayWidth * 0.5F - 296.0F * 0.5F
+		, 500.0F
+		, 0.0f));
+
+	winText->SetWidgetPosition(Point3D(
+		displayWidth * 0.25F - 296.0F * 0.25F
+		, 100.0F
+		, 0.0f));
+	
 	towerImage->SetWidgetPosition(Point3D(
 		displayWidth * 0.5F - (64.0F + 300.0F) * 0.5F
 		, 28.0F
@@ -190,4 +213,15 @@ void DisplayBoard::UpdateBaseHealth(int32 health)
 {
 	baseProgress = static_cast<ProgressWidget*>(FindWidget("BaseHealth"));
 	baseProgress->SetValue(health);
+	if (health==0) {
+		TheEngine->Report("YOUWIN");
+		TheInterfaceMgr->AddWidget(winText);
+		youwin = true;
+	}
+}
+
+void DisplayBoard::UpdateTowerHealth(int32 health)
+{
+	towerProgress = static_cast<ProgressWidget*>(FindWidget("TowerHealth"));
+	towerProgress->SetValue(health);
 }

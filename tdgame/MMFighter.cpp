@@ -611,12 +611,14 @@ void FighterController::EnterWorld(World *world, const Point3D& worldPosition)
 	}
      */
 }
-// fighterController => instance of player
+
 // 
 CharacterStatus FighterController::Damage(int32 damage, unsigned_int32 flags, GameCharacterController *attacker, const Point3D *position, const Vector3D *force)
 {
 	health = health - damage;
+
 	fighterPlayer.GetTarget()->SendMessage(UpdateHealthMessage(health));
+
 		return (kCharacterUnaffected);
 }
 
@@ -790,7 +792,6 @@ void FighterController::fireLaser(void)
     // DetectCollision works too if data not needed !
     CollisionState state = world->QueryCollision(pos, pos +  shotDirection* 100.F, 0.0F,kCollisionProjectile , &collisionData);
     if (state == kCollisionStateGeometry){
-		
         TheEngine->Report("GEOMETRY");
         //printf("ray: GEOMETRY \n");
     }else if (state == kCollisionStateRigidBody){
@@ -800,6 +801,14 @@ void FighterController::fireLaser(void)
 		if (rigidBodyType == kRigidBodyCharacter) {
 			GameCharacterController *contactedPlayerController = static_cast<GameCharacterController *>(rigidBodyController);
 			contactedPlayerController->Damage(10, 0, 0, 0, 0);
+		}
+		if (rigidBodyType == kRigidBodyTower) {
+			TowerController *contactedTowerController = static_cast<TowerController *>(rigidBodyController);
+			contactedTowerController->towerTakeDamage(10);
+		}
+		if (rigidBodyType == kRigidBodyBase) {
+			BaseController *contactedBaseController = static_cast<BaseController *>(rigidBodyController);
+			contactedBaseController->takeDamage(10);
 		}
         TheEngine->Report("BODY");
         //printf("ray: BODY \n");

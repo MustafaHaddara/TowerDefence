@@ -38,7 +38,7 @@
 
 #include "TDTowerController.h"
 #include "TDMinionController.h"
-
+#include "BaseController.h"
 
 namespace MMGame
 {
@@ -70,6 +70,7 @@ namespace MMGame
 			//ControllerReg<GameRigidBodyController>			gameRigidBodyControllerRegistration;
             ControllerReg<TowerController> towerControllerRegistration;
             ControllerReg<MinionController> minionControllerRegistration;
+			ControllerReg<BaseController> baseControllerRegistration;
 
 			LocatorRegistration								spawnLocatorRegistration;
 			LocatorRegistration								collLocatorRegistration;

@@ -37,10 +37,10 @@ namespace MMGame
  {
     private:
         
-               
+		bool							youwin;
         TextWidget                      *scoreText;
         TextWidget                      *healthText;
-        
+		TextWidget                      *winText;
     
         
         Widget                          healthGroup;
@@ -56,6 +56,7 @@ namespace MMGame
 		ImageWidget						*towerImage;
 		ProgressWidget					*healthProgress;
 		ProgressWidget					*baseProgress;
+		ProgressWidget					*towerProgress;
 		TextWidget						*moneyText;
 
 		// Static Widgets
@@ -81,6 +82,7 @@ namespace MMGame
         
          void ShowMessageText(const char* text);
 		 void UpdateBaseHealth(int32 health);
+		 void UpdateTowerHealth(int32 health);
     };
 
     extern DisplayBoard *TheDisplayBoard;

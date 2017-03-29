@@ -87,6 +87,8 @@ namespace MMGame
 		kMessageClientVoiceReceiveStop,
         kMessageCreateCharacter, // ADDED THIS
         kMessageRequestAvantar,
+		kMessageBaseHealth,
+		kMessageTowerHealth
 	};
 
 
@@ -925,6 +927,34 @@ public:
 
 	UpdateBaseHealthMessage(int32 inputHealth,int32 conindex);
 	~UpdateBaseHealthMessage();
+
+
+	void CompressMessage(Compressor& data) const override;
+	bool DecompressMessage(Decompressor& data) override;
+
+	bool HandleMessage(Player *sender) const override;
+
+
+	float GetNewHealth(void) const
+	{
+		return (newHealth);
+	}
+};
+
+class UpdateTowerHealthMessage : public Message
+{
+	friend class Game;
+
+private:
+
+	int32 newHealth;
+	int32 controllerindex;
+	UpdateTowerHealthMessage();
+
+public:
+
+	UpdateTowerHealthMessage(int32 inputHealth, int32 conindex);
+	~UpdateTowerHealthMessage();
 
 
 	void CompressMessage(Compressor& data) const override;

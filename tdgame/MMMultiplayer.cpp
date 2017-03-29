@@ -657,11 +657,11 @@ bool UpdateHealthMessage::HandleMessage(Player* sender) const
 }
 
 
-UpdateBaseHealthMessage::UpdateBaseHealthMessage() : Message(kMessageHealth)
+UpdateBaseHealthMessage::UpdateBaseHealthMessage() : Message(kMessageBaseHealth)
 {
 }
 
-UpdateBaseHealthMessage::UpdateBaseHealthMessage(int32 inputHealth, int32 conindex) : Message(kMessageHealth)
+UpdateBaseHealthMessage::UpdateBaseHealthMessage(int32 inputHealth, int32 conindex) : Message(kMessageBaseHealth)
 {
 	controllerindex = conindex;
 	newHealth = inputHealth;
@@ -689,13 +689,57 @@ bool UpdateBaseHealthMessage::DecompressMessage(Decompressor& data)
 bool UpdateBaseHealthMessage::HandleMessage(Player* sender) const
 {
 	Controller *controller = TheWorldMgr->GetWorld()->GetController(controllerindex);
-//	BaseController *base = static_cast<const BaseController *>(controller);
+	BaseController *base = static_cast<BaseController *>(controller);
 	if (controller)
 	{
 		if (TheDisplayBoard)
 		{
-//			base->setHealth(newHealth);
-	//		TheDisplayBoard->UpdateBaseHealth(base->getHealth());
+			base->setHealth(newHealth);
+			TheDisplayBoard->UpdateBaseHealth(base->getHealth());
+		}
+	}
+	return(true);
+}
+
+UpdateTowerHealthMessage::UpdateTowerHealthMessage() : Message(kMessageTowerHealth)
+{
+}
+
+UpdateTowerHealthMessage::UpdateTowerHealthMessage(int32 inputHealth, int32 conindex) : Message(kMessageTowerHealth)
+{
+	controllerindex = conindex;
+	newHealth = inputHealth;
+}
+
+UpdateTowerHealthMessage::~UpdateTowerHealthMessage()
+{
+
+}
+
+void UpdateTowerHealthMessage::CompressMessage(Compressor& data) const
+{
+	data << int(newHealth);
+	data << int(controllerindex);
+}
+
+bool UpdateTowerHealthMessage::DecompressMessage(Decompressor& data)
+{
+	data >> newHealth;
+	data >> controllerindex;
+	return(true);
+}
+
+
+bool UpdateTowerHealthMessage::HandleMessage(Player* sender) const
+{
+	Controller *controller = TheWorldMgr->GetWorld()->GetController(controllerindex);
+	TowerController *tower = static_cast<TowerController *>(controller);
+	if (controller)
+	{
+		if (TheDisplayBoard)
+		{
+			tower->setTowerHealth(newHealth);
+			TheDisplayBoard->UpdateTowerHealth(tower->getTowerHealth());
 		}
 	}
 	return(true);

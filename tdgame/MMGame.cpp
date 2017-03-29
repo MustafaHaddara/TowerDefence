@@ -52,6 +52,7 @@ Game::Game() :
 
         towerControllerRegistration(kControllerTower, "Tower"),
         minionControllerRegistration(kControllerMinion, "Minion"),
+		baseControllerRegistration(kControllerBase, "Base"),
 
 		hostCommandObserver(this, &Game::HandleHostCommand),
 		joinCommandObserver(this, &Game::HandleJoinCommand),
@@ -518,6 +519,12 @@ Message *Game::CreateMessage(MessageType type, Decompressor& data) const
 
 		case kMessageHealth:
 			return(new UpdateHealthMessage);
+
+		case kMessageBaseHealth:
+			return(new UpdateBaseHealthMessage);
+
+		case kMessageTowerHealth:
+			return(new UpdateTowerHealthMessage);
             
     }
     

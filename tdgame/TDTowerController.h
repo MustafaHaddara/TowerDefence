@@ -3,6 +3,7 @@
 
 #include "TSController.h"
 #include "TDMinionController.h"
+#include "TSPhysics.h"
 
 namespace MMGame
 {
@@ -19,9 +20,11 @@ namespace MMGame
         kModelTower             = 'Turt'
     };
     
-    class TowerController final : public Controller {
+    class TowerController final : public RigidBodyController {
     private:
-        
+		int32			health = 50;
+		bool			shapeInitFlag;
+
         const int       SHOOT_DURATION = 1000 * 2;  // Fire every 2 seconds
         const float     RANGE = 30.0f;              // Range within aiming
         const int       DAMAGE_DEALT = 20;          // Damage per shot
@@ -35,7 +38,18 @@ namespace MMGame
         TowerController();
         ~TowerController();
         void PreprocessController(void) override;
-        void MoveController(void) override;
+		void towerTakeDamage(int32 damage);
+
+		int32 getTowerHealth(void)
+		{
+			return(health);
+		}
+
+		void setTowerHealth(int32 newHealth)
+		{
+			health = newHealth;
+		}
+		void MoveController(void) override;
         MinionController* GetTargetPoint(int32 range, Vector3D *out);
         ControllerMessage *CreateMessage(ControllerMessageType type) const override;
         void ReceiveMessage(const ControllerMessage *message) override;
@@ -50,7 +64,7 @@ namespace MMGame
         friend class TowerController;
         
     private:
-        
+		int32 health = 300;
         Vector3D target;
         
     public:
@@ -58,7 +72,7 @@ namespace MMGame
         TowerRotateMessage(ControllerMessageType type, int32 index);
         TowerRotateMessage(ControllerMessageType type, const Vector3D& trgt, int32 index, unsigned_int32 flags = 0);
         ~TowerRotateMessage();
-        
+		
         Vector3D getTarget() const {
             return target;
         }

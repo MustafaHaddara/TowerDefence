@@ -1,20 +1,10 @@
-//
-//  MMGamePlayer.cpp
-//  Tombstone
-//
-//  Created by Martin on 2016-10-04.
-//
-//
-
 #include "MMGamePlayer.h"
 #include "MMGame.h"
 #include "MMFighter.h"
 
-using namespace MMGame;
-
+using namespace BaseInvaders;
 
 /*---------------------------------------------------------------------*/
-
 
 GamePlayer::GamePlayer(PlayerKey key) : Player(key)
 {
@@ -32,24 +22,13 @@ GamePlayer::GamePlayer(PlayerKey key) : Player(key)
 GamePlayer::~GamePlayer()
 {
 }
-//
-//void GamePlayer::SetPlayerController(FighterController *controller, const playerState *state)
+
 void GamePlayer::  SetPlayerController(FighterController *controller, const void *state)
 {
     playerController = controller;
     if (controller)
     {
         controller->SetFighterPlayer(this);
-        /*
-         if (state)
-         {
-         playerState = *state;
-         }
-         else
-         {
-         
-         }
-         */
     }
 }
 
@@ -128,6 +107,3 @@ PlayerKey GamePlayer::GetAttackerKey(const GameCharacterController *attacker)
     
     return (kPlayerNone);
 }
-
-
-

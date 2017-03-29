@@ -1,27 +1,13 @@
-//
-//  MMGameWorld.h
-//
-//
-//  Created by Martin on 2016-10-04.
-//
-//
-
-#ifndef __Tombstone__MMGameWorld__
-#define __Tombstone__MMGameWorld__
+#ifndef __Tombstone__BaseInvadersWorld__
+#define __Tombstone__BaseInvadersWorld__
 
 #include "MMGame.h"
 #include "MMCameras.h"
 
-namespace MMGame
-{
+namespace BaseInvaders {
     using namespace Tombstone;
 
-
-
-
-
-class GameWorld : public World
-{
+class GameWorld : public World {
 private:
     
     int32					spawnLocatorCount;
@@ -137,4 +123,4 @@ public:
 
 }
 
-#endif /* defined(__Tombstone__MMGameWorld__) */
+#endif

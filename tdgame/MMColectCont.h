@@ -1,36 +1,13 @@
-//=============================================================
-//
-// Tombstone Engine version 1.0
-
-// CHANGED MVM
-
-// Unauthorized redistribution of source code is strictly
-// prohibited. Violators will be prosecuted.
-//
-//=============================================================
-
-
 #ifndef MMCollectControllers_h
 #define  MMCollectControllers_h
-
 
 #include "TSTriggers.h"
 
 #include "MMCharacter.h"
 
-
-
-
-namespace MMGame 
+namespace BaseInvaders 
 {
 	using namespace Tombstone;
-
-/*
-	enum : ControllerType
-	{
-		kControllerCollectable		= 'clct',
-	};
-*/
 
 	enum : LocatorType
 	{
@@ -123,5 +100,3 @@ namespace MMGame
 
 
 #endif
-
-// ZUXSVMT

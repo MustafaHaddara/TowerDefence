@@ -1,17 +1,3 @@
-//=============================================================
-//
-// Tombstone Engine version 1.0
-// Copyright 2016, by Terathon Software LLC
-//
-// This file is part of the Tombstone Engine and is provided under the
-// terms of the license agreement entered by the registed user.
-//
-// Unauthorized redistribution of source code is strictly
-// prohibited. Violators will be prosecuted.
-//
-//=============================================================
-
-
 #include "MMInput.h"
 #include "MMGame.h"
 #include "MMMultiPlayer.h"
@@ -19,9 +5,7 @@
 #include "MMFighter.h"
 #include "MMGameWorld.h"
 
-
-using namespace MMGame;
-
+using namespace BaseInvaders;
 
 MovementAction::MovementAction(ActionType type, unsigned_int32 moveFlag, unsigned_int32 specFlag) : Action(type)
 {
@@ -220,8 +204,3 @@ void FireAction::HandleDisengage(void)
 		}
 	}
 }
-
-
-
-
-// ZUXSVMT

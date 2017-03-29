@@ -12,7 +12,7 @@
 
 
 
-namespace MMGame
+namespace BaseInvaders
 {
         using namespace Tombstone;
     

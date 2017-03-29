@@ -1,27 +1,8 @@
-// MODIFIED my MvM
-
-
-//=============================================================
-//
-// Tombstone Engine version 1.0
-// Copyright 2016, by Terathon Software LLC
-//
-// This file is part of the Tombstone Engine and is provided under the
-// terms of the license agreement entered by the registed user.
-//
-// Unauthorized redistribution of source code is strictly
-// prohibited. Violators will be prosecuted.
-//
-//=============================================================
-
-
 #include "MMFighter.h"
 #include "MMGame.h"
 #include "MMCameras.h"
 
-
-using namespace MMGame;
-
+using namespace BaseInvaders;
 
 namespace
 {
@@ -76,8 +57,6 @@ FighterController::FighterController(ControllerType type) :
 	motionComplete = false; 
 	targetDistance = 0.0F; 
 	damageTime = 0;
- 
-	//SetCollisionExclusionMask(kCollisionCorpse);
 } 
 
 FighterController::~FighterController() 
@@ -134,21 +113,11 @@ void FighterController::UnpackChunk(const ChunkHeader *chunkHeader, Unpacker& da
 	}
 }
 
-/*
-GamePlayer *FighterController::GetFighterPlayer(void) const
-{
-    return (static_cast<GamePlayer *>(fighterPlayer.GetTarget()));
-}
-*/
-
-
 void FighterController::PreprocessController(void)
 {
 	GameCharacterController::PreprocessController();
 
-    //printf("Preprocess \n");
 	SetFrictionCoefficient(0.001F);
-	//SetCollisionKind(GetCollisionKind() | kCollisionPlayer);
 
 	modelAzimuth = primaryAzimuth;
 
@@ -229,187 +198,168 @@ void FighterController::MoveController(void)
     
 
 	bool server = TheMessageMgr->GetServerFlag();
-	//if (!(fighterFlags & kFighterDead))
-	{
-		static const unsigned_int8 movementIndexTable[16] =
-		{
-			8, 0, 1, 8,
-			2, 4, 6, 2,
-			3, 5, 7, 3,
-			8, 0, 1, 8
-		};
+    static const unsigned_int8 movementIndexTable[16] =
+    {
+        8, 0, 1, 8,
+        2, 4, 6, 2,
+        3, 5, 7, 3,
+        8, 0, 1, 8
+    };
 
-		damageTime = MaxZero(damageTime - TheTimeMgr->GetDeltaTime());
+    damageTime = MaxZero(damageTime - TheTimeMgr->GetDeltaTime());
 
-		if (fighterPlayer == TheMessageMgr->GetLocalPlayer()){
-            			//float dt = TheTimeMgr->GetFloatDeltaTime();
+    if (fighterPlayer == TheMessageMgr->GetLocalPlayer()){
+        float azm = lookAzimuth + TheInputMgr->GetMouseDeltaX();
+        if (azm < -Math::tau_over_2)
+        {
+            azm += Math::tau;
+        }
+        else if (azm > Math::tau_over_2)
+        {
+            azm -= Math::tau;
+        }
 
-            float azm = lookAzimuth + TheInputMgr->GetMouseDeltaX() ;//+ TheGame->GetLookSpeedX() * dt;
-			if (azm < -Math::tau_over_2)
-			{
-				azm += Math::tau;
-			}
-			else if (azm > Math::tau_over_2)
-			{
-				azm -= Math::tau;
-			}
+        float alt = lookAltitude + TheInputMgr->GetMouseDeltaY();
+        alt = Clamp(alt, -1.5F, 1.5F);
 
-            float alt = lookAltitude + TheInputMgr->GetMouseDeltaY();// + TheGame->GetLookSpeedY() * dt;
-			alt = Clamp(alt, -1.5F, 1.5F);
+        if ((azm != lookAzimuth) || (alt != lookAltitude))
+        {
+            lookAzimuth = azm;
+            lookAltitude = alt;
 
-			if ((azm != lookAzimuth) || (alt != lookAltitude))
-			{
-				lookAzimuth = azm;
-				lookAltitude = alt;
+            if (!server)
+            {
+                TheMessageMgr->SendMessage(kPlayerServer, ClientOrientationMessage(azm, alt));
+            }
+        }
 
-				if (!server)
-				{
-					TheMessageMgr->SendMessage(kPlayerServer, ClientOrientationMessage(azm, alt));
-				}
-			}
+        TheSoundMgr->SetListenerVelocity(GetLinearVelocity());
+    }
 
-			TheSoundMgr->SetListenerVelocity(GetLinearVelocity());
-		}
+    int32 motion = fighterMotion;
+    Vector2D force(0.0F, 0.0F);
+    float azimuthOffset = 0.0F;
 
-		int32 motion = fighterMotion;
-		Vector2D force(0.0F, 0.0F);
-		float azimuthOffset = 0.0F;
+    int32 index = movementIndexTable[movementFlags & kMovementPlanarMask];
+    if (index < 8)
+    {
+        static const float movementDirectionTable[8] =
+        {
+            0.0F, 4.0F, 2.0F, -2.0F, 1.0F, -1.0F, 3.0F, -3.0F
+        };
 
-		int32 index = movementIndexTable[movementFlags & kMovementPlanarMask];
-		if (index < 8)
-		{
-			static const float movementDirectionTable[8] =
-			{
-				0.0F, 4.0F, 2.0F, -2.0F, 1.0F, -1.0F, 3.0F, -3.0F
-			};
+        static const float movementAzimuthTable[8] =
+        {
+            0.0F, 0.0F, 2.0F, -2.0F, 1.0F, -1.0F, -1.0F, 1.0F
+        };
 
-			static const float movementAzimuthTable[8] =
-			{
-				0.0F, 0.0F, 2.0F, -2.0F, 1.0F, -1.0F, -1.0F, 1.0F
-			};
+        float direction = movementDirectionTable[index] * Math::tau_over_8 + lookAzimuth;
+        force += CosSin(direction) * kFighterRunForce;
 
-			float direction = movementDirectionTable[index] * Math::tau_over_8 + lookAzimuth;
-			force += CosSin(direction) * kFighterRunForce;
+        primaryAzimuth = lookAzimuth;
+        azimuthOffset = movementAzimuthTable[index];
+        motion = ((index == 1) || (index >= 6)) ? kFighterMotionBackward : kFighterMotionForward;
+    }
+    else if (motion <= kFighterMotionBackward)
+    {
+        motion = kFighterMotionStop;
+    }
 
-			primaryAzimuth = lookAzimuth;
-			azimuthOffset = movementAzimuthTable[index];
-			motion = ((index == 1) || (index >= 6)) ? kFighterMotionBackward : kFighterMotionForward;
-		}
-		else if (motion <= kFighterMotionBackward)
-		{
-			motion = kFighterMotionStop;
-		}
+    if (GetCharacterState() & kCharacterGround)
+    {
+        SetExternalLinearResistance(Vector2D(kFighterResistForce, kFighterResistForce));
+        SetExternalForce(force);
+    }
+    else
+    {
+        SetExternalLinearResistance(Zero2D);
+        SetExternalForce(force * 0.02F);
+    }
 
-		if (GetCharacterState() & kCharacterGround)
-		{
-			SetExternalLinearResistance(Vector2D(kFighterResistForce, kFighterResistForce));
-			SetExternalForce(force);
-		}
-		else
-		{
-			SetExternalLinearResistance(Zero2D);
-			SetExternalForce(force * 0.02F);
-		}
+    lookInterpolateParam = FmaxZero(lookInterpolateParam - TheTimeMgr->GetSystemFloatDeltaTime() * TheMessageMgr->GetSnapshotFrequency());
 
-		lookInterpolateParam = FmaxZero(lookInterpolateParam - TheTimeMgr->GetSystemFloatDeltaTime() * TheMessageMgr->GetSnapshotFrequency());
+    float azm = primaryAzimuth;
+    if ((motion <= kFighterMotionStand) || (motion == kFighterMotionTurnLeft) || (motion == kFighterMotionTurnRight))
+    {
+        float interpolatedAzimuth = GetInterpolatedLookAzimuth();
 
-		float azm = primaryAzimuth;
-		if ((motion <= kFighterMotionStand) || (motion == kFighterMotionTurnLeft) || (motion == kFighterMotionTurnRight))
-		{
-			float interpolatedAzimuth = GetInterpolatedLookAzimuth();
+        float da = interpolatedAzimuth - azm;
+        if (da > Math::tau_over_2)
+        {
+            da -= Math::tau;
+        }
+        else if (da < -Math::tau_over_2)
+        {
+            da += Math::tau;
+        }
 
-			float da = interpolatedAzimuth - azm;
-			if (da > Math::tau_over_2)
-			{
-				da -= Math::tau;
-			}
-			else if (da < -Math::tau_over_2)
-			{
-				da += Math::tau;
-			}
+        if (da > Math::tau_over_8)
+        {
+            if (da > Math::tau_over_4)
+            {
+                azm = interpolatedAzimuth - Math::tau_over_4;
+            }
 
-			if (da > Math::tau_over_8)
-			{
-				if (da > Math::tau_over_4)
-				{
-					azm = interpolatedAzimuth - Math::tau_over_4;
-				}
+            motion = kFighterMotionTurnLeft;
+        }
+        else if (da < -Math::tau_over_8)
+        {
+            if (da < -Math::tau_over_4)
+            {
+                azm = interpolatedAzimuth + Math::tau_over_4;
+            }
 
-				motion = kFighterMotionTurnLeft;
-			}
-			else if (da < -Math::tau_over_8)
-			{
-				if (da < -Math::tau_over_4)
-				{
-					azm = interpolatedAzimuth + Math::tau_over_4;
-				}
+            motion = kFighterMotionTurnRight;
+        }
+    }
 
-				motion = kFighterMotionTurnRight;
-			}
-		}
+    if (motionComplete)
+    {
+        if (fighterMotion == kFighterMotionTurnLeft)
+        {
+            azm += Math::tau_over_4;
+            if (azm > Math::tau_over_2)
+            {
+                azm -= Math::tau;
+            }
+        }
+        else if (fighterMotion == kFighterMotionTurnRight)
+        {
+            azm -= Math::tau_over_4;
+            if (azm < -Math::tau_over_2)
+            {
+                azm += Math::tau;
+            }
+        }
 
-		if (motionComplete)
-		{
-			if (fighterMotion == kFighterMotionTurnLeft)
-			{
-				azm += Math::tau_over_4;
-				if (azm > Math::tau_over_2)
-				{
-					azm -= Math::tau;
-				}
-			}
-			else if (fighterMotion == kFighterMotionTurnRight)
-			{
-				azm -= Math::tau_over_4;
-				if (azm < -Math::tau_over_2)
-				{
-					azm += Math::tau;
-				}
-			}
+        motion = kFighterMotionStand;
+        motionComplete = false;
+    }
 
-			motion = kFighterMotionStand;
-            motionComplete = false;
-		}
+    if (motion != fighterMotion)
+    {
+        //printf("CHANGE  MOTION \n");
+        SetFighterMotion(motion);
+    }
 
-		if (motion != fighterMotion)
-		{
-            //printf("CHANGE  MOTION \n");
-			SetFighterMotion(motion);
-		}
+    primaryAzimuth = azm;
+    modelAzimuth = azimuthOffset * Math::tau_over_16 + azm;
 
-		primaryAzimuth = azm;
-		modelAzimuth = azimuthOffset * Math::tau_over_16 + azm;
+    SetCharacterOrientation(modelAzimuth);
+    SetMountNodeTransform();
 
-		SetCharacterOrientation(modelAzimuth);
-		SetMountNodeTransform();
+    if (server)
+    {
+        Model *model = GetTargetNode();
+        model->GetWorld()->ActivateTriggers(previousCenterOfMass, GetWorldCenterOfMass(), 0.33F, model);
+    }
 
-		if (server)
-		{
-			Model *model = GetTargetNode();
-			model->GetWorld()->ActivateTriggers(previousCenterOfMass, GetWorldCenterOfMass(), 0.33F, model);
-		}
-
-		previousCenterOfMass = GetWorldCenterOfMass();
-	}
-    /*
-	else
-	{
-		if ((server) && ((deathTime -= TheTimeMgr->GetDeltaTime()) < 0))
-		{
-			TheMessageMgr->SendMessageAll(DeleteNodeMessage(GetControllerIndex()));
-			return;
-		}
-     
-
-		SetExternalLinearResistance(Vector2D(kFighterResistForce, kFighterResistForce));
-	}
-   */
+    previousCenterOfMass = GetWorldCenterOfMass();
 
 	AnimateFighter();
 }
 
-ControllerMessage *FighterController::CreateMessage(ControllerMessageType type) const
-{
+ControllerMessage *FighterController::CreateMessage(ControllerMessageType type) const {
 	switch (type)
 	{
         case kFighterMessageBeginMovement:
@@ -422,18 +372,18 @@ ControllerMessage *FighterController::CreateMessage(ControllerMessageType type) 
         
         case kFireLaser:
             return(new ControllerMessage(kFireLaser, GetControllerIndex()));
+            
+//        case kFighterMessageUpdate:
+//            return (new FighterUpdateMessage(GetControllerIndex()));
 	}
 
 	return (GameCharacterController::CreateMessage(type));
 }
 
 void FighterController::ReceiveMessage(const ControllerMessage *message) {
-    //printf("ray Receive Message \n");
-	switch (message->GetControllerMessageType())
-	{
+	switch (message->GetControllerMessageType()) {
 		case kFighterMessageBeginMovement:
 		{
-            
 			const FighterMovementMessage *m = static_cast<const FighterMovementMessage *>(message);
 
 			unsigned_int32 flag = m->GetMovementFlag();
@@ -521,22 +471,6 @@ void FighterController::ReceiveMessage(const ControllerMessage *message) {
 			fighterInteractor.CancelInteraction();
 			GetTargetNode()->GetWorld()->RemoveInteractor(&fighterInteractor);
 
-/*
-			const Model *model = GetTargetNode();
-			OmniSource *source = new OmniSource("gus/Death", 32.0F);
-			source->SetSourcePriority(kSoundPriorityDeath);
-			source->SetNodePosition(model->GetWorldPosition());
-			model->GetWorld()->AddNewNode(source);
-
-			if (fighterPlayer == TheMessageMgr->GetLocalPlayer())
-			{
-				static_cast<GameWorld *>(model->GetWorld())->SetBloodIntensity(1.0F);
-			}
-
-			SetExternalForce(Zero3D);
-			SetCollisionKind(GetCollisionKind() | kCollisionCorpse);
-			SetCollisionExclusionMask(~kCollisionRigidBody);
-*/
 			deathTime = 10000;
 			fighterFlags |= kFighterDead;
 			SetFighterMotion(kFighterMotionDeath);
@@ -554,7 +488,6 @@ void FighterController::ReceiveMessage(const ControllerMessage *message) {
             
         case kFireLaser:
         {
-            //printf("ray Recieve a FireLaser Message \n");
             if (message->GetControllerMessageType() == kFireLaser) {
                 Controller::ReceiveMessage(message);
             }
@@ -568,20 +501,13 @@ void FighterController::ReceiveMessage(const ControllerMessage *message) {
 	}
 }
 
-void FighterController::SendInitialStateMessages(Player *player) const
-{
-    //printf("FIGHTER Send Initial State Message CALLED \n");
-    
-    
+void FighterController::SendInitialStateMessages(Player *player) const {
     const Point3D& pos = GetTargetNode()->GetWorldPosition();
     CreateCharacterMessage message(kMessageCreateCharacter,GetControllerIndex(),kSoldierEntity,playerkey,pos);
     player->SendMessage(message);
-    
-     
 }
 
-void FighterController::SendSnapshot(void)
-{
+void FighterController::SendSnapshot(void) {
     if (TheMessageMgr->GetServerFlag()) {
         GameCharacterController::SendSnapshot();
     }
@@ -595,29 +521,18 @@ RigidBodyStatus FighterController::HandleNewGeometryContact(const GeometryContac
 	return (kRigidBodyUnchanged);
 }
 
-void FighterController::EnterWorld(World *world, const Point3D& worldPosition)
-{
-    /*
-	if (TheMessageMgr->GetMultiplayerFlag())
-	{
-		Point3D position(worldPosition.x, worldPosition.y, worldPosition.z + 1.0F);
-
-	}
-     */
+void FighterController::EnterWorld(World *world, const Point3D& worldPosition) {
 }
 
-CharacterStatus FighterController::Damage(Fixed damage, unsigned_int32 flags, GameCharacterController *attacker, const Point3D *position, const Vector3D *force)
-{
+CharacterStatus FighterController::Damage(Fixed damage, unsigned_int32 flags, GameCharacterController *attacker, const Point3D *position, const Vector3D *force) {
 		return (kCharacterUnaffected);
 }
 
-void FighterController::Kill(GameCharacterController *attacker, const Point3D *position, const Vector3D *force)
-{
-	//GetFighterPlayer()->Kill(attacker);
+void FighterController::Kill(GameCharacterController *attacker, const Point3D *position, const Vector3D *force) {
+
 }
 
-void FighterController::UpdateOrientation(float azm, float alt)
-{
+void FighterController::UpdateOrientation(float azm, float alt) {
 	deltaLookAzimuth = GetInterpolatedLookAzimuth() - azm;
 	if (deltaLookAzimuth > Math::tau_over_2)
 	{
@@ -635,16 +550,14 @@ void FighterController::UpdateOrientation(float azm, float alt)
 	lookInterpolateParam = 1.0F;
 }
 
-void FighterController::BeginMovement(unsigned_int32 flag, float azm, float alt)
-{
+void FighterController::BeginMovement(unsigned_int32 flag, float azm, float alt) {
 	const Point3D& position = GetTargetNode()->GetWorldPosition();
 	Vector3D velocity = GetLinearVelocity();
 	FighterMovementMessage message(kFighterMessageBeginMovement, GetControllerIndex(), position, velocity, azm, alt, flag);
 	TheMessageMgr->SendMessageAll(message);
 }
 
-void FighterController::EndMovement(unsigned_int32 flag, float azm, float alt)
-{
+void FighterController::EndMovement(unsigned_int32 flag, float azm, float alt) {
 	const Point3D& position = GetTargetNode()->GetWorldPosition();
 	Vector3D velocity = GetLinearVelocity();
 
@@ -652,8 +565,7 @@ void FighterController::EndMovement(unsigned_int32 flag, float azm, float alt)
 	TheMessageMgr->SendMessageAll(message);
 }
 
-void FighterController::ChangeMovement(unsigned_int32 flags, float azm, float alt)
-{
+void FighterController::ChangeMovement(unsigned_int32 flags, float azm, float alt) {
 	const Point3D& position = GetTargetNode()->GetWorldPosition();
 	Vector3D velocity = GetLinearVelocity();
 
@@ -661,52 +573,39 @@ void FighterController::ChangeMovement(unsigned_int32 flags, float azm, float al
 	TheMessageMgr->SendMessageAll(message);
 }
 
-void FighterController::BeginFiring(bool primary, float azm, float alt)
-{
+void FighterController::BeginFiring(bool primary, float azm, float alt) {
 	SetOrientation(azm, alt);
 
 	unsigned_int32 flags = fighterFlags & ~kFighterFiring;
 	fighterFlags = flags | ((primary) ? kFighterFiringPrimary : kFighterFiringSecondary);
-
-	//GetWeaponController()->BeginFiring(primary);
 }
 
-void FighterController::EndFiring(float azm, float alt)
-{
+void FighterController::EndFiring(float azm, float alt) {
 	SetOrientation(azm, alt);
 	fighterFlags &= ~kFighterFiring;
-
-	//GetWeaponController()->EndFiring();
 }
 
-void FighterController::SetWeapon(int32 weaponIndex, int32 weaponControllerIndex)
-{
-	//GamePlayer *player = GetFighterPlayer();
+void FighterController::SetWeapon(int32 weaponIndex, int32 weaponControllerIndex) {
 
 }
 
-void FighterController::PlayInventorySound(int32 inventoryIndex)
-{
+void FighterController::PlayInventorySound(int32 inventoryIndex) {
 	
 }
 
-void FighterController::ActivateFlashlight(void)
-{
+void FighterController::ActivateFlashlight(void) {
 	
 }
 
-void FighterController::DeactivateFlashlight(void)
-{
+void FighterController::DeactivateFlashlight(void) {
 	
 }
 
-void FighterController::ToggleFlashlight(void)
-{
+void FighterController::ToggleFlashlight(void) {
 	
 }
 
-void FighterController::SetPerspectiveExclusionMask(unsigned_int32 mask) const
-{
+void FighterController::SetPerspectiveExclusionMask(unsigned_int32 mask) const {
 	Node *node = GetTargetNode()->GetFirstSubnode();
 	while (node)
 	{
@@ -738,20 +637,12 @@ void FighterController::SetPerspectiveExclusionMask(unsigned_int32 mask) const
 	}
 }
 
-void FighterController::SetFighterStyle(const int32 *style, bool prep)
-{
+void FighterController::SetFighterStyle(const int32 *style, bool prep) {
+    
 }
 
-/*
-void FighterController::SetFighterMotion(int32 motion)
-{
-	fighterMotion = motion;
-	motionComplete = false;
-}
- */
-
-void FighterController::HandleAnimationEvent(FrameAnimator *animator, CueType cueType)
-{
+void FighterController::HandleAnimationEvent(FrameAnimator *animator, CueType cueType) {
+    
 }
 
 void FighterController::HandleMotionCompletion(Interpolator *interpolator, void *cookie)
@@ -759,21 +650,11 @@ void FighterController::HandleMotionCompletion(Interpolator *interpolator, void 
 	static_cast<FighterController *>(cookie)->motionComplete = true;
 }
 
-/*
-void FighterController::AnimateFighter(void)
-{
-	GetTargetNode()->AnimateModel();
-}
-*/
-
-void FighterController::fireLaser(void)
-{
-    
+void FighterController::fireLaser(void) {
     CollisionData   collisionData;
     const Point3D& position = GetTargetNode()->GetWorldPosition();
     Vector2D t = CosSin(lookAzimuth);
     Vector2D u = CosSin(lookAltitude);
-#define FIRE_RANGE 100.
     Vector3D shotDirection(t.x * u.x,  t.y * u.x,  u.y);
     Point3D pos(position.x,position.y,position.z+1);
     
@@ -782,14 +663,10 @@ void FighterController::fireLaser(void)
     CollisionState state = world->QueryCollision(pos, pos +  shotDirection* 100.F, 0.0F,kCollisionProjectile , &collisionData);
     if (state == kCollisionStateGeometry){
         TheEngine->Report("GEOMETRY");
-        //printf("ray: GEOMETRY \n");
-    }else if (state == kCollisionStateRigidBody){
+    } else if (state == kCollisionStateRigidBody){
         TheEngine->Report("BODY");
-        //printf("ray: BODY \n");
-    }else{
+    } else {
         TheEngine->Report("MISS");
-        //printf("ray: Miss \n");
-        
     };
     
 }
@@ -800,8 +677,7 @@ CreateFighterMessage::CreateFighterMessage(ModelMessageType type) : CreateModelM
 {
 }
 
-CreateFighterMessage::CreateFighterMessage(ModelMessageType type, int32 fighterIndex, const Point3D& position, float azm, float alt, unsigned_int32 movement, int32 weapon, int32 weaponController, int32 key) : CreateModelMessage(type, fighterIndex, position)
-{
+CreateFighterMessage::CreateFighterMessage(ModelMessageType type, int32 fighterIndex, const Point3D& position, float azm, float alt, unsigned_int32 movement, int32 weapon, int32 weaponController, int32 key) : CreateModelMessage(type, fighterIndex, position) {
 	initialAzimuth = azm;
 	initialAltitude = alt;
 
@@ -1187,5 +1063,3 @@ void FighterController::SetFighterMotion(int32 motion)
             break;
     }
 }
-
-/* ----- Make it look different for each player */

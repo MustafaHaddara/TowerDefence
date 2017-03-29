@@ -1,12 +1,5 @@
-//
-//  MMGamePlayer.h
-//
-//  Created by Martin on 2016-10-04.
-//
-//
-
-#ifndef __Tombstone__MMGamePlayer__
-#define __Tombstone__MMGamePlayer__
+#ifndef __Tombstone__BaseInvadersPlayer__
+#define __Tombstone__BaseInvadersPlayer__
 
 #include "TSWorld.h"
 #include "TSMarkings.h"
@@ -20,7 +13,7 @@
 #include "MMFighter.h"
 
 
-namespace MMGame
+namespace BaseInvaders
 {
     using namespace Tombstone;
     
@@ -34,7 +27,6 @@ namespace MMGame
         
         FighterController		*playerController;
         
-        //PlayerState				playerState;
         unsigned_int32			playerFlags;
         int32					playerPing;
         
@@ -66,35 +58,6 @@ namespace MMGame
             return (playerController);
         }
         
-
-        /*
-         PlayerState *GetPlayerState(void)
-         {
-         return (&playerState);
-         }
-         
-         const PlayerState *GetPlayerState(void) const
-         {
-         return (&playerState);
-         }
-         
-         void RestorePlayerState(const PlayerState *state)
-         {
-         playerState = *state;
-         
-         
-         int32 GetPlayerScore(void) const
-         {
-         return (playerState.playerScore);
-         }
-         
-         Fixed GetPlayerHealth(void) const
-         {
-         return (playerState.playerHealth);
-         }
-         
-        
-         */
         
         void SetPlayerController(FighterController *controller, const void *state = nullptr);
         void SetPlayerStyle(const int32 *style);
@@ -118,5 +81,4 @@ namespace MMGame
     
 }
 
-
-#endif /* defined(__Tombstone__MMGamePlayer__) */
+#endif

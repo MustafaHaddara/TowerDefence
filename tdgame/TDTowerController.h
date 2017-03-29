@@ -4,7 +4,7 @@
 #include "TSController.h"
 #include "TDMinionController.h"
 
-namespace MMGame
+namespace BaseInvaders
 {
     using namespace Tombstone;
     

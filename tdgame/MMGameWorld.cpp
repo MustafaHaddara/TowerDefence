@@ -1,12 +1,4 @@
-//
-//  MMGameWorld.cpp
-//
-//  Created by Martin on 2016-10-04.
-//
-//
-
 #include "MMGameWorld.h"
-
 
 #include "MMMultiPLayer.h"
 #include "MMGamePlayer.h"
@@ -16,7 +8,7 @@
 #include "MMColectCont.h"
 #include "MMPhysEntity.h"
 
-using namespace MMGame;
+using namespace BaseInvaders;
 
 GameWorld::GameWorld(const char *name) :
 World(name),
@@ -177,7 +169,6 @@ void GameWorld::SetFocalLength(float focal)
 #define TYPE_NAME(type) \
 (kSoldierEntity       == type ? "kSoldierEntity"    :  \
 (kCollectEntity     == type ? "kCollectEntity"   :  \
-(kPhysEntiy   == type ? "kPhysEntiy"  : \
 (0 == type ? "yellow" : "unknown"))))
 
 
@@ -290,12 +281,6 @@ void GameWorld::AddOjectAtLocation(const Point3D& pos ,ObjectType type,long inde
             // WE CAN LOAD MODELS AT RUNTIM TOO
             model = Model::NewModel("models/model1");
             break;
-            
-        case kPhysEntiy:
-            controller=new PhysEntity();
-            model = Model::NewModel("models/model1");
-            break;
-            
     }
     
     // SET THE CONTROLLER KEY

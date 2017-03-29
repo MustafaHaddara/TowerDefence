@@ -1,15 +1,10 @@
-// MODIFIED my MvM
-
-//=============================================================
-
-
 #include "MMMultiplayer.h"
 #include "MMGame.h"
 
 #include "MMFighter.h"
 #include "MMGameWorld.h"
 
-using namespace MMGame;
+using namespace BaseInvaders;
 
 
 namespace
@@ -594,16 +589,8 @@ bool ClientRequestMessage::DecompressMessage(Decompressor& data)
 
 bool ClientRequestMessage::HandleMessage(Player *sender) const
 {
-    //printf("Recieved ClientRequestMessage \n");
-    
-    //switch (GetMessageType()){
-      //  case  kMessageTypeRequestAvantar:{
-            //printf("ClientRequestMessage::  Requesting Avatar Player Key %d  \n",sender->GetPlayerKey());
-            
-            Point3D pos;
-            GameWorld *world = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
-            world->ReqestOjectAtLocation(pos,kSoldierEntity,sender->GetPlayerKey());
-			return true;
-        //}
-    //}
+    Point3D pos;
+    GameWorld *world = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
+    world->ReqestOjectAtLocation(pos,kSoldierEntity,sender->GetPlayerKey());
+    return true;
 }

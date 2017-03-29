@@ -1,17 +1,9 @@
-//
-//  TDMinionController.hpp
-//  Tombstone
-//
-//  Created by Mustafa Haddara on 2017-03-06.
-//
-//
-
 #ifndef TDMinionController_h
 #define TDMinionController_h
 
 #include "TSController.h"
 
-namespace MMGame
+namespace BaseInvaders
 {
     using namespace Tombstone;
     
@@ -28,6 +20,9 @@ namespace MMGame
         kMessageMinionDead,
     };
     
+    /**
+     * MinionController class controls minions
+     */
     class MinionController final : public Controller {
     
     private:
@@ -39,23 +34,68 @@ namespace MMGame
     public:
         static int32 LATEST_ID;
         
+        /**
+         * Default constructor
+         */
         MinionController();
+        
+        /**
+         * Constructor with target
+         * \param t Node pointing at the first node in the minion's path
+         */
         MinionController(Node* t);
+        
+        /**
+         * Destructor
+         */
         ~MinionController();
+        
+        /**
+         * PreprocessController 
+         * This is called once to initialize the controller
+         */
         void PreprocessController(void) override;
+        
+        /**
+         * MoveController is called once every frame by the Tombstone engine
+         * Here we do all of the processing (on the server) to move the minion to its next node in its path.
+         */
         void MoveController(void) override;
+        
+        /**
+         * GetNextTarget is called once the minion has reached within `STEP_SIZE` of the next node
+         */
         void GetNextTarget(void);
+        
+        /**
+         * \brief Deals damage to the minion
+         * \param damage The amount of damage to deal to the minion
+         * Every minion starts with 100 health. Calling this function subtracts the amount of the damage from the health. 
+         */
         void DealDamage(int32 damage);
         
+        /**
+         * Constructor
+         */
         int32 GetId(void) {
             return id;
         }
         
+        /**
+         * Constructor
+         */
         bool IsDead() {
             return health > 0;
         }
         
+        /**
+         * Constructor
+         */
         ControllerMessage *CreateMessage(ControllerMessageType type) const override;
+        
+        /**
+         * Constructor
+         */
         void ReceiveMessage(const ControllerMessage *message) override;
         
     };

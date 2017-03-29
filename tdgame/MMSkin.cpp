@@ -1,18 +1,9 @@
-//
-//  MMSkin.cpp
-//
-
-
-
 #include "MMSkin.h"
 #include "MMGame.h"
 
+using namespace BaseInvaders;
 
-using namespace MMGame;
-
-
-
-DisplayBoard *MMGame::TheDisplayBoard = nullptr;
+DisplayBoard *BaseInvaders::TheDisplayBoard = nullptr;
 
 
 

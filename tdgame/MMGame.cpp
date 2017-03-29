@@ -1,21 +1,3 @@
-
-// MODIFIED my MvM
-
-
-//=============================================================
-//
-// Tombstone Engine version 1.0
-// Copyright 2016, by Terathon Software LLC
-//
-// This file is part of the Tombstone Engine and is provided under the
-// terms of the license agreement entered by the registed user.
-//
-// Unauthorized redistribution of source code is strictly
-// prohibited. Violators will be prosecuted.
-//
-//=============================================================
-
-
 #include "TSToolWindows.h"
 #include "TSAudioCapture.h"
 #include "TSWater.h"
@@ -26,15 +8,9 @@
 #include "MMGameWorld.h"
 #include "MMFighter.h"
 
+using namespace BaseInvaders;
 
-
-using namespace MMGame;
-
-
-
-Game *MMGame::TheGame = nullptr;
-
-
+Game *BaseInvaders::TheGame = nullptr;
 
 Game::Game() :
 		Global<Game>(TheGame),
@@ -47,9 +23,6 @@ Game::Game() :
         soldierModelReg(kModelSoldier, nullptr, "soldier/Soldier", kModelPrecache | kModelPrivate, kControllerSoldier),
         minionModelReg(kModelMinion, nullptr, "zombie/Zombie", kModelPrecache | kModelPrivate, kControllerSoldier),
         appleModelRegistration(kModelApple,nullptr, "health/Apple", 0, kControllerCollectable),
-        //soldierModelReg(kModelSoldier, nullptr, "GUS/gus", kModelPrecache | kModelPrivate, kControllerSoldier),
-
-//        gameRigidBodyControllerRegistration(kControllerGameRigidBody, stringTable.GetString(StringID('CTRL', kControllerGameRigidBody))),
 
         towerControllerRegistration(kControllerTower, "Tower"),
         minionControllerRegistration(kControllerMinion, "Minion"),
@@ -72,8 +45,6 @@ Game::Game() :
 		primaryFireAction(kActionFirePrimary)
 
 {
-	//TheDisplayMgr->InstallDisplayEventHandler(&displayEventHandler);
-
 	TheEngine->AddCommand(&hostCommand);
 	TheEngine->AddCommand(&joinCommand);
 	
@@ -360,57 +331,12 @@ void Game::HandleConnectionEvent(ConnectionEvent event, const NetworkAddress& ad
     Application::HandleConnectionEvent(event, address, param);
 }
 
-void Game::HandlePlayerEvent(PlayerEvent event, Player *player, const void *param)
-{
-    //printf("HandlePlayerEvent\n");
-    switch (event)
-    {
+void Game::HandlePlayerEvent(PlayerEvent event, Player *player, const void *param) {
+    switch (event) {
         case kPlayerConnected:
-        {
-            //printf("kPlayerConnected\n");
-            
-            if (TheMessageMgr->GetSynchronizedFlag())
-            {
-		 // NOTHING TO DO 
-            }
-            
-            if (TheMessageMgr->GetServerFlag()) {
-//                 GamePlayer *gamePlayer = static_cast<GamePlayer *>(TheMessageMgr->GetFirstPlayer());
-//                 while (gamePlayer->GetNextPlayer()) {
-//                 if ((gamePlayer != player) && (gamePlayer->GetPlayerFlags() & kPlayerReceiveVoiceChat)) {
-//                     new Channel(player, gamePlayer);
-//                 }
-//                     gamePlayer = gamePlayer->GetNextPlayer();
-//                 }
-                
-            }
-            
-            break;
-        }
-            
         case kPlayerDisconnected:
-        {
-             //printf("kPlayerDisconnected\n");
-            Controller *controller = static_cast<GamePlayer *>(player)->GetPlayerController();
-            if (controller)
-            {
-                //delete controller->GetTargetNode();
-            }
-            
-            break;
-        }
-            
         case kPlayerTimedOut:
-        {
-            //printf("kPlayerTimedOut\n");
-            Controller *controller = static_cast<GamePlayer *>(player)->GetPlayerController();
-            if (controller)
-            {
-                //delete controller->GetTargetNode();
-            }
-            
             break;
-        }
             
         case kPlayerInitialized:
         {
@@ -447,13 +373,9 @@ void Game::HandlePlayerEvent(PlayerEvent event, Player *player, const void *para
 }
 
 // THIS IS CALLED WHEN ALL THE LOADING ON THE CLIENT IS DONE
-void Game::HandleGameEvent(GameEvent event, const void *param)
-{
-    //printf("HandleGameEvent\n");
-    switch (event)
-    {
+void Game::HandleGameEvent(GameEvent event, const void *param) {
+    switch (event) {
         case kGameSynchronized:
-            //printf("Game Syncronized request avatar\n");
             ClientRequestMessage message(kMessageRequestAvantar,0);
             TheMessageMgr->SendMessage(kPlayerServer,message);
             break;
@@ -507,30 +429,20 @@ Message *Game::CreateMessage(MessageType type, Decompressor& data) const
             
         case kMessageClientFiringPrimaryBegin:
         case kMessageClientFiringEnd:
-            
             return (new ClientFiringMessage(type));
             
         case kMessageCreateCharacter:
             return(new CreateCharacterMessage(type));
             
         case kMessageRequestAvantar:
-            
             return(new ClientRequestMessage(type));
-
-//        case kMessageMinionDead:
-//            return new MinionDeadMessage();
-            
     }
     
     return (nullptr);
 }
 
 void Game::ReceiveMessage(Player *sender, const NetworkAddress& address, const Message *message) {
-//    switch (message->GetMessageType()) {
-//        case kMessageMinionDead:
-//            printf("recieved minion dead\n");
-//            break;
-//    }
+
 }
 
 void Game::SpawnPlayer(Player *player)
@@ -539,17 +451,8 @@ void Game::SpawnPlayer(Player *player)
     if (world)
     {
         int32 count = world->GetSpawnLocatorCount();
-        if (count != 0)
-        {
-            //const Marker *marker = world->GetSpawnLocator(Math::RandomInteger(count));
-            
-            //const Vector3D direction = marker->GetWorldTransform()[0];
-            //float azimuth = Arctan(direction.y, direction.x);
-            
-            //int32 fighterIndex = world->NewControllerIndex();
-            //int32 weaponIndex = world->NewControllerIndex();
-            //TheMessageMgr->SendMessageAll(CreateGusGravesMessage(fighterIndex, marker->GetWorldPosition(), azimuth, //0.0F, 0, kWeaponPistol, weaponIndex, player->GetPlayerKey()));
-            
+        if (count != 0) {
+        
         }
     }
 }

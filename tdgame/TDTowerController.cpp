@@ -1,11 +1,3 @@
-//
-//  TDTowerController.cpp
-//  Tombstone
-//
-//  Created by Mustafa Haddara on 2017-01-07.
-//
-//
-
 #include "TDTowerController.h"
 #include "MMGameWorld.h"
 
@@ -16,7 +8,7 @@
 #include "TSWorld.h"
 #include "TSZones.h"
 
-namespace MMGame {
+namespace BaseInvaders {
     using namespace Tombstone;
 
     using Tombstone::ControllerType;

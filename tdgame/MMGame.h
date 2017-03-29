@@ -1,21 +1,5 @@
-// MODIFIED my MvM
-
-//=============================================================
-//
-// Tombstone Engine version 1.0
-// Copyright 2016, by Terathon Software LLC
-//
-// This file is part of the Tombstone Engine and is provided under the
-// terms of the license agreement entered by the registed user.
-//
-// Unauthorized redistribution of source code is strictly
-// prohibited. Violators will be prosecuted.
-//
-//=============================================================
-
-
-#ifndef MMGame_h
-#define MMGame_h
+#ifndef BaseInvaders_h
+#define BaseInvaders_h
 
 
 #include "TSWorld.h"
@@ -30,18 +14,13 @@
 
 #include "MMInput.h"
 #include "MMSkin.h"
-//#include "MMCameras.h"
-//#include "MMFighter.h"
-
-//#include "MMGameWorld.h"
-//#include "MMGamePlayer.h"
 
 #include "TDTowerController.h"
 #include "TDMinionController.h"
 #include "TDMinionSpawnController.h"
 
 
-namespace MMGame
+namespace BaseInvaders
 {
 	using namespace Tombstone;
     
@@ -64,12 +43,10 @@ namespace MMGame
 
 			Creator<Controller>								controllerCreator;
 
-			//DisplayEventHandler								displayEventHandler;
             ModelRegistration     soldierModelReg;
             ModelRegistration     minionModelReg;
             ModelRegistration     appleModelRegistration;
 
-			//ControllerReg<GameRigidBodyController>			gameRigidBodyControllerRegistration;
             ControllerReg<TowerController> towerControllerRegistration;
             ControllerReg<MinionController> minionControllerRegistration;
             ControllerReg<MinionSpawnController> minionSpawnControllerRegistration;
@@ -171,5 +148,3 @@ namespace MMGame
 
 
 #endif
-
-// ZUXSVMT

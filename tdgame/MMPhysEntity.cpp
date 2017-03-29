@@ -1,13 +1,7 @@
-
-
 #include "MMPhysEntity.h"
 #include "MMGame.h"
 
-
-using namespace  MMGame;
-
-
-
+using namespace  BaseInvaders;
 
 PhysEntity::PhysEntity():RigidBodyController(kPhysEnity)
 {

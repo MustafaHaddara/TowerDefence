@@ -1,11 +1,3 @@
-//
-//  TDMinionController.cpp
-//  Tombstone
-//
-//  Created by Mustafa Haddara on 2017-03-06.
-//
-//
-
 #include "TDMinionSpawnController.h"
 #include "TDMinionController.h"
 
@@ -18,7 +10,7 @@
 #include "MMBase.h"
 #include "MMFighter.h"
 
-namespace MMGame {
+namespace BaseInvaders {
     using namespace Tombstone;
     
     using Tombstone::ControllerType;

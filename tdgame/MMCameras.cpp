@@ -1,27 +1,9 @@
-//=============================================================
-//
-// Tombstone Engine version 1.0
-// Copyright 2016, by Terathon Software LLC
-//
-// This file is part of the Tombstone Engine and is provided under the
-// terms of the license agreement entered by the registed user.
-//
-// Unauthorized redistribution of source code is strictly
-// prohibited. Violators will be prosecuted.
-//
-//=============================================================
-
-
 #include "MMCameras.h"
-//#include "MMGame.h"
 #include "MMFighter.h"
 
+using namespace BaseInvaders;
 
-using namespace MMGame;
-
-
-const float MMGame::kCameraPositionHeight = 1.6F;
-
+const float BaseInvaders::kCameraPositionHeight = 1.6F;
 
 ModelCamera::ModelCamera() : FrustumCamera(1.0F, 1.0F)
 {
@@ -102,5 +84,3 @@ void ChaseCamera::MoveCamera(void)
 		SetNodeTransform(right, down, view, p2);
 	}
 }
-
-// ZUXSVMT

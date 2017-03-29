@@ -32,9 +32,69 @@ namespace MMGame
         ~GameBoard(){};
     };
 
-    
+	class SinglePlayerWindow : public Window, public Global<SinglePlayerWindow>
+	{
+	private:
+
+		SinglePlayerWindow();
+
+	public:
+
+		~SinglePlayerWindow();
+
+		static void OpenWindow(void);
+
+		void MoveWidget(void) override;
+		void HandleWidgetEvent(Widget *widget, const WidgetEventData *eventData) override;
+	};
+
+    // Main title splash window
+	class MainWindow : public Window, public Global<MainWindow>
+	{
+	private:
+
+		TextButtonWidget		*newButton;
+		TextButtonWidget		*loadButton;
+		TextButtonWidget		*saveButton;
+		TextButtonWidget		*exitButton;
+
+		TextButtonWidget		*hostButton;
+		TextButtonWidget		*joinButton;
+
+		TextButtonWidget		*playerButton;
+		TextButtonWidget		*controlsButton;
+		TextButtonWidget		*graphicsButton;
+		TextButtonWidget		*audioButton;
+
+		TextButtonWidget		*creditsButton;
+		TextButtonWidget		*quitButton;
+
+		TextButtonWidget		*currentButton;
+
+		MainWindow();
+
+		static void HandleSinglePlayerWindowClose(Window *window, void *cookie);
+		//static void HandleHostGameWindowClose(Window *window, void *cookie);
+		//static void HandleJoinGameWindowClose(JoinGameWindow *window, void *cookie);
+
+		void SetCurrentButton(TextButtonWidget *button);
+
+	public:
+
+		~MainWindow();
+
+		static void OpenWindow(void);
+
+		static void ReturnToGame(void);
+
+		void PreprocessWidget(void) override;
+
+		bool HandleKeyboardEvent(const KeyboardEventData *eventData) override;
+		void HandleWidgetEvent(Widget *widget, const WidgetEventData *eventData) override;
+	};
+
     class DisplayBoard : public GameBoard , public Global<DisplayBoard>
- {
+	{
     private:
         
                
@@ -51,6 +111,9 @@ namespace MMGame
 
 		// Modifiable Widgets
 
+		IconButtonWidget				*towerOne;
+		IconButtonWidget				*towerTwo;
+		IconButtonWidget				*towerThree;
 		ImageWidget						*healthBackground;
 		ImageWidget						*towerImage;
 		ProgressWidget					*healthProgress;
@@ -58,8 +121,7 @@ namespace MMGame
 
 		// Static Widgets
 
-		// towerDisplay to be split into modifiable IconButtonWidgets
-		Widget							*towerDisplay;
+		//Widget							*towerDisplay;
 		Widget							*moneyDisplay;
         
         static ColorRGBA CalculateBarColor(float value);
@@ -76,14 +138,17 @@ namespace MMGame
         
         void UpdateDisplayPosition(void);
 		void UpdatePlayerHealth(void);
+		void SelectTowerOne(void);
+		void SelectTowerTwo(void);
+		void SelectTowerThree(void);
         
          void ShowMessageText(const char* text);
         
     };
 
     extern DisplayBoard *TheDisplayBoard;
-
-    
+	extern MainWindow *TheMainWindow;
+	extern SinglePlayerWindow *TheSinglePlayerWindow;
     
     
 };

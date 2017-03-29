@@ -115,6 +115,7 @@ namespace MMGame
         
             // Skin
              List<GameBoard>                             boardList;
+			 List<Window>								windowList;
 
 		public:
 
@@ -159,6 +160,12 @@ namespace MMGame
             boardList.AppendListElement(board);
             TheInterfaceMgr->AddWidget(board);
         }
+
+		void AddWindow(Window *window)
+		{
+			windowList.AppendListElement(window);
+			TheInterfaceMgr->AddWidget(window);
+		}
 
 
 	};

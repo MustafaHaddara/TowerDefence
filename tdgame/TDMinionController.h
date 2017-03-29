@@ -19,7 +19,9 @@ namespace TDGame {
     };
     
     /**
-     * \brief MinionController class controls minions
+     * \brief Controls minions.
+     *
+     * Minions follow paths in the world, randomly chosing between forks in the path. Minions can also take damage and die.
      */
     class MinionController final : public Controller {
         
@@ -33,42 +35,47 @@ namespace TDGame {
         static int32 LATEST_ID;
         
         /**
-         * Default constructor
+         * \brief Default constructor
          */
         MinionController();
         
         /**
-         * Constructor with target
+         * \brief Constructor with target
          * \param t Node pointing at the first node in the minion's path
          */
         MinionController(Node* t);
         
         /**
-         * Destructor
+         * \brief Destructor
          */
         ~MinionController();
         
         /**
-         * PreprocessController
+         * \brief Initializes controller
+         *
          * This is called once to initialize the controller
          */
         void PreprocessController(void) override;
         
         /**
-         * MoveController is called once every frame by the Tombstone engine
+         * \brief This is called once every frame by the Tombstone engine
+         *
          * Here we do all of the processing (on the server) to move the minion to its next node in its path.
          */
         void MoveController(void) override;
         
         /**
-         * GetNextTarget is called once the minion has reached within `STEP_SIZE` of the next node
+         * \brief Gets the next target for the minion to travel to.
+         *
+         * This is called once the minion has reached within `STEP_SIZE` of the next node. It searchs the current node for outgoing connectors, which point at successive nodes in the path. If there is more than one outgoing connector, one is randomly chosen to be the target to travel to.
          */
         void GetNextTarget(void);
         
         /**
-         * \brief Deals damage to the minion
+         * \brief Deals damage to the minion.
          * \param damage The amount of damage to deal to the minion
-         * Every minion starts with 100 health. Calling this function subtracts the amount of the damage from the health.
+         *
+         * Every minion starts with 100 health. Calling this function subtracts the amount of the damage from the health. If the minion's health falls to 0 or below, the minion deletes itself from the world.
          */
         void DealDamage(int32 damage);
         
@@ -93,7 +100,7 @@ namespace TDGame {
     };
     
     /**
-     * Message encapsulating movement instructions for the minions
+     * \brief Message encapsulating movement instructions for the minions
      */
     class MinionMoveMessage : public ControllerMessage {
         friend class MinionController;
@@ -114,12 +121,12 @@ namespace TDGame {
         MinionMoveMessage(ControllerMessageType type, const Point3D trgt, int32 index);
         
         /**
-         * Destructor
+         * \brief Destructor
          */
         ~MinionMoveMessage();
         
         /**
-         * Returns the new target of the minion as encapsulated in the message
+         * \brief Returns the new target of the minion
          */
         Point3D getTarget() const {
             return target;
@@ -137,7 +144,7 @@ namespace TDGame {
     };
     
     /**
-     * Message encapsulating telling a client minion that it got shot
+     * \brief Message encapsulating telling a client minion that it got shot
      */
     class MinionShotMessage : public ControllerMessage {
         friend class MinionController;

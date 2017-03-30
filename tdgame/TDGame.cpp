@@ -29,7 +29,7 @@ Game::Game() :
         soldierModelReg(kModelSoldier, nullptr, "model/robot", kModelPrecache | kModelPrivate, kControllerSoldier),
         minionModelReg(kModelMinion, nullptr, "zombie/Zombie", kModelPrecache | kModelPrivate, kControllerSoldier),
         appleModelRegistration(kModelApple,nullptr, "health/Apple", 0, kControllerCollectable),
-        towerModelRegistration(kModelTower,nullptr, "tower", 0, kControllerTower),
+        towerModelRegistration(kModelTower,nullptr, "model/tower", 0, kControllerTower),
 
         towerControllerRegistration(kControllerTower, "Tower"),
         minionControllerRegistration(kControllerMinion, "Minion"),

@@ -164,18 +164,14 @@ void Game::HandleJoinCommand(Command *command, const char *text)
     // We'll first want to provide the user with some feedback - so he'll know what he's doing.
     String<128> str("Attempting to join --> ");
     str += text;
+    printf(text);
     
     NetworkAddress address = MessageMgr::StringToAddress(text);
-    if (address.GetPort() == 0)address.SetPort(kGamePort);
-
+    if (address.GetPort() == 0) {
+        address.SetPort(kGamePort);
+    }
     
-    TheEngine->Report(str, kReportError);
-    
-    // Now we're just going to (try to) connect to the entered address.
-    NetworkAddress local_addr = TheNetworkMgr->GetLocalAddress();
-    local_addr.SetPort(kGamePort);
-    
-    TheMessageMgr->Connect(local_addr);
+    TheMessageMgr->Connect(address);
 }
 
 

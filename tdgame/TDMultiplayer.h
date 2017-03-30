@@ -65,6 +65,9 @@ namespace TDGame
 		kMessageClientVoiceReceiveStop,
         kMessageCreateCharacter, // ADDED THIS
         kMessageRequestAvantar,
+		kMessageTowerOne,
+		kMessageTowerTwo,
+		kMessageTowerThree
 	};
 
 
@@ -858,6 +861,26 @@ public:
     EnemyType GetCharType(void){
         return(chartype);
     }
+};
+
+
+class ClientTowerSelectMessage : public Message
+{
+	friend class Game;
+
+private:
+
+	unsigned towerNumber;	// Which tower was selected? 1, 2 or 3?
+
+public:
+
+	ClientTowerSelectMessage(MessageType type);
+	~ClientTowerSelectMessage();
+
+	void CompressMessage(Compressor& data) const override;
+	bool DecompressMessage(Decompressor& data) override;
+
+	bool HandleMessage(Player *sender) const override;
 };
 
 }

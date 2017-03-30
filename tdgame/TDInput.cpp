@@ -207,6 +207,35 @@ void FireAction::HandleDisengage(void)
 	}
 }
 
+TowerAction::TowerAction(ActionType type) : Action(type)
+{
+}
+
+TowerAction::~TowerAction()
+{
+}
+
+void TowerAction::HandleEngage(void)
+{
+	const Player *player = TheMessageMgr->GetLocalPlayer();
+			
+	unsigned messageType;
+
+	switch (GetActionType())
+	{
+	case kActionTowerOne:
+		messageType = kMessageTowerOne;
+		break;
+	case kActionTowerTwo:
+		messageType = kMessageTowerTwo;
+		break;
+	case kActionTowerThree:
+		messageType = kMessageTowerThree;
+		break;
+	}
+
+	TheMessageMgr->SendMessage(kPlayerServer, ClientTowerSelectMessage(messageType));
+}
 
 
 

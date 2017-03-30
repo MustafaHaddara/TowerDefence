@@ -51,7 +51,10 @@ Game::Game() :
 		upAction(kActionUp, kMovementUp, kSpectatorMoveUp),
 		downAction(kActionDown, kMovementDown, kSpectatorMoveDown),
 		movementAction(kActionMovement, 0, 0),
-		primaryFireAction(kActionFirePrimary)
+		primaryFireAction(kActionFirePrimary),
+		towerOneAction(kActionTowerOne),
+		towerTwoAction(kActionTowerTwo),
+		towerThreeAction(kActionTowerThree)
 
 {
 	//TheDisplayMgr->InstallDisplayEventHandler(&displayEventHandler);
@@ -69,6 +72,9 @@ Game::Game() :
 	TheInputMgr->AddAction(&downAction);
 	TheInputMgr->AddAction(&movementAction);
 	TheInputMgr->AddAction(&primaryFireAction);
+	TheInputMgr->AddAction(&towerOneAction);
+	TheInputMgr->AddAction(&towerTwoAction);
+	TheInputMgr->AddAction(&towerThreeAction);
 
 	prevEscapeCallback = TheInputMgr->GetEscapeCallback();
 	prevEscapeCookie = TheInputMgr->GetEscapeCookie();

@@ -288,6 +288,9 @@ DisplayBoard::DisplayBoard() : Global<DisplayBoard>(TheDisplayBoard)
 	AppendSubnode(moneyText);
 	AppendSubnode(baseText);
 	AppendSubnode(baseProgress);
+	if (youwin == true) {
+		AppendSubnode(winText);
+	}
 	UpdateDisplayPosition();
 }
 
@@ -367,14 +370,17 @@ void DisplayBoard::UpdateDisplayPosition(void)
 		, 0.0F));
     
 	baseProgress->SetWidgetPosition(Point3D(
-		36.0F
-		, displayHeight * 0.9F - 26.0F * 0.5F
-		, 0.0F));
+		displayWidth * 0.5F - 296.0F * 0.5F
+		, 1000.0F
+		, 0.0f));
 	baseText->SetWidgetPosition(Point3D(
-		36.0F
-		, displayHeight * 0.9F - 26.0F * 0.5F
-		, 0.0F));
-
+		displayWidth * 0.5F - 500.0F * 0.5F
+		, 1000.0F
+		, 0.0f));
+	winText->SetWidgetPosition(Point3D(
+		displayWidth * 0.25F - 296.0F * 0.25F
+		, 100.0F
+		, 0.0f));
 	InvalidateWidget();
 }
 

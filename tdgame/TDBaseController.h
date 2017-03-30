@@ -22,17 +22,35 @@ namespace TDGame
 		bool			shapeInitFlag;
 
 	public:
-
+		/**
+		* \brief constructor
+		*/
 		BaseController();
+		/**
+		* \brief default deconstructor
+		*/
 		~BaseController();
+		/**
+		* \brief Initializes controller
+		*
+		* This is called once to initialize the controller
+		*/
 		void PreprocessController(void) override;
+		/**
+		* \ health is recalculated and sent to clients
+		*/
 		void takeDamage(int32 damage);
 		
+		/**
+		* \brief get health method
+		*/
 		int32 getHealth(void)
 		{
 			return(health);
 		}
-
+		/**
+		* \brief set health method
+		*/
 		void setHealth(int32 newHealth)
 		{
 			health = newHealth;

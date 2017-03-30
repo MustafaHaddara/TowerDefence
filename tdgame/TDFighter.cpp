@@ -11,7 +11,6 @@ namespace
 	const float kFighterResistForce = 10.0F;
 }
 
-
 FighterInteractor::FighterInteractor(FighterController *controller)
 {
 	fighterController = controller;
@@ -58,16 +57,16 @@ FighterController::FighterController(ControllerType type) :
 	motionComplete = false; 
 	targetDistance = 0.0F; 
 	damageTime = 0;
- 
-	//SetCollisionExclusionMask(kCollisionCorpse);
-} 
+}
+
 
 FighterController::~FighterController() 
 { 
 	delete rootAnimator; 
 	delete mountNode;
 }
- 
+
+
 void FighterController::Pack(Packer& data, unsigned_int32 packFlags) const
 {
 	GameCharacterController::Pack(data, packFlags);
@@ -93,6 +92,7 @@ void FighterController::Unpack(Unpacker& data, unsigned_int32 unpackFlags)
 	UnpackChunkList<FighterController>(data, unpackFlags);
 }
 
+
 void FighterController::UnpackChunk(const ChunkHeader *chunkHeader, Unpacker& data, unsigned_int32 unpackFlags)
 {
 	switch (chunkHeader->chunkType)
@@ -116,21 +116,12 @@ void FighterController::UnpackChunk(const ChunkHeader *chunkHeader, Unpacker& da
 	}
 }
 
-/*
-GamePlayer *FighterController::GetFighterPlayer(void) const
-{
-    return (static_cast<GamePlayer *>(fighterPlayer.GetTarget()));
-}
-*/
-
 
 void FighterController::PreprocessController(void)
 {
 	GameCharacterController::PreprocessController();
 
-    //printf("Preprocess \n");
 	SetFrictionCoefficient(0.001F);
-	//SetCollisionKind(GetCollisionKind() | kCollisionPlayer);
 
 	modelAzimuth = primaryAzimuth;
 
@@ -748,20 +739,26 @@ void FighterController::AnimateFighter(void)
 }
 */
 
+
 void FighterController::fireLaser(void)
 {
-    
+    // ray casting setup
     CollisionData   collisionData;
     const Point3D& position = GetTargetNode()->GetWorldPosition();
     Vector2D t = CosSin(lookAzimuth);
     Vector2D u = CosSin(lookAltitude);
-#define FIRE_RANGE 100.
+    // set the range of firing
+    #define FIRE_RANGE 100.
     Vector3D shotDirection(t.x * u.x,  t.y * u.x,  u.y);
     Point3D pos(position.x,position.y,position.z+1);
     
     World* world=TheWorldMgr->GetWorld();
 	GameWorld *gameWorld = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
     // DetectCollision works too if data not needed !
+    /**
+     * \brief state stores the object type of collision
+     * state is actually an enum
+     */
     CollisionState state = world->QueryCollision(pos, pos +  shotDirection* 100.F, 0.0F,kCollisionProjectile , &collisionData);
 	Point3D collisionLocation = collisionData.position;
     if (state == kCollisionStateGeometry){
@@ -773,16 +770,15 @@ void FighterController::fireLaser(void)
         //printf("ray: GEOMETRY \n");
     }else if (state == kCollisionStateRigidBody){
         TheEngine->Report("BODY");
-        //printf("ray: BODY \n");
     }else{
         TheEngine->Report("MISS");
-        //printf("ray: Miss \n");
         
     };
     
 }
 
 //----------------------------------------------------------------------------------------------------------------
+
 
 CreateFighterMessage::CreateFighterMessage(ModelMessageType type) : CreateModelMessage(type)
 {
@@ -801,10 +797,12 @@ CreateFighterMessage::CreateFighterMessage(ModelMessageType type, int32 fighterI
 	playerKey = key;
 }
 
+// Deconstructor
 CreateFighterMessage::~CreateFighterMessage()
 {
 }
 
+// A message needs to be compressed before sending out
 void CreateFighterMessage::CompressMessage(Compressor& data) const
 {
 	CreateModelMessage::CompressMessage(data);
@@ -820,6 +818,7 @@ void CreateFighterMessage::CompressMessage(Compressor& data) const
 	data << int16(playerKey);
 }
 
+// A message needs to be decompressed before reading
 bool CreateFighterMessage::DecompressMessage(Decompressor& data)
 {
 	if (CreateModelMessage::DecompressMessage(data))
@@ -828,6 +827,7 @@ bool CreateFighterMessage::DecompressMessage(Decompressor& data)
 		unsigned_int8	movement;
 		unsigned_int8	weapon;
 
+        // extrating the data out
 		data >> initialAzimuth;
 		data >> initialAltitude;
 
@@ -849,12 +849,11 @@ bool CreateFighterMessage::DecompressMessage(Decompressor& data)
 }
 
 
-
-
 FighterMovementMessage::FighterMovementMessage(ControllerMessageType type, int32 controllerIndex) : CharacterStateMessage(type, controllerIndex)
 {
 }
 
+// FighterMovementMessage contains controller, position and velocity information
 FighterMovementMessage::FighterMovementMessage(ControllerMessageType type, int32 controllerIndex, const Point3D& position, const Vector3D& velocity, float azimuth, float altitude, unsigned_int32 flag) : CharacterStateMessage(type, controllerIndex, position, velocity)
 {
 	movementAzimuth = azimuth;
@@ -862,6 +861,7 @@ FighterMovementMessage::FighterMovementMessage(ControllerMessageType type, int32
 	movementFlag = flag;
 }
 
+// Deconstructor
 FighterMovementMessage::~FighterMovementMessage()
 {
 }
@@ -901,6 +901,7 @@ FighterUpdateMessage::FighterUpdateMessage(int32 controllerIndex) : ControllerMe
 {
 }
 
+// FighterUpdateMessage contains controller index and position information
 FighterUpdateMessage::FighterUpdateMessage(int32 controllerIndex, float azimuth, float altitude) : ControllerMessage(FighterController::kFighterMessageUpdate, controllerIndex)
 {
 	updateAzimuth = azimuth;
@@ -932,8 +933,6 @@ bool FighterUpdateMessage::DecompressMessage(Decompressor& data)
 
 	return (false);
 }
-
-
 
 
 SpineTwistAnimator::SpineTwistAnimator() : Animator(kAnimatorSpineTwist)
@@ -1083,11 +1082,10 @@ void FighterController::AnimateFighter(void)
 }
 
 
-
 void FighterController::SetFighterMotion(int32 motion)
 {
-    //FighterController::SetFighterMotion(motion);
     
+    // motion enum predefined in FighterController.h
     fighterMotion = motion;
     
     FrameAnimator *animator1 = GetFrameAnimator(0);
@@ -1099,6 +1097,7 @@ void FighterController::SetFighterMotion(int32 motion)
     
     switch (motion)
     {
+
         case kFighterMotionStop:
         {
             interpolator1->SetMode(kInterpolatorForward | kInterpolatorLoop);
@@ -1139,6 +1138,7 @@ void FighterController::SetFighterMotion(int32 motion)
             weight1->SetState(1.0F - w, 0.004F, kInterpolatorBackward);
             break;
         }
+            
         case kFighterMotionTurnLeft:
             
             animator2->SetAnimation("soldier/TurnLeft");

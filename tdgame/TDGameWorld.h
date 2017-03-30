@@ -26,7 +26,6 @@ private:
     Node*                   minionList[MAX_NUM_MINIONS];
     
     SpectatorCamera			spectatorCamera;
-    FirstPersonCamera		firstPersonCamera;
     ChaseCamera				chaseCamera;
     ModelCamera				*playerCamera;
     
@@ -78,7 +77,7 @@ public:
     
     bool UsingFirstPersonCamera(void) const
     {
-        return (playerCamera == &firstPersonCamera);
+        return false; //(playerCamera == &firstPersonCamera);
     }
     
     void SetBloodIntensity(float blood)
@@ -106,7 +105,6 @@ public:
     void SetSpectatorCamera(const Point3D& position, float azm, float alt);
     
     void SetLocalPlayerVisibility(void);
-    void ChangePlayerCamera(void);
     void SetFocalLength(float focal);
     
     void ShakeCamera(float intensity, int32 duration);

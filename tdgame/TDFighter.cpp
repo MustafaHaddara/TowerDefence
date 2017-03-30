@@ -1,7 +1,5 @@
 #include "TDFighter.h"
 #include "TDGame.h"
-#include "TDCameras.h"
-
 
 using namespace TDGame;
 

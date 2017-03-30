@@ -18,39 +18,6 @@ ModelCamera::~ModelCamera()
 {
 }
 
-
-FirstPersonCamera::FirstPersonCamera()
-{
-}
-
-FirstPersonCamera::~FirstPersonCamera()
-{
-}
-
-void FirstPersonCamera::MoveCamera(void)
-{
-	Model *model = GetTargetModel();
-	if (model)
-	{
-		FighterController *controller = static_cast<FighterController *>(model->GetController());
-		Vector2D t = CosSin(controller->GetLookAzimuth());
-		Vector2D u = CosSin(controller->GetLookAltitude());
-
-		Vector3D view(t.x * u.x, t.y * u.x, u.y);
-		Vector3D right(t.y, -t.x, 0.0F);
-		Vector3D down = Cross(view, right);
-
-		const Point3D& position = model->GetWorldPosition();
-		Point3D p(position.x, position.y, position.z + kCameraPositionHeight);
-
-		SetNodeTransform(right, down, view, p);
-
-		const Quaternion& q = TheWorldMgr->GetTrackingOrientation();
-		SetNodeMatrix3D(GetNodeTransform().GetMatrix3D() * q.GetRotationMatrix());
-	}
-}
-
-
 ChaseCamera::ChaseCamera()
 {
 }

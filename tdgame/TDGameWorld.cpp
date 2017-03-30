@@ -27,7 +27,7 @@ WorldResult GameWorld::PreprocessWorld(void)
     }
     
     SetWorldCamera(&spectatorCamera);
-    playerCamera = &firstPersonCamera;
+    playerCamera = &chaseCamera;
     
     spawnLocatorCount = 0;
     collLocatorCount = 0;
@@ -111,7 +111,6 @@ void GameWorld::EndRendering(FrameBuffer *frameBuffer)
 
 void GameWorld::SetCameraTargetModel(Model *model)
 {
-    firstPersonCamera.SetTargetModel(model);
     chaseCamera.SetTargetModel(model);
     SetWorldCamera(playerCamera);
     
@@ -119,7 +118,6 @@ void GameWorld::SetCameraTargetModel(Model *model)
 
 void GameWorld::SetSpectatorCamera(const Point3D& position, float azm, float alt)
 {
-    firstPersonCamera.SetTargetModel(nullptr);
     chaseCamera.SetTargetModel(nullptr);
     SetWorldCamera(&spectatorCamera);
     spectatorCamera.SetNodePosition(position);
@@ -132,30 +130,9 @@ void GameWorld::SetLocalPlayerVisibility(void)
     
 }
 
-void GameWorld::ChangePlayerCamera(void)
-{
-    const Player *player = TheMessageMgr->GetLocalPlayer();
-    if ((player) && (static_cast<const GamePlayer *>(player)->GetPlayerController()))
-    {
-        if (playerCamera == &firstPersonCamera)
-        {
-            playerCamera = &chaseCamera;
-        }
-        else
-        {
-            playerCamera = &firstPersonCamera;
-        }
-        
-        
-        SetWorldCamera(playerCamera);
-        SetLocalPlayerVisibility();
-    }
-}
-
 void GameWorld::SetFocalLength(float focal)
 {
     spectatorCamera.GetObject()->SetFocalLength(focal);
-    firstPersonCamera.GetObject()->SetFocalLength(focal);
     chaseCamera.GetObject()->SetFocalLength(focal);
 }
 
@@ -237,7 +214,6 @@ Controller* GameWorld::CreateAvatar(const Point3D& pos ,long index,PlayerKey key
         
         
         world->SetCameraTargetModel(model);
-        world->ChangePlayerCamera();
         
     }
     

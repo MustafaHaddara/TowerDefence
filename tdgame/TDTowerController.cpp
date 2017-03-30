@@ -10,15 +10,15 @@
 
 namespace TDGame {
     using namespace Tombstone;
-
+    
     using Tombstone::ControllerType;
     
     TowerController::TowerController() : Controller(kControllerTower) {
     }
-
+    
     TowerController::~TowerController() {
     }
-
+    
     void TowerController::PreprocessController(void) {
         Controller::PreprocessController();
         
@@ -45,12 +45,12 @@ namespace TDGame {
             thisnode = root->GetNextTreeNode(thisnode);
         } while (thisnode && !found);
     }
-
+    
     void TowerController::MoveController(void) {
         /* Only track the server player */
         if (Tombstone::TheMessageMgr->GetServerFlag()) {
             myCount += TheTimeMgr->GetDeltaTime();
-
+            
             Vector3D view = Vector3D(0,0,0);
             MinionController *mController = GetTargetPoint(RANGE, &view);
             if (mController) {
@@ -116,7 +116,7 @@ namespace TDGame {
         }
         return false;
     }
-
+    
     ControllerMessage *TowerController::CreateMessage(ControllerMessageType type) const {
         switch (type) {
             case kTowerRotateMessage:
@@ -125,7 +125,7 @@ namespace TDGame {
         
         return (Controller::CreateMessage(type));
     }
-
+    
     
     void TowerController::ReceiveMessage(const ControllerMessage *message) {
         if (message->GetControllerMessageType() == kTowerRotateMessage) {
@@ -143,7 +143,7 @@ namespace TDGame {
             target->SetNodeMatrix3D(updatedView, -right, -down);
             // Invalidate the target node so that it gets updated properly
             target->InvalidateNode();
-
+            
         } else {
             Controller::ReceiveMessage(message);
         }
@@ -156,11 +156,11 @@ namespace TDGame {
     TowerRotateMessage::TowerRotateMessage(ControllerMessageType type, const Vector3D& trgt, int32 index, unsigned_int32 flags): Tombstone::ControllerMessage(type, index, flags) {
         target = trgt;
     }
-
+    
     TowerRotateMessage::~TowerRotateMessage() {
         
     }
-
+    
     void TowerRotateMessage::CompressMessage(Compressor& data) const {
         ControllerMessage::CompressMessage(data);
         
@@ -168,7 +168,7 @@ namespace TDGame {
         data << target.y;
         data << target.z;
     }
-
+    
     bool TowerRotateMessage::DecompressMessage(Decompressor& data) {
         if (ControllerMessage::DecompressMessage(data)) {
             data >> target.x;
@@ -180,5 +180,5 @@ namespace TDGame {
         
         return false;
     }
-
+    
 }

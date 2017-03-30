@@ -89,6 +89,7 @@ namespace TDGame
         TextWidget                      *winText;
         TextWidget                      *scoreText;
         TextWidget                      *healthText;
+		TextWidget						*baseText;
         
     
         

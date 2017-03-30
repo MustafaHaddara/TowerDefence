@@ -217,10 +217,28 @@ DisplayBoard::DisplayBoard() : Global<DisplayBoard>(TheDisplayBoard)
 	myText->SetWidgetColor(ColorRGBA(1.0f, 1.0f, 1.0f)); // WHITE
 	myText->SetWidgetPosition(Point3D(50, 50, 0));
 
+
+
 	// Adds widget to the screen
 	TheInterfaceMgr->AddWidget(myText);
 
 	// New UI Code
+
+	baseText = new TextWidget(Vector2D(80.0F, 16.0F), "Base Health:");
+	baseText->SetFont("font/Bold");
+	baseText->SetWidgetColor(ColorRGBA(1.0f, 0.0f, 1.0f)); // WHITE
+
+	winText = new TextWidget(Vector2D(1000.0F, 200.0F), "YOU WIN");
+	winText->SetFont("font/Bold");
+	winText->SetTextScale(15.0);
+	winText->SetWidgetColor(ColorRGBA(1.0f, 0.0f, 1.0f)); // WHITE
+
+	baseProgress = new ProgressWidget(Vector2D(296.0f, 18.0f));
+	baseProgress->SetWidgetKey("BaseHealth");
+	baseProgress->SetMaxValue(1000);
+	baseProgress->SetValue(1000);
+	baseProgress->SetWidgetColor(ColorRGBA(0.05f, 0.05f, 0.05f));
+
 
 	towerOne = new IconButtonWidget(Vector2D(64.0f, 64.0f), "TowerOne");
 	towerOne->SetTexture(0, "textures/TowerButton1");
@@ -268,7 +286,8 @@ DisplayBoard::DisplayBoard() : Global<DisplayBoard>(TheDisplayBoard)
 	AppendSubnode(towerImage);
 	AppendSubnode(moneyDisplay);
 	AppendSubnode(moneyText);
-
+	AppendSubnode(baseText);
+	AppendSubnode(baseProgress);
 	UpdateDisplayPosition();
 }
 
@@ -347,6 +366,15 @@ void DisplayBoard::UpdateDisplayPosition(void)
 		, displayHeight * 0.9F - 26.0F * 0.5F
 		, 0.0F));
     
+	baseProgress->SetWidgetPosition(Point3D(
+		36.0F
+		, displayHeight * 0.9F - 26.0F * 0.5F
+		, 0.0F));
+	baseText->SetWidgetPosition(Point3D(
+		36.0F
+		, displayHeight * 0.9F - 26.0F * 0.5F
+		, 0.0F));
+
 	InvalidateWidget();
 }
 

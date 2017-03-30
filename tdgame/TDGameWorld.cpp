@@ -1,6 +1,6 @@
 #include "TDGameWorld.h"
 
-
+#include "stdio.h"
 #include "TDMultiPLayer.h"
 #include "TDGamePlayer.h"
 #include "TDFighter.h"

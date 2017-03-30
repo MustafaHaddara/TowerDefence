@@ -33,19 +33,25 @@ namespace TDGame {
         //Find the marker on the Turret. It is the point from which to fire.
         Node *root = GetTargetNode();
         Node *thisnode = root;
+        Node *turretBase;
         String<30> nodeName = "NoName";
-        bool found = false;
-        do
-        {
+        int found = 0;
+        do {
             nodeName = "NoName";
             if (thisnode->GetNodeName() != NULL)
                 nodeName = thisnode->GetNodeName();
             if ((Text::CompareText(nodeName, "TurretBarrel")) ) {
                 turretBarrel = thisnode;
-                found = true;
+                found += 1;
+            }
+            if ((Text::CompareText(nodeName, "TurretBase")) ) {
+                turretBase = thisnode;
+                found += 1;
             }
             thisnode = root->GetNextTreeNode(thisnode);
-        } while (thisnode && !found);
+        } while (thisnode && found<2);
+        
+        originalView = turretBarrel->GetWorldPosition() - turretBase->GetWorldPosition();
     }
     
     void TowerController::MoveController(void) {
@@ -123,8 +129,6 @@ namespace TDGame {
         switch (type) {
             case kTowerRotateMessage:
                 return new TowerRotateMessage(type, GetControllerIndex());
-//			case kTowerCreateMessage:
-//				return new TowerCreateMessage(type, GetControllerIndex());
         }
         
         return (Controller::CreateMessage(type));
@@ -136,6 +140,7 @@ namespace TDGame {
 
 			const TowerRotateMessage *m = static_cast<const TowerRotateMessage *>(message);
 			Vector3D updatedView = m->getTarget();
+            updatedView.z = 0;
 
 			float x = updatedView.x;
 			float y = updatedView.y;
@@ -144,22 +149,9 @@ namespace TDGame {
 			Vector3D down = Cross(updatedView, right);
 
 			target->SetNodeMatrix3D(updatedView, -right, -down);
+
 			// Invalidate the target node so that it gets updated properly
 			target->InvalidateNode();
-//		} else if (message->GetControllerMessageType() == kTowerCreateMessage) {
-//			const TowerCreateMessage *tcm = static_cast<const TowerCreateMessage *>(message);
-//			Point3D position = tcm->getPosition();
-//			int32 index = tcm->GetNewControllerIndex();
-//
-//			Controller* controller = new TowerController();
-//			Model* model = Model::GetModel(kModelTower);
-//
-//			model->SetController(controller);
-//			controller->SetControllerIndex(index);
-//
-//			Node* node = model;
-//			node->SetNodePosition(position);
-//			TheWorldMgr->GetWorld()->AddNewNode(node);
     
 		} else {
 			Controller::ReceiveMessage(message);

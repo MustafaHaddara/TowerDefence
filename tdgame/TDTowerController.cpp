@@ -3,7 +3,7 @@
 //  Tombstone
 //
 //  Created by Mustafa Haddara on 2017-01-07.
-//
+//	Modified by Jeff Braches
 //
 
 #include "TDTowerController.h"
@@ -21,6 +21,9 @@ namespace MMGame {
 
     using Tombstone::ControllerType;
     
+	int32 id;
+	int32 health=100;
+
     TowerController::TowerController() : Controller(kControllerTower) {
     }
 
@@ -119,33 +122,58 @@ namespace MMGame {
         switch (type) {
             case kTowerRotateMessage:
                 return new TowerRotateMessage(type, GetControllerIndex());
+			case kTowerCreateMessage:
+				return new TowerCreateMessage(type, GetControllerIndex());
         }
         
         return (Controller::CreateMessage(type));
     }
 
     
-    void TowerController::ReceiveMessage(const ControllerMessage *message) {
-        if (message->GetControllerMessageType() == kTowerRotateMessage) {
-            Node *target = GetTargetNode();
-            
-            const TowerRotateMessage *m = static_cast<const TowerRotateMessage *>(message);
-            Vector3D updatedView = m->getTarget();
-            
-            float x = updatedView.x;
-            float y = updatedView.y;
-            float f = InverseSqrt(x * x + y * y);
-            Vector3D right(y * f, -x * f, 0.0F);
-            Vector3D down = Cross(updatedView, right);
-            
-            target->SetNodeMatrix3D(updatedView, -right, -down);
-            // Invalidate the target node so that it gets updated properly
-            target->InvalidateNode();
+	void TowerController::ReceiveMessage(const ControllerMessage *message) {
+		if (message->GetControllerMessageType() == kTowerRotateMessage) {
+			Node *target = GetTargetNode();
 
-        } else {
-            Controller::ReceiveMessage(message);
-        }
-    }
+			const TowerRotateMessage *m = static_cast<const TowerRotateMessage *>(message);
+			Vector3D updatedView = m->getTarget();
+
+			float x = updatedView.x;
+			float y = updatedView.y;
+			float f = InverseSqrt(x * x + y * y);
+			Vector3D right(y * f, -x * f, 0.0F);
+			Vector3D down = Cross(updatedView, right);
+
+			target->SetNodeMatrix3D(updatedView, -right, -down);
+			// Invalidate the target node so that it gets updated properly
+			target->InvalidateNode();
+		}
+		else if (message->GetControllerMessageType() == kTowerCreateMessage) {
+			const TowerCreateMessage *tcm = static_cast<const TowerCreateMessage *>(message);
+			Point3D position = tcm->getPosition();
+			int32 index = tcm->GetNewControllerIndex();
+
+			Controller* controller = new TowerController();
+			Model* model = Model::GetModel(kModelTower);
+
+			model->SetController(controller);
+			controller->SetControllerIndex(index);
+
+			Node* node = model;
+			node->SetNodePosition(position);
+			TheWorldMgr->GetWorld()->AddNewNode(node);
+
+			Node* turretBarrel = model;
+			Point3D turretPosition = position;
+			turretPosition.y = (position.y) + 3;
+			node->SetNodePosition(turretPosition);
+			TheWorldMgr->GetWorld()->AddNewNode(turretBarrel);
+		
+		}
+		else {
+			Controller::ReceiveMessage(message);
+		}
+		
+	}
     
     TowerRotateMessage::TowerRotateMessage(ControllerMessageType type, int32 index): Tombstone::ControllerMessage(type, index) {
         
@@ -179,4 +207,32 @@ namespace MMGame {
         return false;
     }
 
+	TowerCreateMessage::TowerCreateMessage(ControllerMessageType type, int32 index): Tombstone::ControllerMessage(type, index) {
+
+	}
+	TowerCreateMessage::TowerCreateMessage(ControllerMessageType type, const Point3D& pos, int32 index, unsigned_int32 flags): Tombstone::ControllerMessage(type, index, flags) {
+		position = pos;
+	}
+
+	TowerCreateMessage::~TowerCreateMessage() {
+
+	}
+
+	void TowerCreateMessage::CompressMessage(Compressor& data) const {
+		ControllerMessage::CompressMessage(data);
+
+		data << position.x;
+		data << position.y;
+		data << position.z;
+	}
+	bool TowerCreateMessage::DecompressMessage(Decompressor & data){
+		if (ControllerMessage::DecompressMessage(data)) {
+			data >> position.x;
+			data >> position.y;
+			data >> position.z;
+
+			return true;
+		}
+		return false;
+	}
 }

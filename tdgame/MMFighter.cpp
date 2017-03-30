@@ -18,6 +18,7 @@
 #include "MMFighter.h"
 #include "MMGame.h"
 #include "MMCameras.h"
+#include "MMGameWorld.h"
 
 
 using namespace MMGame;
@@ -778,10 +779,16 @@ void FighterController::fireLaser(void)
     Point3D pos(position.x,position.y,position.z+1);
     
     World* world=TheWorldMgr->GetWorld();
+	GameWorld *gameWorld = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
     // DetectCollision works too if data not needed !
     CollisionState state = world->QueryCollision(pos, pos +  shotDirection* 100.F, 0.0F,kCollisionProjectile , &collisionData);
+	Point3D collisionLocation = collisionData.position;
     if (state == kCollisionStateGeometry){
         TheEngine->Report("GEOMETRY");
+		if (Tombstone::TheMessageMgr->GetServerFlag()) {
+			gameWorld->ReqestOjectAtLocation(collisionLocation, kTowerEntity, 0);
+		}
+		
         //printf("ray: GEOMETRY \n");
     }else if (state == kCollisionStateRigidBody){
         TheEngine->Report("BODY");
@@ -1064,7 +1071,8 @@ void FighterController::AnimateFighter(void)
         }
         else
         {
-            const Matrix3D& p = GetFrameAnimator(1)->GetTransformTrackHeader()->GetTransformFrameData()->transform;
+           /*
+		   const Matrix3D& p = GetFrameAnimator(1)->GetTransformTrackHeader()->GetTransformFrameData()->transform;
             Transform4D m = fighter->GetFirstSubnode()->GetNodeTransform() * Inverse(p);
             float x = m(0,0);
             float y = m(1,0);
@@ -1072,6 +1080,7 @@ void FighterController::AnimateFighter(void)
             
             float d = InverseSqrt(x * x + y * y);
             rotation = Quaternion::MakeRotation(alt * Math::one_over_3, Vector3D(y * d, -x * d, 0.0F));
+			*/
         }
         
         float f = azm - modelAzimuth;

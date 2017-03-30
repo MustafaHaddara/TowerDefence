@@ -30,8 +30,12 @@ namespace MMGame
         Transform4D     originalTransform;          // The target's original transform
         Vector3D        originalView;               // The direction turret is facing before any rotation
         Node			*turretBarrel;              // Marker on Turret Model from which to shoot
+		int32			id;
+		int32			health = 100;
         
     public:
+		static int32 LATEST_ID;
+
         TowerController();
         ~TowerController();
         void PreprocessController(void) override;
@@ -42,7 +46,12 @@ namespace MMGame
         
         enum {
             kTowerRotateMessage,
+			kTowerCreateMessage,
         };
+
+		int32 GetId(void) {
+			return id;
+		}
         
     };
     
@@ -52,7 +61,7 @@ namespace MMGame
     private:
         
         Vector3D target;
-        
+
     public:
         
         TowerRotateMessage(ControllerMessageType type, int32 index);
@@ -62,10 +71,39 @@ namespace MMGame
         Vector3D getTarget() const {
             return target;
         }
+		
         
         void CompressMessage(Compressor& data) const override;
         bool DecompressMessage(Decompressor& data) override;
     };
+	
+	class TowerCreateMessage : public ControllerMessage {
+		friend class TowerController;
+	
+	private:
+		Point3D position;
+		int32 newControllerIndex;
+		int32 health;
+		int32 id;
+	public:
+
+		Point3D getPosition() const {
+			return position;
+		}
+		int32 GetNewControllerIndex() const {
+			return newControllerIndex;
+		}
+
+		TowerCreateMessage(ControllerMessageType type, int32 index);
+		TowerCreateMessage(ControllerMessageType type, const Point3D& pos, int32 index, unsigned_int32 flags = 0);
+		~TowerCreateMessage();
+
+		void CompressMessage(Compressor & data) const;
+		bool DecompressMessage(Decompressor& data) override;
+		int32 GetID() {
+			return id;
+		}
+	};
 
 }
 

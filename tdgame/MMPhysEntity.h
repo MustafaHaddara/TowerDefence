@@ -4,7 +4,6 @@
 #ifndef MMPhysEnt_H
 #define  MMPhysEnt_H
 
-
 #include "TSTriggers.h"
 
 #include "MMCharacter.h"
@@ -18,7 +17,7 @@ namespace MMGame
     
     
     enum{
-        kPhysEnity  = 'gphy'
+        kPhysEnity  = 'gphy',
     };
 
     class PhysEntity : public RigidBodyController
@@ -26,9 +25,7 @@ namespace MMGame
         public:
             PhysEntity();
             ~PhysEntity();
-        
     };
-
 
 };
 

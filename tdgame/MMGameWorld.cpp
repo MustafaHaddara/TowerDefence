@@ -295,6 +295,11 @@ void GameWorld::AddOjectAtLocation(const Point3D& pos ,ObjectType type,long inde
             controller=new PhysEntity();
             model = Model::NewModel("models/model1");
             break;
+
+		case kTowerEntity:
+			controller = new TowerController;
+			model = Model::NewModel("models/model1");
+			break;
             
     }
     
@@ -321,6 +326,21 @@ void GameWorld::PopulateWorld(void)
 	}
 }
 
+/*
+void GameWorld::DeleteTower(int32 towerID) {
+	GetTowers();
+	for (int i = 0; i < towerCount; i++) {
+		Node *towerNode = towerList[i];
+		if (towerNode != nullptr) {
+			TowerController *tc = static_cast<TowerController *>(towerNode->GetController());
+			if (tc->GetId() == towerID) {
+				towerList[i] = nullptr;
+				towerNode->GetSuperNode()->RemoveSubnode(towerNode);
+			}
+		}
+	}
+}
+*/
 void GameWorld::DeleteMinion(int32 minionId) {
     GetMinions();
     for (int i=0; i<minionCount; i++) {
@@ -342,10 +362,10 @@ Node** GameWorld::GetMinions() {
     while (child) {
         Controller *c = child->GetController();
         if (c != nullptr && c->GetControllerType() == kControllerMinion) {
-            if (minionCount > MAX_NUM_MINIONS) {
+            /*if (minionCount > MAX_NUM_MINIONS) {
                 printf("too many minions!");
                 return;
-            }
+            }*/
             minionList[minionCount] = child;
             minionCount++;
         }

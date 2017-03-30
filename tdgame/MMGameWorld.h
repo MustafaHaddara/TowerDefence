@@ -27,12 +27,13 @@ private:
     int32					spawnLocatorCount;
     int32					collLocatorCount;
     int32                   minionCount;
+	int32					towerCount;
     static const int32      MAX_NUM_MINIONS = 32; // assuming we can only have 16 minions at a time derp
-    
+	static const int32		MAX_NUM_TOWERS = 32; // set tower max here
     List<Marker>			spawnLocatorList;
     List<Marker>			collLocatorList;
     Node*                   minionList[MAX_NUM_MINIONS];
-    
+	Node*					towerList[MAX_NUM_TOWERS];
     SpectatorCamera			spectatorCamera;
     FirstPersonCamera		firstPersonCamera;
     ChaseCamera				chaseCamera;
@@ -95,11 +96,16 @@ public:
     }
     
     Node** GetMinions(void);
+	//Node** GetTowers(void);
     
     int32 GetNumMinions(void) {
         return minionCount;
     }
-    
+	/*
+	int32 GetNumTowers(void) {
+		return towerCount;
+	}
+    */
     WorldResult PreprocessWorld(void) override;
     
     RigidBodyStatus HandleNewRigidBodyContact(RigidBodyController *rigidBody, const RigidBodyContact *contact, RigidBodyController *contactBody) override;
@@ -128,11 +134,11 @@ public:
     // PRIVATE
     Controller* CreateAvatar(const Point3D& pos ,long index,PlayerKey key);
 
-
     void PopulateWorld(void);
-    
+
     void DeleteMinion(int32 minionId);
-    
+	//void DeleteTower(int32 towerID);
+
 };
 
 }

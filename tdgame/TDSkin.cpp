@@ -85,10 +85,8 @@ void MainWindow::PreprocessWidget(void)
 			world->SetWorldFlags(world->GetWorldFlags() | kWorldPaused);
 			TheTimeMgr->SetWorldTimeMultiplier(0.0F);
 		}
-	}
-	else
-	{
-		TheInterfaceMgr->GetStrip()->ShowWidget();
+	} else {
+//		TheInterfaceMgr->GetStrip()->ShowWidget();
 	}
 }
 
@@ -190,9 +188,7 @@ void MainWindow::HandleWidgetEvent(Widget *widget, const WidgetEventData *eventD
 
 		if (widget == newButton)
 		{
-			TheGame->LoadWorld("cap2");
-			//SinglePlayerWindow::OpenWindow();
-			//TheSinglePlayerWindow->SetCompletionCallback(&HandleSinglePlayerWindowClose);
+            TheGame->HostMultiplayerGame("cap2", 0);
 			delete this;
 		}
 		else if (widget == quitButton)

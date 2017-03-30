@@ -111,22 +111,7 @@ void MovementAction::HandleMove(int32 value)
 		SpectatorCamera *camera = world->GetSpectatorCamera();
 		camera->SetSpectatorFlags((camera->GetSpectatorFlags() & ~kSpectatorPlanarMask) | flags); 
 	} 
-} 
-
- 
-LookAction::LookAction(ActionType type) : Action(type) 
-{ 
 }
-
-LookAction::~LookAction() 
-{
-}
-
-void LookAction::HandleUpdate(float value)
-{
-	
-}
-
 
 FireAction::FireAction(ActionType type) : Action(type)
 {
@@ -215,10 +200,7 @@ TowerAction::~TowerAction()
 {
 }
 
-void TowerAction::HandleEngage(void)
-{
-	const Player *player = TheMessageMgr->GetLocalPlayer();
-			
+void TowerAction::HandleEngage(void) {
 	unsigned messageType;
 
 	switch (GetActionType())
@@ -234,6 +216,7 @@ void TowerAction::HandleEngage(void)
 		break;
 	}
 
+	// Send a message to the server indicating which tower type was selected
 	TheMessageMgr->SendMessage(kPlayerServer, ClientTowerSelectMessage(messageType));
 }
 

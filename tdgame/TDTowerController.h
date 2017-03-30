@@ -145,7 +145,6 @@ namespace TDGame
             return target;
         }
 		
-        
         /**
          * \brief Serializes message
          */

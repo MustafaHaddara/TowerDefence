@@ -1042,7 +1042,7 @@ void FighterController::AnimateFighter(void)
         float alt = GetInterpolatedLookAltitude();
          modelAzimuth = GetModelAzimuth();
         
-        Model *fighter = GetTargetNode();
+//        Model *fighter = GetTargetNode();
         
         int32 motion = GetFighterMotion();
         if ((motion <= kFighterMotionStand) || (motion == kFighterMotionForward) || (motion == kFighterMotionBackward))

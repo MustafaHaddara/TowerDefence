@@ -121,12 +121,12 @@ namespace TDGame {
             }
             case kMinionShotMessage: {
                 const MinionShotMessage *m = static_cast<const MinionShotMessage *>(message);
-                health -= m->GetDamage();
+                int dmg = m->GetDamage();
+                health -= dmg;
                 
                 Node* model = GetTargetNode();
                 Transform4D scaled = model->GetNodeTransform();
-                model->SetNodeTransform(scaled * scaled.MakeScale(0.95));
-//                printf("minion #%d has %d health\n", id, health);
+                model->SetNodeTransform(scaled * scaled.MakeScale((100.0 - float(dmg))/100.0));
                 if (health == 0) {
                     // TODO send a game message object and get the server to do this
                     delete GetTargetNode();

@@ -24,7 +24,9 @@ private:
     List<Marker>			spawnLocatorList;
     List<Marker>			collLocatorList;
     Node*                   minionList[MAX_NUM_MINIONS];
+    
     SpectatorCamera			spectatorCamera;
+    FirstPersonCamera		firstPersonCamera;
     ChaseCamera				chaseCamera;
     ModelCamera				*playerCamera;
     
@@ -76,7 +78,7 @@ public:
     
     bool UsingFirstPersonCamera(void) const
     {
-        return false; //(playerCamera == &firstPersonCamera);
+        return (playerCamera == &firstPersonCamera);
     }
     
     void SetBloodIntensity(float blood)
@@ -85,16 +87,11 @@ public:
     }
     
     Node** GetMinions(void);
-	//Node** GetTowers(void);
     
     int32 GetNumMinions(void) {
         return minionCount;
     }
-	/*
-	int32 GetNumTowers(void) {
-		return towerCount;
-	}
-    */
+    
     WorldResult PreprocessWorld(void) override;
     
     RigidBodyStatus HandleNewRigidBodyContact(RigidBodyController *rigidBody, const RigidBodyContact *contact, RigidBodyController *contactBody) override;
@@ -109,6 +106,7 @@ public:
     void SetSpectatorCamera(const Point3D& position, float azm, float alt);
     
     void SetLocalPlayerVisibility(void);
+    void ChangePlayerCamera(void);
     void SetFocalLength(float focal);
     
     void ShakeCamera(float intensity, int32 duration);
@@ -122,11 +120,11 @@ public:
     // PRIVATE
     Controller* CreateAvatar(const Point3D& pos ,long index,PlayerKey key);
 
+
     void PopulateWorld(void);
-
+    
     void DeleteMinion(int32 minionId);
-	//void DeleteTower(int32 towerID);
-
+    
 };
 
 }

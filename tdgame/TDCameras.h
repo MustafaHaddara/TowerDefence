@@ -55,6 +55,32 @@ namespace TDGame
 	};
 
     /**
+     * \brief A camera which follows a model from within.
+     *
+     * This is in the style of a "First Person" camera.
+     */
+    class FirstPersonCamera final : public ModelCamera {
+    public:
+        
+        /**
+         * \brief Constructor
+         */
+        FirstPersonCamera();
+ 
+        /**
+         * \brief Destructor
+         */
+        ~FirstPersonCamera();
+        
+        /**
+         * \brief Move the camera
+         *
+         * The camera moves to follow its target model.
+         */
+        void MoveCamera(void) override;
+    };
+    
+    /**
      * \brief A camera which follows a model from behind.
      *
      * This is in the style of a "Third Person" camera.

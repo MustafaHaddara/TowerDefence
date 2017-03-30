@@ -102,65 +102,6 @@ bool GameInfoMessage::HandleMessage(Player *sender) const
 	return (true);
 }
 
-
-PlayerStyleMessage::PlayerStyleMessage() : Message(kMessagePlayerStyle)
-{
-}
-
-PlayerStyleMessage::PlayerStyleMessage(PlayerKey player, const int32 *style) : Message(kMessagePlayerStyle)
-{
-	playerKey = player;
-
-	for (machine a = 0; a < kPlayerStyleCount; a++)
-	{
-		playerStyle[a] = style[a];
-	}
-}
-
-PlayerStyleMessage::~PlayerStyleMessage()
-{
-}
-
-void PlayerStyleMessage::CompressMessage(Compressor& data) const
-{
-	data << int16(playerKey);
-
-	for (machine a = 0; a < kPlayerStyleCount; a++)
-	{
-		data << char(playerStyle[a]);
-	}
-}
-
-bool PlayerStyleMessage::DecompressMessage(Decompressor& data)
-{
-	int16	player;
-
-	data >> player;
-	playerKey = player;
-
-	for (machine a = 0; a < kPlayerStyleCount; a++)
-	{
-		char	style;
-
-		data >> style;
-		playerStyle[a] = style;
-	}
-
-	return (true);
-}
-
-bool PlayerStyleMessage::HandleMessage(Player *sender) const
-{
-	GamePlayer *player = static_cast<GamePlayer *>(TheMessageMgr->GetPlayer(playerKey));
-	if (player)
-	{
-		player->SetPlayerStyle(playerStyle);
-	}
-
-	return (true);
-}
-
-
 CreateModelMessage::CreateModelMessage(ModelMessageType type) : Message(kMessageCreateModel)
 {
 	modelMessageType = type;
@@ -195,29 +136,7 @@ bool CreateModelMessage::DecompressMessage(Decompressor& data)
 
 void CreateModelMessage::InitializeModel(GameWorld *world, Model *model, Controller *controller) const
 {
-    /*
-	controller->SetControllerIndex(controllerIndex);
-	model->SetController(controller);
 
-	model->SetNodePosition(initialPosition);
-	world->AddNewNode(model);
-
-	if (TheMessageMgr->GetSynchronizedFlag())
-	{
-		RigidBodyController *rigidBody = static_cast<RigidBodyController *>(controller);
-		RigidBodyType type = rigidBody->GetRigidBodyType();
-
-		if (type == kRigidBodyProjectile)
-		{
-			static_cast<ProjectileController *>(rigidBody)->EnterWorld(world, initialPosition);
-		}
-		else
-            if (type == kRigidBodyCharacter)
-		{
-			static_cast<GameCharacterController *>(rigidBody)->EnterWorld(world, initialPosition);
-		}
-	}
-    */
 }
 
 CreateModelMessage *CreateModelMessage::CreateMessage(ModelMessageType type)
@@ -268,53 +187,6 @@ bool DeathMessage::HandleMessage(Player *sender) const
 {
 		return (true);
 }
-
-
-ClientStyleMessage::ClientStyleMessage() : Message(kMessageClientStyle)
-{
-}
-
-ClientStyleMessage::ClientStyleMessage(const int32 *style) : Message(kMessageClientStyle)
-{
-	for (machine a = 0; a < kPlayerStyleCount; a++)
-	{
-		playerStyle[a] = style[a];
-	}
-}
-
-ClientStyleMessage::~ClientStyleMessage()
-{
-}
-
-void ClientStyleMessage::CompressMessage(Compressor& data) const
-{
-	for (machine a = 0; a < kPlayerStyleCount; a++)
-	{
-		data << char(playerStyle[a]);
-	}
-}
-
-bool ClientStyleMessage::DecompressMessage(Decompressor& data)
-{
-	for (machine a = 0; a < kPlayerStyleCount; a++)
-	{
-		char	style;
-
-		data >> style;
-		playerStyle[a] = style;
-	}
-
-	return (true);
-}
-
-bool ClientStyleMessage::HandleMessage(Player *sender) const
-{
-	PlayerStyleMessage styleMessage(sender->GetPlayerKey(), playerStyle);
-	TheMessageMgr->SendMessage(kPlayerServer, styleMessage);
-	TheMessageMgr->SendMessageClients(styleMessage, sender);
-	return (true);
-}
-
 
 ClientOrientationMessage::ClientOrientationMessage() : Message(kMessageClientOrientation)
 {
@@ -467,34 +339,6 @@ ClientMiscMessage::~ClientMiscMessage()
 
 bool ClientMiscMessage::HandleMessage(Player *sender) const
 {
-    /*
-	GamePlayer *player = static_cast<GamePlayer *>(sender);
-
-	switch (GetMessageType())
-	{
-		case kMessageClientSpawn:
-
-			if ((player->GetDeathTime() < 0))
-			{
-				FighterController *controller = player->GetPlayerController();
-				if (!controller)
-				{
-
-					if (TheMessageMgr->GetMultiplayerFlag())
-					{
-						TheGame->SpawnPlayer(player);
-					}
-					else
-					{
-						TheGame->RestartWorld();
-					}
-				}
-			}
-
-			break;
-    }
-*/
-
 	return (true);
 }
 
@@ -551,7 +395,6 @@ bool CreateCharacterMessage::DecompressMessage(Decompressor& data)
 
 bool CreateCharacterMessage::HandleMessage(Player *sender) const
 {
-    //printf("Handle Charater Message index %d type %d ownkey %d \n",index,chartype,ownerKey);
     GameWorld *world = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
     world->AddOjectAtLocation(pos,chartype,index,ownerKey);
     return(true);
@@ -614,10 +457,12 @@ ClientTowerSelectMessage::~ClientTowerSelectMessage()
 
 void ClientTowerSelectMessage::CompressMessage(Compressor& data) const
 {
+	data << towerNumber;
 }
 
 bool ClientTowerSelectMessage::DecompressMessage(Decompressor& data)
 {
+	data >> towerNumber;
 	return true;
 }
 

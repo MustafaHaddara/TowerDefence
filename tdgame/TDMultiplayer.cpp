@@ -448,7 +448,7 @@ bool ClientFiringMessage::HandleMessage(Player *sender) const
 {
 	
     FighterController *controller = static_cast<GamePlayer *>(sender)->GetPlayerController();
-    if (controller) {
+    if (controller && GetMessageType() == kMessageClientFiringPrimaryBegin) {
         controller->fireLaser();
     }
     

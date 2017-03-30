@@ -47,6 +47,7 @@ namespace TDGame
             ModelRegistration     soldierModelReg;
             ModelRegistration     minionModelReg;
             ModelRegistration     appleModelRegistration;
+            ModelRegistration     towerModelRegistration;
 
 			//ControllerReg<GameRigidBodyController>			gameRigidBodyControllerRegistration;
             ControllerReg<TowerController> towerControllerRegistration;

@@ -24,7 +24,6 @@ private:
     List<Marker>			spawnLocatorList;
     List<Marker>			collLocatorList;
     Node*                   minionList[MAX_NUM_MINIONS];
-	Node*					towerList[MAX_NUM_TOWERS];
     SpectatorCamera			spectatorCamera;
     ChaseCamera				chaseCamera;
     ModelCamera				*playerCamera;

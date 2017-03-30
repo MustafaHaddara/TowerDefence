@@ -247,10 +247,10 @@ void GameWorld::AddOjectAtLocation(const Point3D& pos ,ObjectType type,long inde
             CreateAvatar(pos , index, key);
             return;
 
-//        case kCollectEntity: // some other case
-//            controller = new CollectableController();
-//            model = Model::GetModel(kModelApple);
-//            break;
+        case kTowerEntity:
+            controller = new TowerController();
+            model = Model::GetModel(kModelTower);
+            break;
             
     }
     

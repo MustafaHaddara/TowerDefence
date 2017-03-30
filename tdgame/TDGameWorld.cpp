@@ -1,12 +1,9 @@
 #include "TDGameWorld.h"
 
-
 #include "TDMultiPLayer.h"
 #include "TDGamePlayer.h"
 #include "TDFighter.h"
 #include "TDMinionController.h"
-
-#include "TDColectCont.h"
 
 using namespace TDGame;
 
@@ -168,7 +165,6 @@ void GameWorld::SetFocalLength(float focal)
 
 #define TYPE_NAME(type) \
 (kSoldierEntity       == type ? "kSoldierEntity"    :  \
-(kCollectEntity     == type ? "kCollectEntity"   :  \
 (0 == type ? "yellow" : "unknown"))))
 
 
@@ -275,12 +271,10 @@ void GameWorld::AddOjectAtLocation(const Point3D& pos ,ObjectType type,long inde
             CreateAvatar(pos , index, key);
             return;
 
-        case kCollectEntity:
-            controller=new CollectableController();
-            //Model *model = Model::GetModel(kModelApple);
-            // WE CAN LOAD MODELS AT RUNTIM TOO
-            model = Model::NewModel("models/model1");
-            break;
+//        case kCollectEntity: // some other case
+//            controller = new CollectableController();
+//            model = Model::GetModel(kModelApple);
+//            break;
             
     }
     
@@ -298,13 +292,8 @@ void GameWorld::AddOjectAtLocation(const Point3D& pos ,ObjectType type,long inde
 
 /*----------------------------------------------------------*/
 
-void GameWorld::PopulateWorld(void)
-{
-    //printf("Populating WOrkd \n");
-	// Collect Items
-	for(int i=0;i<collLocatorCount;i++){
-		ReqestOjectAtLocation(collLocatorList[i]->GetNodePosition(),kCollectEntity ,-1);
-	}
+void GameWorld::PopulateWorld(void) {
+    
 }
 
 void GameWorld::DeleteMinion(int32 minionId) {

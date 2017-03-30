@@ -25,13 +25,11 @@ Game::Game() :
         spawnLocatorRegistration(kLocatorSpawn, "Spawn Location"),
         collLocatorRegistration(kLocatorColl, "Coll Mark"),
         physLocatorRegistration(kLocatorPys, "Phys Mark"),
-        soldierModelReg(kModelSoldier, nullptr, "soldier/Soldier", kModelPrecache | kModelPrivate, kControllerSoldier),
+
+        soldierModelReg(kModelSoldier, nullptr, "model/robot", kModelPrecache | kModelPrivate, kControllerSoldier),
         minionModelReg(kModelMinion, nullptr, "zombie/Zombie", kModelPrecache | kModelPrivate, kControllerSoldier),
         appleModelRegistration(kModelApple,nullptr, "health/Apple", 0, kControllerCollectable),
         towerModelRegistration(kModelTower,nullptr, "tower", 0, kControllerTower),
-        //soldierModelReg(kModelSoldier, nullptr, "GUS/gus", kModelPrecache | kModelPrivate, kControllerSoldier),
-
-//        gameRigidBodyControllerRegistration(kControllerGameRigidBody, stringTable.GetString(StringID('CTRL', kControllerGameRigidBody))),
 
         towerControllerRegistration(kControllerTower, "Tower"),
         minionControllerRegistration(kControllerMinion, "Minion"),

@@ -65,6 +65,7 @@ namespace TDGame
     enum{
         kSoldierEntity      ='csol',  // THE AVATAR
         kPhysEntiy          ='cphy',  // SOMETHING WITH PHYSICS
+		kTowerEntity		='ctow',  // TOWERS
     };
 }
 

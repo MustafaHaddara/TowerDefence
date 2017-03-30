@@ -24,7 +24,7 @@ private:
     List<Marker>			spawnLocatorList;
     List<Marker>			collLocatorList;
     Node*                   minionList[MAX_NUM_MINIONS];
-    
+	Node*					towerList[MAX_NUM_TOWERS];
     SpectatorCamera			spectatorCamera;
     ChaseCamera				chaseCamera;
     ModelCamera				*playerCamera;
@@ -86,11 +86,16 @@ public:
     }
     
     Node** GetMinions(void);
+	//Node** GetTowers(void);
     
     int32 GetNumMinions(void) {
         return minionCount;
     }
-    
+	/*
+	int32 GetNumTowers(void) {
+		return towerCount;
+	}
+    */
     WorldResult PreprocessWorld(void) override;
     
     RigidBodyStatus HandleNewRigidBodyContact(RigidBodyController *rigidBody, const RigidBodyContact *contact, RigidBodyController *contactBody) override;
@@ -118,11 +123,11 @@ public:
     // PRIVATE
     Controller* CreateAvatar(const Point3D& pos ,long index,PlayerKey key);
 
-
     void PopulateWorld(void);
-    
+
     void DeleteMinion(int32 minionId);
-    
+	//void DeleteTower(int32 towerID);
+
 };
 
 }

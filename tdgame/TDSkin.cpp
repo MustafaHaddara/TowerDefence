@@ -190,7 +190,7 @@ void MainWindow::HandleWidgetEvent(Widget *widget, const WidgetEventData *eventD
 
 		if (widget == newButton)
 		{
-			TheGame->LoadWorld("cap2");
+			TheGame->LoadWorld("cap3");
 			//SinglePlayerWindow::OpenWindow();
 			//TheSinglePlayerWindow->SetCompletionCallback(&HandleSinglePlayerWindowClose);
 			delete this;
@@ -398,6 +398,23 @@ void DisplayBoard::SelectTowerThree(void)
 	{
 		towerThree->SetValue(0);
 	}
+}
+
+void DisplayBoard::UpdateBaseHealth(int32 health)
+{
+    baseProgress = static_cast<ProgressWidget*>(FindWidget("BaseHealth"));
+    baseProgress->SetValue(health);
+    if (health==0) {
+        TheEngine->Report("YOUWIN");
+        TheInterfaceMgr->AddWidget(winText);
+        youwin = true;
+    }
+}
+
+void DisplayBoard::UpdateTowerHealth(int32 health)
+{
+    towerProgress = static_cast<ProgressWidget*>(FindWidget("TowerHealth"));
+    towerProgress->SetValue(health);
 }
 
 DisplayBoard *TDGame::TheDisplayBoard = nullptr;

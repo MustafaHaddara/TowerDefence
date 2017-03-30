@@ -4,6 +4,8 @@
 #include "TDFighter.h"
 #include "TDGameWorld.h"
 
+#include "TDBaseController.h"
+
 using namespace TDGame;
 
 

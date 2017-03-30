@@ -85,7 +85,8 @@ namespace TDGame
 	{
     private:
         
-               
+         bool							youwin;
+        TextWidget                      *winText;
         TextWidget                      *scoreText;
         TextWidget                      *healthText;
         
@@ -105,6 +106,8 @@ namespace TDGame
 		ImageWidget						*healthBackground;
 		ImageWidget						*towerImage;
 		ProgressWidget					*healthProgress;
+        ProgressWidget					*baseProgress;
+        ProgressWidget					*towerProgress;
 		TextWidget						*moneyText;
 
 		// Static Widgets
@@ -130,7 +133,9 @@ namespace TDGame
 		void SelectTowerTwo(void);
 		void SelectTowerThree(void);
         
-         void ShowMessageText(const char* text);
+        void ShowMessageText(const char* text);
+        void UpdateBaseHealth(int32 health);
+        void UpdateTowerHealth(int32 health);
         
     };
 

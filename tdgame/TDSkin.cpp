@@ -42,16 +42,6 @@ void MainWindow::HandleSinglePlayerWindowClose(Window *window, void *cookie)
 	OpenWindow();
 }
 
-//void MainWindow::HandleHostGameWindowClose(StartWindow *window, void *cookie)
-//{
-//	OpenWindow();
-//}
-
-//void MainWindow::HandleJoinGameWindowClose(JoinGameWindow *window, void *cookie)
-//{
-//	OpenWindow();
-//}
-
 void MainWindow::PreprocessWidget(void)
 {
 	Window::PreprocessWidget();
@@ -256,7 +246,7 @@ DisplayBoard::DisplayBoard() : Global<DisplayBoard>(TheDisplayBoard)
 	moneyDisplay->LoadPanel("panels/money");
 	TheInterfaceMgr->AddWidget(moneyDisplay);
 
-	moneyText = new TextWidget(Vector2D(128.0f, 16.0f), "4444", "fonts/berlinsans");
+	moneyText = new TextWidget(Vector2D(128.0f, 16.0f), "5000", "fonts/berlinsans");
 	moneyText->SetWidgetKey("Money");
 	moneyText->SetTextAlignment(kTextAlignRight);
 
@@ -352,15 +342,12 @@ void DisplayBoard::UpdateDisplayPosition(void)
 
 void DisplayBoard::UpdatePlayerHealth(void)
 {
-	// Test mutator functions
-
 	const Player *player = TheMessageMgr->GetLocalPlayer();
 	if (player)
 	{
 		int32 health = 50;
 		healthProgress = static_cast<ProgressWidget*>(FindWidget("HealthBar"));
 		healthProgress->SetValue(health);
-		moneyText->SetText("5000");
 	}
 }
 

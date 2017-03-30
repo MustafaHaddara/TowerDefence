@@ -9,8 +9,8 @@
 namespace TDGame
 {
 	using namespace Tombstone;
-
-
+	
+	// Input action types
 	enum : ActionType
 	{
 		kActionForward				= 'frwd',
@@ -45,7 +45,7 @@ namespace TDGame
 		kActionSave					= 'save'
 	};
 
-
+	// Movement types
 	enum
 	{
 		kMovementForward			= 1 << 0,
@@ -57,7 +57,9 @@ namespace TDGame
 		kMovementPlanarMask			= 15
 	};
 
-
+	/**
+	* \brief Action for character movement.
+	*/
 	class MovementAction : public Action
 	{
 		private:
@@ -66,46 +68,76 @@ namespace TDGame
 			unsigned_int32		spectatorFlag;
 
 		public:
-
+			/**
+			* \brief Constructor
+			* \param type Type of action
+			* \param moveFlag Movement direction
+			* \param specFlag Spectator movement direction
+			*/
 			MovementAction(ActionType type, unsigned_int32 moveFlag, unsigned_int32 specFlag);
+			/**
+			* \brief Destructor
+			*/
 			~MovementAction();
 
+			/**
+			* \brief Handles when movement begins
+			*/
 			void HandleEngage(void);
+			/**
+			* \brief Handles when movement ends
+			*/
 			void HandleDisengage(void);
+			/**
+			* \brief Handles when movement changes
+			*/
 			void HandleMove(int32 value);
 	};
 
-
-	class LookAction : public Action
-	{
-		public:
-
-			LookAction(ActionType type);
-			~LookAction();
-
-			void HandleUpdate(float value);
-	};
-
-
+	/**
+	* \brief Action for firing weapons.
+	*/
 	class FireAction : public Action
 	{
 		public:
-
+			/**
+			* \brief Constructor
+			* \param type Type of action
+			*/
 			FireAction(ActionType type);
+			/**
+			* \brief Destructor
+			*/
 			~FireAction();
 
+			/**
+			* \brief Handles when firing begins
+			*/
 			void HandleEngage(void);
+			/**
+			* \brief Handles when firing ends
+			*/
 			void HandleDisengage(void);
 	};
 
-
+	/**
+	* \brief Action for selecting towers.
+	*/
 	class TowerAction : public Action
 	{
 	public:
-
+		/**
+		* \brief Constructor
+		* \param type Type of action
+		*/
 		TowerAction(ActionType type);
+		/**
+		* \brief Destructor
+		*/
 		~TowerAction();
-
+		/**
+		* \brief Handles when a tower is selected
+		*/
 		void HandleEngage(void);
 	};
 

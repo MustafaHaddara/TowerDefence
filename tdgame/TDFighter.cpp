@@ -180,10 +180,10 @@ void FighterController::PreprocessController(void)
     animator->AppendNewSubnode(spineTwistAnimator);
     
     FrameAnimator *frameA = GetFrameAnimator(0);
-    frameA->SetAnimation("soldier/Stand");
+    frameA->SetAnimation("model/stand");
     
     frameA = GetFrameAnimator(1);
-    frameA->SetAnimation("soldier/Stand");
+    frameA->SetAnimation("model/stand");
 }
 
 void FighterController::SetMountNodeTransform(void)
@@ -1118,7 +1118,7 @@ void FighterController::SetFighterMotion(int32 motion)
             
         case kFighterMotionForward:
         {
-            animator2->SetAnimation("soldier/Run");
+            animator2->SetAnimation("model/run");
             interpolator2->SetMode(kInterpolatorForward | kInterpolatorLoop);
             
             float w = weight2->GetValue();
@@ -1129,7 +1129,7 @@ void FighterController::SetFighterMotion(int32 motion)
             
         case kFighterMotionBackward:
         {
-            animator2->SetAnimation("soldier/Backward");
+            animator2->SetAnimation("model/back");
             interpolator2->SetMode(kInterpolatorBackward | kInterpolatorLoop);
             interpolator2->SetValue(1.0F);
             
@@ -1141,7 +1141,7 @@ void FighterController::SetFighterMotion(int32 motion)
             
         case kFighterMotionTurnLeft:
             
-            animator2->SetAnimation("soldier/TurnLeft");
+            animator2->SetAnimation("model/turnL");
             interpolator2->SetMode(kInterpolatorForward);
             
             interpolator1->SetMode(kInterpolatorStop);
@@ -1151,7 +1151,7 @@ void FighterController::SetFighterMotion(int32 motion)
             
         case kFighterMotionTurnRight:
             
-            animator2->SetAnimation("soldier/TurnRight");
+            animator2->SetAnimation("model/turnR");
             interpolator2->SetMode(kInterpolatorForward);
             
             interpolator1->SetMode(kInterpolatorStop);
@@ -1161,14 +1161,14 @@ void FighterController::SetFighterMotion(int32 motion)
             
         case kFighterMotionJump:
             
-            animator2->SetAnimation("soldier/Jump");
+            animator2->SetAnimation("model/jump");
             interpolator2->SetMode(kInterpolatorForward);
             break;
         
             
         case kFighterMotionDeath:
             
-            animator2->SetAnimation("soldier/Death");
+            animator2->SetAnimation("model/die");
             interpolator2->SetMode(kInterpolatorForward);
             
             interpolator1->SetMode(kInterpolatorStop);

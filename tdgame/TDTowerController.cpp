@@ -15,6 +15,7 @@
 #include "TSMethods.h"
 #include "TSWorld.h"
 #include "TSZones.h"
+#include "MMMultiplayer.h"
 
 namespace MMGame {
 	using namespace Tombstone;
@@ -52,6 +53,14 @@ namespace MMGame {
 			}
 			thisnode = root->GetNextTreeNode(thisnode);
 		} while (thisnode && !found);
+	}
+	void TowerController::takeDamage(int32 damage) {
+		// fighterController => instance of player
+		// 
+
+		health = health - damage;
+		// take damage only called by the server.
+		TheMessageMgr->SendMessageAll(UpdateTowerHealthMessage(health, GetControllerIndex()));
 	}
 
 	void TowerController::MoveController(void) {

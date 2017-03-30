@@ -802,12 +802,12 @@ void FighterController::fireLaser(void)
 			GameCharacterController *contactedPlayerController = static_cast<GameCharacterController *>(rigidBodyController);
 			contactedPlayerController->Damage(10, 0, 0, 0, 0);
 		}
-		if (rigidBodyType == kRigidBodyTower) {
+	/*	if (rigidBodyType == kRigidBodyTower) {
 			//rigidbody controller is a towercontroller
 			TowerController *contactedTowerController = static_cast<TowerController *>(rigidBodyController);
 			//calling tower takedamge method from tdtowercontroller
 			contactedTowerController->towerTakeDamage(10);
-		}
+		}*/
 		if (rigidBodyType == kRigidBodyBase) {
 			BaseController *contactedBaseController = static_cast<BaseController *>(rigidBodyController);
 			contactedBaseController->takeDamage(10);

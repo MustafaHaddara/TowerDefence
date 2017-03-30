@@ -57,7 +57,6 @@ Game::Game() :
 		towerThreeAction(kActionTowerThree)
 
 {
-	//TheDisplayMgr->InstallDisplayEventHandler(&displayEventHandler);
 
 	TheEngine->AddCommand(&hostCommand);
 	TheEngine->AddCommand(&joinCommand);
@@ -97,7 +96,6 @@ Game::Game() :
 Game::~Game()
 {
 	ExitCurrentGame();
-    //boardList.PurgeList();
 
 	TheWorldMgr->SetWorldCreator(nullptr);
 	TheMessageMgr->SetPlayerCreator(nullptr);
@@ -157,18 +155,13 @@ void Game::StartSinglePlayerGame(const char *name)
     currentWorldName = name;
     
     HostMultiplayerGame(name,0);
-    
-    //World *world = new GameWorld(name);
 }
 
 
 // I hard coded this, so it connects to the local machine
 void Game::HandleJoinCommand(Command *command, const char *text)
 {
-    //printf(" Joining a Game \n");
     TheMessageMgr->BeginMultiplayerGame(false);
-    
-    //String *addressText=MessageMgr::AddressToString(TheNetworkMgr->GetLocalAddress());
     
     // We'll first want to provide the user with some feedback - so he'll know what he's doing.
     String<128> str("Attempting to join --> ");
@@ -179,16 +172,12 @@ void Game::HandleJoinCommand(Command *command, const char *text)
 
     
     TheEngine->Report(str, kReportError);
-//    TheNetworkMgr->SetPortNumber(kGamePort);
-//    TheNetworkMgr->SetBroadcastPortNumber(kGamePort);
-//    TheNetworkMgr->Initialize();
     
     // Now we're just going to (try to) connect to the entered address.
     NetworkAddress local_addr = TheNetworkMgr->GetLocalAddress();
     local_addr.SetPort(kGamePort);
     
     TheMessageMgr->Connect(local_addr);
-//    TheMessageMgr->Connect(address);
 }
 
 
@@ -196,10 +185,6 @@ void Game::HandleJoinCommand(Command *command, const char *text)
 EngineResult Game::HostMultiplayerGame(const char *name, unsigned_int32 flags)
 {
 	ExitCurrentGame();
-    
-    //printf("Start Multi Player Game \n");
-
-	//TheNetworkMgr->SetProtocol(kGameProtocol);
 	TheNetworkMgr->SetPortNumber(kGamePort);
 	TheNetworkMgr->SetBroadcastPortNumber(kGamePort);
     TheNetworkMgr->Initialize();
@@ -210,14 +195,10 @@ EngineResult Game::HostMultiplayerGame(const char *name, unsigned_int32 flags)
 		result = TheWorldMgr->LoadWorld(name);
 		if (result == kWorldOkay)
 		{
-            //printf("World Loaded \n");
             GameWorld *world = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
-			//multiplayerFlags = flags;
 
 			GamePlayer *player = static_cast<GamePlayer *>(TheMessageMgr->GetLocalPlayer());
-			//unsigned_int32 playerFlags = (flags & kMultiplayerDedicated) ? kPlayerInactive : 0;
             
-			//player->SetPlayerFlags(playerFlags);
             const Point3D pos= Point3D(0.0F, 0.0F, 2.0F);
             
             // Request an Avatar  ONLY ON SERVER !!!!!
@@ -242,16 +223,8 @@ EngineResult Game::JoinMultiplayerGame(const char *name, unsigned_int32 flags)
 	EngineResult result = TheWorldMgr->LoadWorld(name);
 	if (result == kWorldOkay)
 	{
-
-        //printf("Joinging Game in word %s \n",name);
-		//GamePlayer *player = static_cast<GamePlayer *>(TheMessageMgr->GetPlayer(kPlayerServer));
-		//if (flags & kMultiplayerDedicated)
-		{
-			//player->SetPlayerFlags(player->GetPlayerFlags() | kPlayerInactive);
-		}
         DisplayBoard::OpenBoard();
         TheDisplayBoard->ShowMessageText("Client");
-
 	}
 
 	return (result);
@@ -292,14 +265,12 @@ void Game::UnloadWorld(void)
 
 void Game::HandleConnectionEvent(ConnectionEvent event, const NetworkAddress& address, const void *param)
 {
-    //printf("HandleConnectionEvent\n");
     switch (event)
     {
         case kConnectionQueryReceived:
         {
             World *world = TheWorldMgr->GetWorld();
             if (world){
-                //printf("SENDING WORLD NAME \n");
                 const char *gameName = TheEngine->GetVariable("gameName")->GetValue();
                 const char *worldName = world->GetWorldName();
                 
@@ -311,7 +282,6 @@ void Game::HandleConnectionEvent(ConnectionEvent event, const NetworkAddress& ad
         }
             
         case kConnectionAttemptFailed:
-            //printf("kConnectionAttemptFailed\n");
             
             // The server rejected our connection.
             
@@ -321,9 +291,6 @@ void Game::HandleConnectionEvent(ConnectionEvent event, const NetworkAddress& ad
         case kConnectionServerAccepted:
             
             // The server accepted our connection.
-            //printf("kConnectionServerAccepted\n");
-            
-            
             
             // Tell the server what player styles the user has set.
             // The server will forward this information to the other players.
@@ -334,7 +301,6 @@ void Game::HandleConnectionEvent(ConnectionEvent event, const NetworkAddress& ad
         case kConnectionServerClosed:
             
             // The server was shut down.
-            //printf("closed \n");
             
             ExitCurrentGame();
             break;
@@ -352,35 +318,10 @@ void Game::HandleConnectionEvent(ConnectionEvent event, const NetworkAddress& ad
 
 void Game::HandlePlayerEvent(PlayerEvent event, Player *player, const void *param)
 {
-    //printf("HandlePlayerEvent\n");
     switch (event)
     {
-        case kPlayerConnected:
-        {
-            //printf("kPlayerConnected\n");
-            
-            if (TheMessageMgr->GetSynchronizedFlag())
-            {
-		 // NOTHING TO DO 
-            }
-            
-            if (TheMessageMgr->GetServerFlag()) {
-//                 GamePlayer *gamePlayer = static_cast<GamePlayer *>(TheMessageMgr->GetFirstPlayer());
-//                 while (gamePlayer->GetNextPlayer()) {
-//                 if ((gamePlayer != player) && (gamePlayer->GetPlayerFlags() & kPlayerReceiveVoiceChat)) {
-//                     new Channel(player, gamePlayer);
-//                 }
-//                     gamePlayer = gamePlayer->GetNextPlayer();
-//                 }
-                
-            }
-            
-            break;
-        }
-            
         case kPlayerDisconnected:
         {
-             //printf("kPlayerDisconnected\n");
             Controller *controller = static_cast<GamePlayer *>(player)->GetPlayerController();
             if (controller)
             {
@@ -392,7 +333,6 @@ void Game::HandlePlayerEvent(PlayerEvent event, Player *player, const void *para
             
         case kPlayerTimedOut:
         {
-            //printf("kPlayerTimedOut\n");
             Controller *controller = static_cast<GamePlayer *>(player)->GetPlayerController();
             if (controller)
             {
@@ -404,26 +344,18 @@ void Game::HandlePlayerEvent(PlayerEvent event, Player *player, const void *para
             
         case kPlayerInitialized:
         {
-            
-            //printf("kPlayerInitialized\n");
             // A new player joining the game has been initialized. For each player already
             // in the game, send a message  TO constrcut the coresponding Avatar
             
             const GamePlayer *gamePlayer = static_cast<GamePlayer *>(TheMessageMgr->GetFirstPlayer());
             do
-            {
-                if (gamePlayer != player)
-                {
-			// NOTHING TO DO
-                }
-                
+            {                
                 gamePlayer = gamePlayer->GetNextPlayer();
             } while (gamePlayer);
             
             // Now tell the new player what world is being played.
             
             World *world = TheWorldMgr->GetWorld();
-            //printf("Server Send Word Name \n");
             if (world) player->SendMessage(GameInfoMessage(0,world->GetWorldName()));
             
             
@@ -439,11 +371,9 @@ void Game::HandlePlayerEvent(PlayerEvent event, Player *player, const void *para
 // THIS IS CALLED WHEN ALL THE LOADING ON THE CLIENT IS DONE
 void Game::HandleGameEvent(GameEvent event, const void *param)
 {
-    //printf("HandleGameEvent\n");
     switch (event)
     {
         case kGameSynchronized:
-            //printf("Game Syncronized request avatar\n");
             ClientRequestMessage message(kMessageRequestAvantar,0);
             TheMessageMgr->SendMessage(kPlayerServer,message);
             break;
@@ -463,10 +393,6 @@ Message *Game::CreateMessage(MessageType type, Decompressor& data) const
             
             return (new GameInfoMessage);
             
-        case kMessagePlayerStyle:
-            
-            return (new PlayerStyleMessage);
-            
         case kMessageCreateModel:
         {
             unsigned_int8	modelType;
@@ -474,20 +400,6 @@ Message *Game::CreateMessage(MessageType type, Decompressor& data) const
             data >> modelType;
             return (CreateModelMessage::CreateMessage(modelType));
         }
-            
-            
-        case kMessageDeath:
-            
-            return (new DeathMessage);
-            
-            
-        case kMessageClientStyle:
-            
-            return (new ClientStyleMessage);
-            
-        case kMessageClientOrientation:
-            
-            return (new ClientOrientationMessage);
             
         case kMessageClientMovementBegin:
         case kMessageClientMovementEnd:
@@ -516,32 +428,7 @@ Message *Game::CreateMessage(MessageType type, Decompressor& data) const
 }
 
 void Game::ReceiveMessage(Player *sender, const NetworkAddress& address, const Message *message) {
-//    switch (message->GetMessageType()) {
-//        case kMessageMinionDead:
-//            printf("recieved minion dead\n");
-//            break;
-//    }
-}
 
-void Game::SpawnPlayer(Player *player)
-{
-    GameWorld *world = static_cast<GameWorld *>(TheWorldMgr->GetWorld());
-    if (world)
-    {
-        int32 count = world->GetSpawnLocatorCount();
-        if (count != 0)
-        {
-            //const Marker *marker = world->GetSpawnLocator(Math::RandomInteger(count));
-            
-            //const Vector3D direction = marker->GetWorldTransform()[0];
-            //float azimuth = Arctan(direction.y, direction.x);
-            
-            //int32 fighterIndex = world->NewControllerIndex();
-            //int32 weaponIndex = world->NewControllerIndex();
-            //TheMessageMgr->SendMessageAll(CreateGusGravesMessage(fighterIndex, marker->GetWorldPosition(), azimuth, //0.0F, 0, kWeaponPistol, weaponIndex, player->GetPlayerKey()));
-            
-        }
-    }
 }
 
 

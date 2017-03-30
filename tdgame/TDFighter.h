@@ -125,7 +125,7 @@ namespace TDGame
 	class FighterController : public GameCharacterController
 	{
 		private:
-
+			int32					health;
 			unsigned_int32			fighterFlags;
 			Link<Player>			fighterPlayer;
  
@@ -160,7 +160,7 @@ namespace TDGame
 
 			Node					*mountNode;
 			Light					*flashlight;
-
+			
 			MergeAnimator			*rootAnimator;
 			MergeAnimator			*mergeAnimator;
 			BlendAnimator			*blendAnimator;
@@ -243,7 +243,15 @@ namespace TDGame
 			}
 
 		public:
+			int32 GetHealth(void)
+			{
+				return(health);
+			}
 
+			void setHealth(int32 newHealth)
+			{
+				health = newHealth;
+			}
             void fireLaser(void);
         
 			FighterController(ControllerType type);

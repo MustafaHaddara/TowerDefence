@@ -18,7 +18,9 @@ namespace TDGame
 
 	enum : RigidBodyType
 	{
-		kRigidBodyCharacter		= 'char'
+		kRigidBodyCharacter		= 'char',
+		kRigidBodyBase			= 'base',
+		kRigidBodyTower			= 'towe'
 	};
 
 

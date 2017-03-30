@@ -330,7 +330,7 @@ Node** GameWorld::GetMinions() {
         if (c != nullptr && c->GetControllerType() == kControllerMinion) {
             if (minionCount > MAX_NUM_MINIONS) {
                 printf("too many minions!");
-                return;
+                return nullptr;
             }
             minionList[minionCount] = child;
             minionCount++;

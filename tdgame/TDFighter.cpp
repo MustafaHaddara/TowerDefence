@@ -37,7 +37,7 @@ FighterController::FighterController(ControllerType type) :
 {
 	weaponModel = nullptr;
 	weaponMountMarker = nullptr;
-
+	health = 100;
 	iconIndex = -1;
 	iconEffect = nullptr;
 	mountNode = nullptr;
@@ -589,8 +589,13 @@ void FighterController::EnterWorld(World *world, const Point3D& worldPosition)
      */
 }
 
-CharacterStatus FighterController::Damage(Fixed damage, unsigned_int32 flags, GameCharacterController *attacker, const Point3D *position, const Vector3D *force)
+// 
+CharacterStatus FighterController::Damage(int32 damage, unsigned_int32 flags, GameCharacterController *attacker, const Point3D *position, const Vector3D *force)
 {
+	health = health - damage;
+
+	fighterPlayer.GetTarget()->SendMessage(UpdateHealthMessage(health));
+
 		return (kCharacterUnaffected);
 }
 
@@ -767,6 +772,23 @@ void FighterController::fireLaser(void)
         TheEngine->Report("GEOMETRY");
         //printf("ray: GEOMETRY \n");
     }else if (state == kCollisionStateRigidBody){
+		RigidBodyController *rigidBodyController = collisionData.rigidBody;
+		RigidBodyType rigidBodyType = rigidBodyController->GetRigidBodyType();
+
+		if (rigidBodyType == kRigidBodyCharacter) {
+			GameCharacterController *contactedPlayerController = static_cast<GameCharacterController *>(rigidBodyController);
+			contactedPlayerController->Damage(10, 0, 0, 0, 0);
+		}
+		if (rigidBodyType == kRigidBodyTower) {
+			//rigidbody controller is a towercontroller
+			TowerController *contactedTowerController = static_cast<TowerController *>(rigidBodyController);
+			//calling tower takedamge method from tdtowercontroller
+			contactedTowerController->towerTakeDamage(10);
+		}
+		if (rigidBodyType == kRigidBodyBase) {
+			BaseController *contactedBaseController = static_cast<BaseController *>(rigidBodyController);
+			contactedBaseController->takeDamage(10);
+		}
         TheEngine->Report("BODY");
         //printf("ray: BODY \n");
     }else{
@@ -1153,7 +1175,6 @@ void FighterController::SetFighterMotion(int32 motion)
             break;
             
         case kFighterMotionJump:
-            
             animator2->SetAnimation("soldier/Jump");
             interpolator2->SetMode(kInterpolatorForward);
             break;

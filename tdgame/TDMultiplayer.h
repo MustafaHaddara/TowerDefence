@@ -65,6 +65,8 @@ namespace TDGame
 		kMessageClientVoiceReceiveStop,
         kMessageCreateCharacter, // ADDED THIS
         kMessageRequestAvantar,
+		kMessageBaseHealth,
+		kMessageTowerHealth
 	};
 
 
@@ -860,6 +862,92 @@ public:
     }
 };
 
+class UpdateHealthMessage : public Message
+{
+	friend class Game;
+
+private:
+
+	int32 newHealth;
+
+		UpdateHealthMessage();
+
+public:
+
+	UpdateHealthMessage(int32 inputHealth);
+	~UpdateHealthMessage();
+
+
+	void CompressMessage(Compressor& data) const override;
+	bool DecompressMessage(Decompressor& data) override;
+
+	bool HandleMessage(Player *sender) const override;
+
+
+	float GetNewHealth(void) const
+	{
+		return (newHealth);
+	}
+};
+
+
+class UpdateBaseHealthMessage : public Message
+{
+	friend class Game;
+
+private:
+
+	int32 newHealth;
+	int32 controllerindex;
+	UpdateBaseHealthMessage();
+
+public:
+
+	UpdateBaseHealthMessage(int32 inputHealth,int32 conindex);
+	~UpdateBaseHealthMessage();
+
+
+	void CompressMessage(Compressor& data) const override;
+	bool DecompressMessage(Decompressor& data) override;
+
+	bool HandleMessage(Player *sender) const override;
+
+
+	float GetNewHealth(void) const
+	{
+		return (newHealth);
+	}
+};
+
+class UpdateTowerHealthMessage : public Message
+{
+	friend class Game;
+
+private:
+
+	int32 newHealth;
+	int32 controllerindex;
+	UpdateTowerHealthMessage();
+
+public:
+
+	UpdateTowerHealthMessage(int32 inputHealth, int32 conindex);
+	~UpdateTowerHealthMessage();
+
+
+	void CompressMessage(Compressor& data) const override;
+	bool DecompressMessage(Decompressor& data) override;
+
+	bool HandleMessage(Player *sender) const override;
+
+
+	float GetNewHealth(void) const
+	{
+		return (newHealth);
+	}
+};
+
+    
 }
 
 #endif

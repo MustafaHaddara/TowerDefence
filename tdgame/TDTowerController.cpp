@@ -1,3 +1,11 @@
+//
+//  TDTowerController.cpp
+//  Tombstone
+//
+//  Created by Mustafa Haddara on 2017-01-07.
+//
+//
+#include <stdio.h>
 #include "TDTowerController.h"
 #include "TDGameWorld.h"
 
@@ -7,22 +15,25 @@
 #include "TSMethods.h"
 #include "TSWorld.h"
 #include "TSZones.h"
+#include "TDMultiplayer.h"
 
 namespace TDGame {
     using namespace Tombstone;
     
     using Tombstone::ControllerType;
     
-    TowerController::TowerController() : Controller(kControllerTower) {
+    TowerController::TowerController() : RigidBodyController(kControllerTower) {
+		SetRigidBodyType(kRigidBodyTower);
+		shapeInitFlag = false;
     }
     
     TowerController::~TowerController() {
     }
     
     void TowerController::PreprocessController(void) {
-        Controller::PreprocessController();
+        RigidBodyController::PreprocessController();
         
-        myCount = 0;
+	    myCount = 0;
         const Node *target = GetTargetNode();
         originalTransform = target->GetWorldTransform();//GetNodeTransform();
         Point3D originalDirection = Point3D(originalTransform[0].x,originalTransform[0].y, originalTransform[0].z);
@@ -43,9 +54,16 @@ namespace TDGame {
                 found = true;
             }
             thisnode = root->GetNextTreeNode(thisnode);
-        } while (thisnode && !found);
+        } while (thisnode && !found); 
     }
-    
+	void TowerController::towerTakeDamage(int32 damage) {
+		// fighterController => instance of player
+		// 
+
+		health = health - damage;
+		// take damage only called by the server. 
+		TheMessageMgr->SendMessageAll(UpdateTowerHealthMessage(health, GetControllerIndex()));
+	}
     void TowerController::MoveController(void) {
         /* Only track the server player */
         if (Tombstone::TheMessageMgr->GetServerFlag()) {

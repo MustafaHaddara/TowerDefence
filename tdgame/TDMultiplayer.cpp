@@ -602,3 +602,140 @@ bool ClientRequestMessage::HandleMessage(Player *sender) const
         //}
     //}
 }
+
+
+
+
+// ZUXSVMT
+UpdateHealthMessage::UpdateHealthMessage() : Message(kMessageHealth)
+{
+}
+
+UpdateHealthMessage::UpdateHealthMessage(int32 inputHealth) : Message(kMessageHealth)
+{
+	newHealth = inputHealth;
+}
+
+UpdateHealthMessage::~UpdateHealthMessage()
+{
+	
+}
+
+void UpdateHealthMessage::CompressMessage(Compressor& data) const
+{
+	data << int(newHealth);
+}
+
+bool UpdateHealthMessage::DecompressMessage(Decompressor& data)
+{
+	data >> newHealth;
+	return(true);
+}
+
+
+bool UpdateHealthMessage::HandleMessage(Player* sender) const
+{
+	Player *player = TheMessageMgr->GetLocalPlayer();
+	if (player)
+	{
+		FighterController *controller = static_cast<const GamePlayer *>(player)->GetPlayerController();
+		if (controller)
+		{
+			if (TheDisplayBoard)
+			{
+				controller->setHealth(newHealth);
+				TheDisplayBoard->UpdatePlayerHealth();
+			}
+		}
+	}
+	return(true);
+}
+
+
+UpdateBaseHealthMessage::UpdateBaseHealthMessage() : Message(kMessageBaseHealth)
+{
+}
+
+UpdateBaseHealthMessage::UpdateBaseHealthMessage(int32 inputHealth, int32 conindex) : Message(kMessageBaseHealth)
+{
+	controllerindex = conindex;
+	newHealth = inputHealth;
+}
+
+UpdateBaseHealthMessage::~UpdateBaseHealthMessage()
+{
+
+}
+
+void UpdateBaseHealthMessage::CompressMessage(Compressor& data) const
+{
+	data << int(newHealth);
+	data << int(controllerindex);
+}
+
+bool UpdateBaseHealthMessage::DecompressMessage(Decompressor& data)
+{
+	data >> newHealth;
+	data >> controllerindex;
+	return(true);
+}
+
+
+bool UpdateBaseHealthMessage::HandleMessage(Player* sender) const
+{
+	Controller *controller = TheWorldMgr->GetWorld()->GetController(controllerindex);
+	BaseController *base = static_cast<BaseController *>(controller);
+	if (controller)
+	{
+		if (TheDisplayBoard)
+		{
+			base->setHealth(newHealth);
+			TheDisplayBoard->UpdateBaseHealth(base->getHealth());
+		}
+	}
+	return(true);
+}
+
+UpdateTowerHealthMessage::UpdateTowerHealthMessage() : Message(kMessageTowerHealth)
+{
+}
+
+UpdateTowerHealthMessage::UpdateTowerHealthMessage(int32 inputHealth, int32 conindex) : Message(kMessageTowerHealth)
+{
+	controllerindex = conindex;
+	newHealth = inputHealth;
+}
+
+UpdateTowerHealthMessage::~UpdateTowerHealthMessage()
+{
+
+}
+
+void UpdateTowerHealthMessage::CompressMessage(Compressor& data) const
+{
+	data << int(newHealth);
+	data << int(controllerindex);
+}
+
+bool UpdateTowerHealthMessage::DecompressMessage(Decompressor& data)
+{
+	data >> newHealth;
+	data >> controllerindex;
+	return(true);
+}
+
+
+bool UpdateTowerHealthMessage::HandleMessage(Player* sender) const
+{
+	Controller *controller = TheWorldMgr->GetWorld()->GetController(controllerindex);
+	TowerController *tower = static_cast<TowerController *>(controller);
+	if (controller)
+	{
+		if (TheDisplayBoard)
+		{
+			tower->setTowerHealth(newHealth);
+			TheDisplayBoard->UpdateTowerHealth(tower->getTowerHealth());
+		}
+	}
+	return(true);
+}

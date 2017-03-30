@@ -75,13 +75,14 @@ Game::Game() :
 	TheInputMgr->SetEscapeCallback(&EscapeCallback, this);
 
 	TheWorldMgr->SetWorldCreator(&CreateWorld);
-
+	TheMessageMgr->SetPlayerCreator(&CreatePlayer);
 	gameFlags = 0;
 
 	currentWorldName[0] = 0;
 
 
 	TheInterfaceMgr->SetInputManagementMode(kInputManagementAutomatic);
+	DisplayBoard::OpenBoard();
 
 	// Show splash
 	MainWindow::OpenWindow();
@@ -501,8 +502,14 @@ Message *Game::CreateMessage(MessageType type, Decompressor& data) const
             
             return(new ClientRequestMessage(type));
 
-//        case kMessageMinionDead:
-//            return new MinionDeadMessage();
+		case kMessageHealth:
+			return(new UpdateHealthMessage);
+
+		case kMessageBaseHealth:
+			return(new UpdateBaseHealthMessage);
+
+		case kMessageTowerHealth:
+			return(new UpdateTowerHealthMessage);
             
     }
     

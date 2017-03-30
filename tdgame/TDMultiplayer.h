@@ -12,6 +12,9 @@ namespace TDGame
 	typedef unsigned_int32	ModelMessageType;
     
     
+    /**
+     * \brief Encapsulates player state within a 32-bit-wide bitmask.
+     */
     struct playerState
     {
         int32 state;

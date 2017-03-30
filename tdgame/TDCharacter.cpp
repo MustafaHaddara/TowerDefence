@@ -135,21 +135,6 @@ void GameCharacterController::MoveController(void)
 	}
 }
 
-void GameCharacterController::HandlePhysicsSpaceExit(void)
-{
-	if ((!(characterState & kCharacterDead)) && (TheMessageMgr->GetServerFlag()))
-	{
-		Kill(nullptr);
-	}
-}
-
-const SubstanceData *GameCharacterController::GetGroundSubstanceData(void) const
-{
-
-
-	return (nullptr);
-}
-
 void GameCharacterController::EnterWorld(World *world, const Point3D& worldPosition)
 {
 }

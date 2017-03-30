@@ -50,6 +50,7 @@ namespace TDGame
             ModelRegistration     soldierModelReg;
             ModelRegistration     minionModelReg;
             ModelRegistration     appleModelRegistration;
+            ModelRegistration     towerModelRegistration;
 
             ControllerReg<TowerController> towerControllerRegistration;
             ControllerReg<MinionController> minionControllerRegistration;

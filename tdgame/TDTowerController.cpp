@@ -2,7 +2,6 @@
 #include "TDGameWorld.h"
 
 #include "TSController.h"
-#include "TSCameras.h"
 #include "TSGeometries.h"
 #include "TSMethods.h"
 #include "TSWorld.h"
@@ -13,6 +12,9 @@ namespace TDGame {
     
     using Tombstone::ControllerType;
     
+	int32 id;
+	int32 health=100;
+
     TowerController::TowerController() : Controller(kControllerTower) {
     }
     
@@ -121,33 +123,48 @@ namespace TDGame {
         switch (type) {
             case kTowerRotateMessage:
                 return new TowerRotateMessage(type, GetControllerIndex());
+//			case kTowerCreateMessage:
+//				return new TowerCreateMessage(type, GetControllerIndex());
         }
         
         return (Controller::CreateMessage(type));
     }
     
+	void TowerController::ReceiveMessage(const ControllerMessage *message) {
+		if (message->GetControllerMessageType() == kTowerRotateMessage) {
+			Node *target = GetTargetNode();
+
+			const TowerRotateMessage *m = static_cast<const TowerRotateMessage *>(message);
+			Vector3D updatedView = m->getTarget();
+
+			float x = updatedView.x;
+			float y = updatedView.y;
+			float f = InverseSqrt(x * x + y * y);
+			Vector3D right(y * f, -x * f, 0.0F);
+			Vector3D down = Cross(updatedView, right);
+
+			target->SetNodeMatrix3D(updatedView, -right, -down);
+			// Invalidate the target node so that it gets updated properly
+			target->InvalidateNode();
+//		} else if (message->GetControllerMessageType() == kTowerCreateMessage) {
+//			const TowerCreateMessage *tcm = static_cast<const TowerCreateMessage *>(message);
+//			Point3D position = tcm->getPosition();
+//			int32 index = tcm->GetNewControllerIndex();
+//
+//			Controller* controller = new TowerController();
+//			Model* model = Model::GetModel(kModelTower);
+//
+//			model->SetController(controller);
+//			controller->SetControllerIndex(index);
+//
+//			Node* node = model;
+//			node->SetNodePosition(position);
+//			TheWorldMgr->GetWorld()->AddNewNode(node);
     
-    void TowerController::ReceiveMessage(const ControllerMessage *message) {
-        if (message->GetControllerMessageType() == kTowerRotateMessage) {
-            Node *target = GetTargetNode();
-            
-            const TowerRotateMessage *m = static_cast<const TowerRotateMessage *>(message);
-            Vector3D updatedView = m->getTarget();
-            
-            float x = updatedView.x;
-            float y = updatedView.y;
-            float f = InverseSqrt(x * x + y * y);
-            Vector3D right(y * f, -x * f, 0.0F);
-            Vector3D down = Cross(updatedView, right);
-            
-            target->SetNodeMatrix3D(updatedView, -right, -down);
-            // Invalidate the target node so that it gets updated properly
-            target->InvalidateNode();
-            
-        } else {
-            Controller::ReceiveMessage(message);
-        }
-    }
+		} else {
+			Controller::ReceiveMessage(message);
+		}
+	}
     
     TowerRotateMessage::TowerRotateMessage(ControllerMessageType type, int32 index): Tombstone::ControllerMessage(type, index) {
         
@@ -180,5 +197,4 @@ namespace TDGame {
         
         return false;
     }
-    
 }

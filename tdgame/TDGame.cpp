@@ -4,7 +4,6 @@
 
 #include "TDGame.h"
 #include "TDMultiplayer.h"
-#include "TDCameras.h"
 #include "TDGameWorld.h"
 #include "TDFighter.h"
 
@@ -29,6 +28,10 @@ Game::Game() :
         soldierModelReg(kModelSoldier, nullptr, "soldier/Soldier", kModelPrecache | kModelPrivate, kControllerSoldier),
         minionModelReg(kModelMinion, nullptr, "zombie/Zombie", kModelPrecache | kModelPrivate, kControllerSoldier),
         appleModelRegistration(kModelApple,nullptr, "health/Apple", 0, kControllerCollectable),
+        towerModelRegistration(kModelTower,nullptr, "tower", 0, kControllerTower),
+        //soldierModelReg(kModelSoldier, nullptr, "GUS/gus", kModelPrecache | kModelPrivate, kControllerSoldier),
+
+//        gameRigidBodyControllerRegistration(kControllerGameRigidBody, stringTable.GetString(StringID('CTRL', kControllerGameRigidBody))),
 
         towerControllerRegistration(kControllerTower, "Tower"),
         minionControllerRegistration(kControllerMinion, "Minion"),

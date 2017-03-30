@@ -34,8 +34,12 @@ namespace TDGame
         Vector3D        originalView;               // The direction turret is facing before any rotation
         Node			*turretBarrel;              // Marker on Turret Model from which to shoot
         Node*           currentTarget = nullptr;
+		int32			id;
+		int32			health = 100;
         
     public:
+		static int32 LATEST_ID;
+
         /**
          * \brief Default constructor
          */
@@ -97,7 +101,12 @@ namespace TDGame
         
         enum {
             kTowerRotateMessage,
+			kTowerCreateMessage,
         };
+
+		int32 GetId(void) {
+			return id;
+		}
         
     };
     
@@ -110,7 +119,7 @@ namespace TDGame
     private:
         
         Vector3D target;
-        
+
     public:
         
         /**
@@ -135,7 +144,7 @@ namespace TDGame
         Vector3D getTarget() const {
             return target;
         }
-        
+		
         /**
          * \brief Serializes message
          */
@@ -146,7 +155,6 @@ namespace TDGame
          */
         bool DecompressMessage(Decompressor& data) override;
     };
-
 }
 
 #endif

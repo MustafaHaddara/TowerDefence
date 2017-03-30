@@ -64,8 +64,8 @@ namespace TDGame
     // THESE ARE THE "ENTITIES" WE CAN ADD TO THE WORLD
     enum{
         kSoldierEntity      ='csol',  // THE AVATAR
-        kCollectEntity      ='ccol',  // SOMETHING WE CAN COLLECT
         kPhysEntiy          ='cphy',  // SOMETHING WITH PHYSICS
+		kTowerEntity		='ctow',  // TOWERS
     };
 }
 

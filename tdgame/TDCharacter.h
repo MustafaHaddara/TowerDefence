@@ -58,155 +58,276 @@ namespace TDGame
 
 	struct SubstanceData;
 
+    /**
+     * \brief Controlers a game character.
+     */
+	class GameCharacterController : public CharacterController, public LinkTarget<GameCharacterController> {
+    private:
 
-	struct DamageLocation
-	{
-		Point3D		position;
-		Vector3D	momentum;
+        CharacterType		characterType;
+        unsigned_int32		characterState;
+
+        float				standingTime;
+        float				offGroundTime;
+
+    protected:
+
+        /**
+         * \brief Constructor
+         */
+        GameCharacterController(CharacterType charType, ControllerType contType);
+        
+        /**
+         * \brief Constructor
+         */
+        GameCharacterController(const GameCharacterController& gameCharacterController);
+
+        /**
+         * \brief Set the game character as able to be attacked.
+         */
+        void SetAttackable(bool attackable);
+
+    public:
+
+        /**
+         * \brief Constructor
+         */
+        virtual ~GameCharacterController();
+
+        /**
+         * \brief Returns character type.
+         */
+        CharacterType GetCharacterType(void) const
+        {
+            return (characterType);
+        }
+
+        /**
+         * \brief Returns character state in a 32-bit bitmask.
+         */
+        unsigned_int32 GetCharacterState(void) const
+        {
+            return (characterState);
+        }
+
+        /**
+         * \brief Set the character state.
+         * \param state The new state of the character.
+         */
+        void SetCharacterState(unsigned_int32 state)
+        {
+            characterState = state;
+        }
+
+        /**
+         * \brief Reset the amount of time the character has been standing
+         */
+        void ResetStandingTime(void) 
+        { 
+            standingTime = 0.0F;
+            SetVelocityMultiplier(1.0F); 
+        } 
+
+        /**
+         * \brief Get the amount of the time the character has been off the ground (ie. in the air).
+         */
+        float GetOffGroundTime(void) const
+        { 
+            return (offGroundTime); 
+        } 
+
+        /**
+         * \brief Returns the model this character is controlling.
+         */
+        Model *GetTargetNode(void) const
+        { 
+            return (static_cast<Model *>(Controller::GetTargetNode()));
+        }
+
+        /**
+         * \brief Compress controller for transmission.
+         */
+        void Pack(Packer& data, unsigned_int32 packFlags) const override;
+        
+        /**
+         * \brief Decompress controller when recieving.
+         */
+        void Unpack(Unpacker& data, unsigned_int32 unpackFlags) override;
+        
+        /**
+         * \brief Decompress part of controller when recieving.
+         */
+        void UnpackChunk(const ChunkHeader *chunkHeader, Unpacker& data, unsigned_int32 unpackFlags);
+
+        /**
+         * \brief Move the controller
+         * 
+         * Called every frame by the Tombstone Engine
+         */
+        void MoveController(void) override;
+
+        /**
+         * \brief Called when the character enters the world.
+         */
+        virtual void EnterWorld(World *world, const Point3D& worldPosition);
+
+        /**
+         * \brief Damage the character.
+         * \param damage The amount of the damage to deal to the chraacter.
+         * \param attacker The character dealing damage.
+         */
+        virtual CharacterStatus Damage(Fixed damage, unsigned_int32 flags, GameCharacterController *attacker, const Point3D *position = nullptr, const Vector3D *impulse = nullptr);
+        
+        /**
+         * \brief Kill the character.
+         * \param attacked The other character that killed this one.
+         */
+        virtual void Kill(GameCharacterController *attacker, const Point3D *position = nullptr, const Vector3D *impulse = nullptr);
+	};
+
+    /**
+     * \brief Message encapsulating character state.
+     */
+	class CharacterStateMessage : public ControllerMessage {
+    friend class CharacterController;
+
+    private:
+
+        Point3D		initialPosition;
+        Vector3D	initialVelocity;
+
+    public:
+
+        /**
+         * \brief Base constructor used by Tombstone Engine.
+         */
+        CharacterStateMessage(ControllerMessageType type, int32 controllerIndex);
+        
+        /**
+         * \brief Contructor used by Server to signal a new rotation to the clients.
+         * \param position Current position of the character.
+         * \param velocity Current velocity of the character.
+         */
+        CharacterStateMessage(ControllerMessageType type, int32 controllerIndex, const Point3D& position, const Vector3D& velocity);
+        
+        /**
+         * \brief Destructor
+         */
+        ~CharacterStateMessage();
+
+        /**
+         * \brief Returns the position of the character.
+         */
+        const Point3D& GetInitialPosition(void) const
+        {
+            return (initialPosition);
+        }
+
+        /**
+         * \brief Returns the velocity of the character.
+         */
+        const Vector3D& GetInitialVelocity(void) const
+        {
+            return (initialVelocity);
+        }
+
+        /**
+         * \brief Serializes message
+         */
+        void CompressMessage(Compressor& data) const override;
+        
+        /**
+         * \brief Deserializes message
+         */
+        bool DecompressMessage(Decompressor& data) override;
 	};
 
 
-	class GameCharacterController : public CharacterController, public LinkTarget<GameCharacterController>
-	{
-		private:
+    /**
+     * \brief Handles animation.
+     */
+	class AnimationBlender : public Packable {
+    private:
 
-			CharacterType		characterType;
-			unsigned_int32		characterState;
+        int32				blendParity;
+        BlendAnimator		blendAnimator;
+        FrameAnimator		frameAnimator[2];
 
-			float				standingTime;
-			float				offGroundTime;
+    public:
 
-		protected:
+        /**
+         * \brief Contructor.
+         */
+        AnimationBlender();
+        
+        /**
+         * \brief Destructor.
+         */
+        ~AnimationBlender();
 
-			GameCharacterController(CharacterType charType, ControllerType contType);
-			GameCharacterController(const GameCharacterController& gameCharacterController);
+        /**
+         * \brief Returns BlendAnimator.
+         */
+        BlendAnimator *GetBlendAnimator(void)
+        {
+            return (&blendAnimator);
+        }
 
-			void SetAttackable(bool attackable);
+        /**
+         * \brief Returns FrameAnimator.
+         */
+        FrameAnimator *GetFrameAnimator(int32 index)
+        {
+            return (&frameAnimator[index]);
+        }
 
-		public:
+        /**
+         * \brief Returns most recently used FrameAnimator.
+         */
+        FrameAnimator *GetRecentAnimator(void)
+        {
+            return (&frameAnimator[blendParity]);
+        }
 
-			virtual ~GameCharacterController();
+        /**
+         * \brief Sets the ObserverType of the used FrameAnimator.
+         */
+        void SetFrameAnimatorObserver(FrameAnimator::ObserverType *observer)
+        {
+            frameAnimator[0].SetObserver(observer);
+            frameAnimator[1].SetObserver(observer);
+        }
 
-			CharacterType GetCharacterType(void) const
-			{
-				return (characterType);
-			}
+        /**
+         * \brief Compress controller for transmission.
+         */
+        void Pack(Packer& data, unsigned_int32 packFlags) const override;
+        
+        /**
+         * \brief Decompress controller when recieving.
+         */
+        void Unpack(Unpacker& data, unsigned_int32 unpackFlags) override;
+        
+        /**
+         * \brief Decompress part of controller when recieving.
+         */
+        void UnpackChunk(const ChunkHeader *chunkHeader, Unpacker& data, unsigned_int32 unpackFlags);
 
-			unsigned_int32 GetCharacterState(void) const
-			{
-				return (characterState);
-			}
+        /**
+         * \brief Preprocess model for animations
+         * \param model The model to be animated
+         */
+        void PreprocessAnimationBlender(Model *model);
 
-			void SetCharacterState(unsigned_int32 state)
-			{
-				characterState = state;
-			}
-
-			void ResetStandingTime(void) 
-			{ 
-				standingTime = 0.0F;
-				SetVelocityMultiplier(1.0F); 
-			} 
- 
-			float GetOffGroundTime(void) const
-			{ 
-				return (offGroundTime); 
-			} 
-
-			Model *GetTargetNode(void) const
-			{ 
-				return (static_cast<Model *>(Controller::GetTargetNode()));
-			}
-
-			void Pack(Packer& data, unsigned_int32 packFlags) const override;
-			void Unpack(Unpacker& data, unsigned_int32 unpackFlags) override;
-			void UnpackChunk(const ChunkHeader *chunkHeader, Unpacker& data, unsigned_int32 unpackFlags);
-
-			void MoveController(void) override;
-
-			void HandlePhysicsSpaceExit(void) override;
-
-			const SubstanceData *GetGroundSubstanceData(void) const;
-
-			virtual void EnterWorld(World *world, const Point3D& worldPosition);
-
-			virtual CharacterStatus Damage(Fixed damage, unsigned_int32 flags, GameCharacterController *attacker, const Point3D *position = nullptr, const Vector3D *impulse = nullptr);
-			virtual void Kill(GameCharacterController *attacker, const Point3D *position = nullptr, const Vector3D *impulse = nullptr);
-	};
-
-
-	class CharacterStateMessage : public ControllerMessage
-	{
-		friend class CharacterController;
-
-		private:
-
-			Point3D		initialPosition;
-			Vector3D	initialVelocity;
-
-		public:
-
-			CharacterStateMessage(ControllerMessageType type, int32 controllerIndex);
-			CharacterStateMessage(ControllerMessageType type, int32 controllerIndex, const Point3D& position, const Vector3D& velocity);
-			~CharacterStateMessage();
-
-			const Point3D& GetInitialPosition(void) const
-			{
-				return (initialPosition);
-			}
-
-			const Vector3D& GetInitialVelocity(void) const
-			{
-				return (initialVelocity);
-			}
-
-			void CompressMessage(Compressor& data) const override;
-			bool DecompressMessage(Decompressor& data) override;
-	};
-
-
-	class AnimationBlender : public Packable
-	{
-		private:
-
-			int32				blendParity;
-			BlendAnimator		blendAnimator;
-			FrameAnimator		frameAnimator[2];
-
-		public:
-
-			AnimationBlender();
-			~AnimationBlender();
-
-			BlendAnimator *GetBlendAnimator(void)
-			{
-				return (&blendAnimator);
-			}
-
-			FrameAnimator *GetFrameAnimator(int32 index)
-			{
-				return (&frameAnimator[index]);
-			}
-
-			FrameAnimator *GetRecentAnimator(void)
-			{
-				return (&frameAnimator[blendParity]);
-			}
-
-			void SetFrameAnimatorObserver(FrameAnimator::ObserverType *observer)
-			{
-				frameAnimator[0].SetObserver(observer);
-				frameAnimator[1].SetObserver(observer);
-			}
-
-			void Pack(Packer& data, unsigned_int32 packFlags) const override;
-			void Unpack(Unpacker& data, unsigned_int32 unpackFlags) override;
-			void UnpackChunk(const ChunkHeader *chunkHeader, Unpacker& data, unsigned_int32 unpackFlags);
-
-			void PreprocessAnimationBlender(Model *model);
-
-			FrameAnimator *StartAnimation(const char *name, unsigned_int32 mode, Interpolator::CompletionCallback *callback = nullptr, void *cookie = nullptr);
-			FrameAnimator *BlendAnimation(const char *name, unsigned_int32 mode, float blendRate, Interpolator::CompletionCallback *callback = nullptr, void *cookie = nullptr);
+        /**
+         * \brief Start the animation.
+         */
+        FrameAnimator *StartAnimation(const char *name, unsigned_int32 mode, Interpolator::CompletionCallback *callback = nullptr, void *cookie = nullptr);
+        
+        /**
+         * \brief Blend from one animation to another.
+         */
+        FrameAnimator *BlendAnimation(const char *name, unsigned_int32 mode, float blendRate, Interpolator::CompletionCallback *callback = nullptr, void *cookie = nullptr);
 	};
 }
 

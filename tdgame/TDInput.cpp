@@ -200,10 +200,7 @@ TowerAction::~TowerAction()
 {
 }
 
-void TowerAction::HandleEngage(void)
-{
-	const Player *player = TheMessageMgr->GetLocalPlayer();
-			
+void TowerAction::HandleEngage(void) {
 	unsigned messageType;
 
 	switch (GetActionType())

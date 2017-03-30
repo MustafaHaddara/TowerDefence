@@ -14,55 +14,70 @@ namespace TDGame
 
 	extern const float kCameraPositionHeight;
 
+    /**
+     * \brief Base camera class.
+     *
+     * Every camera follows a model in the world and inherits from this class.
+     */
+	class ModelCamera : public FrustumCamera {
+    private:
 
-	class ModelCamera : public FrustumCamera
-	{
-		private:
+        Model		*targetModel;
 
-			Model		*targetModel;
+    protected:
 
-		protected:
+        /**
+         * \brief Constructor
+         */
+        ModelCamera();
 
-			ModelCamera();
+    public:
 
-		public:
+        /**
+         * \brief Destructor
+         */
+        ~ModelCamera();
 
-			~ModelCamera();
+        /**
+         * \brief Get the model the camera is currently following.
+         */
+        Model *GetTargetModel(void) const {
+            return (targetModel);
+        }
 
-			Model *GetTargetModel(void) const
-			{
-				return (targetModel);
-			}
-
-			void SetTargetModel(Model *model)
-			{
-				targetModel = model;
-			}
+        /**
+         * \brief Set the model for the camera to start following.
+         * \param model The model that the camera should begin following.
+         */
+        void SetTargetModel(Model *model) {
+            targetModel = model;
+        }
 	};
 
+    /**
+     * \brief A camera which follows a model from behind.
+     *
+     * This is in the style of a "Third Person" camera.
+     */
+	class ChaseCamera final : public ModelCamera {
+    public:
 
-	class FirstPersonCamera final : public ModelCamera
-	{
-		public:
+        /**
+         * \brief Constructor
+         */
+        ChaseCamera();
+        
+        /**
+         * \brief Destructor
+         */
+        ~ChaseCamera();
 
-			FirstPersonCamera();
-			~FirstPersonCamera();
-
-			void MoveCamera(void) override;
-
-
-			void setMovementFlag(int);
-	};
-
-
-	class ChaseCamera final : public ModelCamera
-	{
-		public:
-
-			ChaseCamera();
-			~ChaseCamera();
-
-			void MoveCamera(void) override;
+        /**
+         * \brief Move the camera
+         *
+         * The camera moves to follow its target model.
+         */
+		void MoveCamera(void) override;
 	};
 }
 

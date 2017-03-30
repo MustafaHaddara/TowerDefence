@@ -1,12 +1,9 @@
 #include "TDGameWorld.h"
 
-
 #include "TDMultiPLayer.h"
 #include "TDGamePlayer.h"
 #include "TDFighter.h"
 #include "TDMinionController.h"
-
-#include "TDColectCont.h"
 
 using namespace TDGame;
 
@@ -30,7 +27,7 @@ WorldResult GameWorld::PreprocessWorld(void)
     }
     
     SetWorldCamera(&spectatorCamera);
-    playerCamera = &firstPersonCamera;
+    playerCamera = &chaseCamera;
     
     spawnLocatorCount = 0;
     collLocatorCount = 0;
@@ -114,7 +111,6 @@ void GameWorld::EndRendering(FrameBuffer *frameBuffer)
 
 void GameWorld::SetCameraTargetModel(Model *model)
 {
-    firstPersonCamera.SetTargetModel(model);
     chaseCamera.SetTargetModel(model);
     SetWorldCamera(playerCamera);
     
@@ -122,7 +118,6 @@ void GameWorld::SetCameraTargetModel(Model *model)
 
 void GameWorld::SetSpectatorCamera(const Point3D& position, float azm, float alt)
 {
-    firstPersonCamera.SetTargetModel(nullptr);
     chaseCamera.SetTargetModel(nullptr);
     SetWorldCamera(&spectatorCamera);
     spectatorCamera.SetNodePosition(position);
@@ -135,30 +130,9 @@ void GameWorld::SetLocalPlayerVisibility(void)
     
 }
 
-void GameWorld::ChangePlayerCamera(void)
-{
-    const Player *player = TheMessageMgr->GetLocalPlayer();
-    if ((player) && (static_cast<const GamePlayer *>(player)->GetPlayerController()))
-    {
-        if (playerCamera == &firstPersonCamera)
-        {
-            playerCamera = &chaseCamera;
-        }
-        else
-        {
-            playerCamera = &firstPersonCamera;
-        }
-        
-        
-        SetWorldCamera(playerCamera);
-        SetLocalPlayerVisibility();
-    }
-}
-
 void GameWorld::SetFocalLength(float focal)
 {
     spectatorCamera.GetObject()->SetFocalLength(focal);
-    firstPersonCamera.GetObject()->SetFocalLength(focal);
     chaseCamera.GetObject()->SetFocalLength(focal);
 }
 
@@ -168,7 +142,6 @@ void GameWorld::SetFocalLength(float focal)
 
 #define TYPE_NAME(type) \
 (kSoldierEntity       == type ? "kSoldierEntity"    :  \
-(kCollectEntity     == type ? "kCollectEntity"   :  \
 (0 == type ? "yellow" : "unknown"))))
 
 
@@ -241,7 +214,6 @@ Controller* GameWorld::CreateAvatar(const Point3D& pos ,long index,PlayerKey key
         
         
         world->SetCameraTargetModel(model);
-        world->ChangePlayerCamera();
         
     }
     
@@ -275,11 +247,9 @@ void GameWorld::AddOjectAtLocation(const Point3D& pos ,ObjectType type,long inde
             CreateAvatar(pos , index, key);
             return;
 
-        case kCollectEntity:
-            controller=new CollectableController();
-            //Model *model = Model::GetModel(kModelApple);
-            // WE CAN LOAD MODELS AT RUNTIM TOO
-            model = Model::NewModel("models/model1");
+        case kTowerEntity:
+            controller = new TowerController();
+            model = Model::GetModel(kModelTower);
             break;
             
     }
@@ -298,15 +268,25 @@ void GameWorld::AddOjectAtLocation(const Point3D& pos ,ObjectType type,long inde
 
 /*----------------------------------------------------------*/
 
-void GameWorld::PopulateWorld(void)
-{
-    //printf("Populating WOrkd \n");
-	// Collect Items
-	for(int i=0;i<collLocatorCount;i++){
-		ReqestOjectAtLocation(collLocatorList[i]->GetNodePosition(),kCollectEntity ,-1);
-	}
+void GameWorld::PopulateWorld(void) {
+    
 }
 
+/*
+void GameWorld::DeleteTower(int32 towerID) {
+	GetTowers();
+	for (int i = 0; i < towerCount; i++) {
+		Node *towerNode = towerList[i];
+		if (towerNode != nullptr) {
+			TowerController *tc = static_cast<TowerController *>(towerNode->GetController());
+			if (tc->GetId() == towerID) {
+				towerList[i] = nullptr;
+				towerNode->GetSuperNode()->RemoveSubnode(towerNode);
+			}
+		}
+	}
+}
+*/
 void GameWorld::DeleteMinion(int32 minionId) {
     GetMinions();
     for (int i=0; i<minionCount; i++) {
@@ -328,10 +308,10 @@ Node** GameWorld::GetMinions() {
     while (child) {
         Controller *c = child->GetController();
         if (c != nullptr && c->GetControllerType() == kControllerMinion) {
-            if (minionCount > MAX_NUM_MINIONS) {
+            /*if (minionCount > MAX_NUM_MINIONS) {
                 printf("too many minions!");
                 return;
-            }
+            }*/
             minionList[minionCount] = child;
             minionCount++;
         }

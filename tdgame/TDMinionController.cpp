@@ -1,11 +1,3 @@
-//
-//  TDMinionController.cpp
-//  Tombstone
-//
-//  Created by Mustafa Haddara on 2017-03-06.
-//
-//
-
 #include "TDMinionController.h"
 
 #include "TSController.h"
@@ -13,35 +5,44 @@
 #include "TSMarkers.h"
 #include "TSZones.h"
 
-#include "MMBase.h"
+#include "TDBase.h"
 
-namespace MMGame {
+namespace TDGame {
     using namespace Tombstone;
     
     using Tombstone::ControllerType;
     
+    int32 MinionController::LATEST_ID = 0;
+    
     MinionController::MinionController() : Controller(kControllerMinion) {
-        
+        id = LATEST_ID;
+        LATEST_ID++;
+    }
+    
+    MinionController::MinionController(Node* t):MinionController() {
+        target = t;
     }
     
     MinionController::~MinionController() {
-    
+        
     }
     
     void MinionController::PreprocessController(void) {
         Controller::PreprocessController();
         
-        Node *root = GetTargetNode();
+        if (target == nullptr) {
+            Node *root = GetTargetNode();
 
-        Tombstone::Marker *marker = root->GetOwningZone()->GetFirstMarker();
-        while (marker) {
-            if ((marker->GetMarkerType() == kMarkerLocator) && (marker->NodeEnabled())) {
-                LocatorMarker *locator = static_cast<LocatorMarker *>(marker);
-                if (locator->GetLocatorType() == kLocatorMinionSpawn) {
-                    target = marker;
-                    break;
+            Tombstone::Marker *marker = root->GetOwningZone()->GetFirstMarker();
+            while (marker) {
+                if ((marker->GetMarkerType() == kMarkerLocator) && (marker->NodeEnabled())) {
+                    LocatorMarker *locator = static_cast<LocatorMarker *>(marker);
+                    if (locator->GetLocatorType() == kLocatorMinionSpawn) {
+                        target = marker;
+                        break;
+                    }
+                    marker = marker->GetNextListElement();
                 }
-                marker = marker->GetNextListElement();
             }
         }
     }
@@ -57,40 +58,83 @@ namespace MMGame {
     
     void MinionController::GetNextTarget() {
         if (target != nullptr) {
-            target = target->GetConnectedNode("next_in_path"); // next_in_path
+            Connector *c = static_cast<Connector*>(target->GetHub()->GetFirstOutgoingRelation());
+            
+            int num_paths = 1;
+            while (c != nullptr) {
+                c = static_cast<Connector*>(c->GetNextOutgoingRelation());
+                num_paths++;
+            }
+            
+            if (num_paths == 1) {
+                return;
+            }
+            
+            int path_chosen = Tombstone::Math::RandomInteger(num_paths);
+            c = static_cast<Connector*>(target->GetHub()->GetFirstOutgoingRelation());
+            while (path_chosen > 0) {
+                target = c->GetConnectorTarget();
+                c = static_cast<Connector*>(c->GetNextOutgoingRelation());
+                path_chosen--;
+            }
+
         }
         if (target == nullptr) {
             //printf("completed motion\n");
         }
     }
     
+    void MinionController::DealDamage(int32 damage) {
+        MinionShotMessage *msg = new MinionShotMessage(kMinionShotMessage, damage, GetControllerIndex());
+        TheMessageMgr->SendMessageAll(*msg);
+    }
+    
     ControllerMessage *MinionController::CreateMessage(ControllerMessageType type) const {
         switch (type) {
             case kMinionMoveMessage:
                 return new MinionMoveMessage(type, GetControllerIndex());
+            case kMinionShotMessage:
+                return new MinionShotMessage(type, GetControllerIndex());
         }
     
     }
     
     void MinionController::ReceiveMessage(const ControllerMessage *message) {
-        if (message->GetControllerMessageType() == kMinionMoveMessage) {
-            const MinionMoveMessage *m = static_cast<const MinionMoveMessage *>(message);
-            Point3D trgt = m->getTarget();
-            Node *attached = GetTargetNode();
-            Point3D current = attached->GetNodePosition();
-            Vector3D diff = trgt - current;
-            if (Magnitude(diff) < STEP_SIZE) {
-                GetNextTarget();
-                return;
+        switch (message->GetControllerMessageType()) {
+            case kMinionMoveMessage: {
+                const MinionMoveMessage *m = static_cast<const MinionMoveMessage *>(message);
+                Point3D trgt = m->getTarget();
+                Node *attached = GetTargetNode();
+                Point3D current = attached->GetNodePosition();
+                Vector3D diff = trgt - current;
+                if (Magnitude(diff) < STEP_SIZE) {
+                    GetNextTarget();
+                    return;
+                }
+                diff.Normalize();
+                diff = diff * STEP_SIZE;
+                Point3D step = current + diff;
+                
+                attached->SetNodePosition(step);
+                attached->InvalidateNode();
+                break;
             }
-            diff.Normalize();
-            diff = diff * STEP_SIZE;
-            Point3D step = current + diff;
-            
-            attached->SetNodePosition(step);
-            attached->InvalidateNode();
-        } else {
-            Controller::ReceiveMessage(message);
+            case kMinionShotMessage: {
+                const MinionShotMessage *m = static_cast<const MinionShotMessage *>(message);
+                health -= m->GetDamage();
+                
+                Node* model = GetTargetNode();
+                Transform4D scaled = model->GetNodeTransform();
+                model->SetNodeTransform(scaled * scaled.MakeScale(0.95));
+//                printf("minion #%d has %d health\n", id, health);
+                if (health == 0) {
+                    // TODO send a game message object and get the server to do this
+                    delete GetTargetNode();
+                }
+            }
+            default: {
+                Controller::ReceiveMessage(message);
+            }
         }
     }
     
@@ -132,5 +176,34 @@ namespace MMGame {
         
         return false;
     }
-
+    
+    MinionShotMessage::MinionShotMessage(ControllerMessageType type, int32 index): Tombstone::ControllerMessage(type, index) {
+        
+    }
+    
+    MinionShotMessage::MinionShotMessage(ControllerMessageType type, int32 dmg, int32 index): Tombstone::ControllerMessage(type, index) {
+        damage = dmg;
+    }
+    
+    MinionShotMessage::~MinionShotMessage() {
+        
+    }
+    
+    void MinionShotMessage::CompressMessage(Compressor& data) const {
+        ControllerMessage::CompressMessage(data);
+        
+        data << damage;
+        data << minionId;
+    }
+    
+    bool MinionShotMessage::DecompressMessage(Decompressor& data) {
+        if (ControllerMessage::DecompressMessage(data)) {
+            data >> damage;
+            data >> minionId;
+            
+            return true;
+        }
+        
+        return false;
+    }
 }

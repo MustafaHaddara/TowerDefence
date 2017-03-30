@@ -1,38 +1,20 @@
-
-// MODIFIED my MvM
-
-
-//=============================================================
-//
-// Tombstone Engine version 1.0
-// Copyright 2016, by Terathon Software LLC
-//
-// This file is part of the Tombstone Engine and is provided under the
-// terms of the license agreement entered by the registed user.
-//
-// Unauthorized redistribution of source code is strictly
-// prohibited. Violators will be prosecuted.
-//
-//=============================================================
-
-
 #include "TSToolWindows.h"
 #include "TSAudioCapture.h"
 #include "TSWater.h"
 
-#include "MMGame.h"
-#include "MMMultiplayer.h"
-#include "MMCameras.h"
-#include "MMGameWorld.h"
-#include "MMFighter.h"
+#include "TDGame.h"
+#include "TDMultiplayer.h"
+#include "TDCameras.h"
+#include "TDGameWorld.h"
+#include "TDFighter.h"
 
 
 
-using namespace MMGame;
+using namespace TDGame;
 
 
 
-Game *MMGame::TheGame = nullptr;
+Game *TDGame::TheGame = nullptr;
 
 
 
@@ -45,6 +27,7 @@ Game::Game() :
         collLocatorRegistration(kLocatorColl, "Coll Mark"),
         physLocatorRegistration(kLocatorPys, "Phys Mark"),
         soldierModelReg(kModelSoldier, nullptr, "soldier/Soldier", kModelPrecache | kModelPrivate, kControllerSoldier),
+        minionModelReg(kModelMinion, nullptr, "zombie/Zombie", kModelPrecache | kModelPrivate, kControllerSoldier),
         appleModelRegistration(kModelApple,nullptr, "health/Apple", 0, kControllerCollectable),
         //soldierModelReg(kModelSoldier, nullptr, "GUS/gus", kModelPrecache | kModelPrivate, kControllerSoldier),
 
@@ -52,6 +35,7 @@ Game::Game() :
 
         towerControllerRegistration(kControllerTower, "Tower"),
         minionControllerRegistration(kControllerMinion, "Minion"),
+        minionSpawnControllerRegistration(kControllerMinionSpawn, "Minion Spawn"),
 
 		hostCommandObserver(this, &Game::HandleHostCommand),
 		joinCommandObserver(this, &Game::HandleJoinCommand),
@@ -189,16 +173,16 @@ void Game::HandleJoinCommand(Command *command, const char *text)
 
     
     TheEngine->Report(str, kReportError);
-    TheNetworkMgr->SetPortNumber(kGamePort);
-    TheNetworkMgr->SetBroadcastPortNumber(kGamePort);
-    TheNetworkMgr->Initialize();
+//    TheNetworkMgr->SetPortNumber(kGamePort);
+//    TheNetworkMgr->SetBroadcastPortNumber(kGamePort);
+//    TheNetworkMgr->Initialize();
     
     // Now we're just going to (try to) connect to the entered address.
     NetworkAddress local_addr = TheNetworkMgr->GetLocalAddress();
     local_addr.SetPort(kGamePort);
     
-//    TheMessageMgr->Connect(local_addr);
-    TheMessageMgr->Connect(address);
+    TheMessageMgr->Connect(local_addr);
+//    TheMessageMgr->Connect(address);
 }
 
 
@@ -517,16 +501,20 @@ Message *Game::CreateMessage(MessageType type, Decompressor& data) const
             
             return(new ClientRequestMessage(type));
 
-            
+//        case kMessageMinionDead:
+//            return new MinionDeadMessage();
             
     }
     
     return (nullptr);
 }
 
-void Game::ReceiveMessage(Player *sender, const NetworkAddress& address, const Message *message)
-{
-    
+void Game::ReceiveMessage(Player *sender, const NetworkAddress& address, const Message *message) {
+//    switch (message->GetMessageType()) {
+//        case kMessageMinionDead:
+//            printf("recieved minion dead\n");
+//            break;
+//    }
 }
 
 void Game::SpawnPlayer(Player *player)
@@ -554,5 +542,3 @@ void Game::SpawnPlayer(Player *player)
 void Game::ApplicationTask(void)
 {
 }
-
-

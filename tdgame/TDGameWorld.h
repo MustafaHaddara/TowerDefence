@@ -1,18 +1,10 @@
-//
-//  MMGameWorld.h
-//
-//
-//  Created by Martin on 2016-10-04.
-//
-//
+#ifndef __Tombstone__TDGameWorld__
+#define __Tombstone__TDGameWorld__
 
-#ifndef __Tombstone__MMGameWorld__
-#define __Tombstone__MMGameWorld__
+#include "TDGame.h"
+#include "TDCameras.h"
 
-#include "MMGame.h"
-#include "MMCameras.h"
-
-namespace MMGame
+namespace TDGame
 {
     using namespace Tombstone;
 
@@ -27,7 +19,7 @@ private:
     int32					spawnLocatorCount;
     int32					collLocatorCount;
     int32                   minionCount;
-    static const int32      MAX_NUM_MINIONS = 32; // assuming we can only have 16 minions at a time derp
+    static const int32      MAX_NUM_MINIONS = 64; // ideally this would be a linkedlist so that we could have an unlimited number of minions but tombstone is trash so we can't use stl::list or stl::vector or Tombstone::List or Tombstone::Array 
     
     List<Marker>			spawnLocatorList;
     List<Marker>			collLocatorList;
@@ -47,9 +39,6 @@ private:
     static void HandleShakeCompletion(RumbleShaker *shaker, void *cookie);
     
     static ProximityResult RecordSplashDamage(Node *node, const Point3D& center, float radius, void *cookie);
-    
-    
-    
     
 public:
     
@@ -97,9 +86,7 @@ public:
         bloodIntensity = Fmin(blood, 1.0F);
     }
     
-    Node** GetMinions(void) {
-        return minionList;
-    }
+    Node** GetMinions(void);
     
     int32 GetNumMinions(void) {
         return minionCount;
@@ -136,8 +123,10 @@ public:
 
     void PopulateWorld(void);
     
+    void DeleteMinion(int32 minionId);
+    
 };
 
 }
 
-#endif /* defined(__Tombstone__MMGameWorld__) */
+#endif /* defined(__Tombstone__TDGameWorld__) */

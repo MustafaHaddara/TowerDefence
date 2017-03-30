@@ -1,21 +1,9 @@
- //
-//  MMSkin.h
-//  C4
-//
-//  Created by Martin v. Mohrenschildt on 14-11-19.
-//  Copyright (c) 2014 McMaster. All rights reserved.
-//
-
-#ifndef C4_MMSkin_h
-#define C4_MMSkin_h
+#ifndef C4_TDSkin_h
+#define C4_TDSkin_h
 
 #include "TSInterface.h"
 
-
-
-
-
-namespace MMGame
+namespace TDGame
 {
     
     using namespace Tombstone;

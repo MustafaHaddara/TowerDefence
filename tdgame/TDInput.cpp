@@ -1,26 +1,12 @@
-//=============================================================
-//
-// Tombstone Engine version 1.0
-// Copyright 2016, by Terathon Software LLC
-//
-// This file is part of the Tombstone Engine and is provided under the
-// terms of the license agreement entered by the registed user.
-//
-// Unauthorized redistribution of source code is strictly
-// prohibited. Violators will be prosecuted.
-//
-//=============================================================
+#include "TDInput.h"
+#include "TDGame.h"
+#include "TDMultiPlayer.h"
+
+#include "TDFighter.h"
+#include "TDGameWorld.h"
 
 
-#include "MMInput.h"
-#include "MMGame.h"
-#include "MMMultiPlayer.h"
-
-#include "MMFighter.h"
-#include "MMGameWorld.h"
-
-
-using namespace MMGame;
+using namespace TDGame;
 
 
 MovementAction::MovementAction(ActionType type, unsigned_int32 moveFlag, unsigned_int32 specFlag) : Action(type)
@@ -165,9 +151,8 @@ void FireAction::HandleEngage(void)
 			if ((!interactionNode) || (interactionNode->GetNodeType() != kNodeEffect))
 			{
 				// No panel effect, so fire the weapon.
-
 				ClientFiringMessage message((GetActionType() == kActionFirePrimary) ? kMessageClientFiringPrimaryBegin : kMessageClientFiringSecondaryBegin, controller->GetLookAzimuth(), controller->GetLookAltitude());
-				TheMessageMgr->SendMessage(kPlayerServer, message);
+				TheMessageMgr->SendMessage(player->GetPlayerKey(), message);
 			}
 			else
 			{
@@ -225,4 +210,3 @@ void FireAction::HandleDisengage(void)
 
 
 
-// ZUXSVMT

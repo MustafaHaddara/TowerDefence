@@ -1,15 +1,10 @@
-// MODIFIED my MvM
+#include "TDMultiplayer.h"
+#include "TDGame.h"
 
-//=============================================================
+#include "TDFighter.h"
+#include "TDGameWorld.h"
 
-
-#include "MMMultiplayer.h"
-#include "MMGame.h"
-
-#include "MMFighter.h"
-#include "MMGameWorld.h"
-
-using namespace MMGame;
+using namespace TDGame;
 
 
 namespace
@@ -607,8 +602,3 @@ bool ClientRequestMessage::HandleMessage(Player *sender) const
         //}
     //}
 }
-
-
-
-
-// ZUXSVMT

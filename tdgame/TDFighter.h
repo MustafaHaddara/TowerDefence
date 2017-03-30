@@ -1,36 +1,19 @@
-
-// MODIFIED my MvM
-
-//=============================================================
-//
-// Tombstone Engine version 1.0
-// Copyright 2016, by Terathon Software LLC
-//
-// This file is part of the Tombstone Engine and is provided under the
-// terms of the license agreement entered by the registed user.
-//
-// Unauthorized redistribution of source code is strictly
-// prohibited. Violators will be prosecuted.
-//
-//=============================================================
-
-
-#ifndef MMFighter_h
-#define MMFighter_h
+#ifndef TDFighter_h
+#define TDFighter_h
 
 
 #include "TSWorld.h"
 
-#include "MMMultiplayer.h"
-#include "MMCharacter.h"
-#include "MMGamePlayer.h"
+#include "TDMultiplayer.h"
+#include "TDCharacter.h"
+#include "TDGamePlayer.h"
 
 
 
 
 
 
-namespace MMGame
+namespace TDGame
 {
 	using namespace Tombstone;
     
@@ -39,7 +22,8 @@ namespace MMGame
 
        enum : ModelType
         {
-                kModelSoldier                   = 'sold'
+                kModelSoldier                   = 'sold',
+                kModelMinion                    = 'mmin'
         };
     
     enum{
@@ -439,7 +423,7 @@ namespace MMGame
             void AnimateFighter(void); // WAS VIRTUAL
         
         
-        //MM
+        //TD
         void SetPlayerKey(int key){
             playerkey=key;
         }
@@ -737,4 +721,3 @@ namespace MMGame
 
 #endif
 
-// ZUXSVMT

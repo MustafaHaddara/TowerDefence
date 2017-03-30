@@ -1,14 +1,8 @@
-//
-//  MMSkin.cpp
-//
+#include "TDSkin.h"
+#include "TDGame.h"
 
 
-
-#include "MMSkin.h"
-#include "MMGame.h"
-
-
-using namespace MMGame;
+using namespace TDGame;
 
 MainWindow::MainWindow() :
 	Window("panels/Splash"),
@@ -406,6 +400,6 @@ void DisplayBoard::SelectTowerThree(void)
 	}
 }
 
-DisplayBoard *MMGame::TheDisplayBoard = nullptr;
-MainWindow *MMGame::TheMainWindow = nullptr;
-SinglePlayerWindow *MMGame::TheSinglePlayerWindow = nullptr;
+DisplayBoard *TDGame::TheDisplayBoard = nullptr;
+MainWindow *TDGame::TheMainWindow = nullptr;
+SinglePlayerWindow *TDGame::TheSinglePlayerWindow = nullptr;

@@ -1,19 +1,5 @@
-//=============================================================
-//
-// Tombstone Engine version 1.0
-// Copyright 2016, by Terathon Software LLC
-//
-// This file is part of the Tombstone Engine and is provided under the
-// terms of the license agreement entered by the registed user.
-//
-// Unauthorized redistribution of source code is strictly
-// prohibited. Violators will be prosecuted.
-//
-//=============================================================
-
-
-#ifndef MMBase_h
-#define MMBase_h
+#ifndef TDBase_h
+#define TDBase_h
 
 
 #include "TSSound.h"
@@ -21,7 +7,7 @@
 #include "TSApplication.h"
 
 
-#define MMCHEATS	1
+#define TDCHEATS	1
 
 
 extern "C"
@@ -30,7 +16,7 @@ extern "C"
 }
 
 
-namespace MMGame
+namespace TDGame
 {
 	using namespace Tombstone;
 	using Tombstone::Fixed;
@@ -80,11 +66,8 @@ namespace MMGame
         kSoldierEntity      ='csol',  // THE AVATAR
         kCollectEntity      ='ccol',  // SOMETHING WE CAN COLLECT
         kPhysEntiy          ='cphy',  // SOMETHING WITH PHYSICS
-//        kMinionEntity       ='mini',  // MINION
     };
 }
 
 
 #endif
-
-// ZUXSVMT

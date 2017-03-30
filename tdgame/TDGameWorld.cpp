@@ -1,29 +1,14 @@
-//
-//  MMGameWorld.cpp
-//
-//  Created by Martin on 2016-10-04.
-//
-//
-
-#include "MMGameWorld.h"
+#include "TDGameWorld.h"
 
 
-#include "MMMultiPLayer.h"
-#include "MMGamePlayer.h"
-#include "MMFighter.h"
+#include "TDMultiPLayer.h"
+#include "TDGamePlayer.h"
+#include "TDFighter.h"
 #include "TDMinionController.h"
 
-#include "MMColectCont.h"
-#include "MMPhysEntity.h"
+#include "TDColectCont.h"
 
-
-
-
-
-using namespace MMGame;
-
-
-
+using namespace TDGame;
 
 GameWorld::GameWorld(const char *name) :
 World(name),
@@ -85,20 +70,6 @@ void GameWorld::CollectZoneMarkers(Zone *zone)
         marker = next;
     }
 
-    Node *child = GetRootNode()->GetFirstSubnode();
-    while (child) {
-        Controller *c = child->GetController();
-        if (c != nullptr && c->GetControllerType() == kControllerMinion) {
-            if (minionCount > MAX_NUM_MINIONS) {
-                //printf("too many minions!");
-                return;
-            }
-            minionList[minionCount] = child;
-            minionCount++;
-        }
-        child=child->GetNextSubnode();
-    }
-    
     Zone *subzone = zone->GetFirstSubzone();
     while (subzone)
     {
@@ -198,7 +169,6 @@ void GameWorld::SetFocalLength(float focal)
 #define TYPE_NAME(type) \
 (kSoldierEntity       == type ? "kSoldierEntity"    :  \
 (kCollectEntity     == type ? "kCollectEntity"   :  \
-(kPhysEntiy   == type ? "kPhysEntiy"  : \
 (0 == type ? "yellow" : "unknown"))))
 
 
@@ -312,10 +282,6 @@ void GameWorld::AddOjectAtLocation(const Point3D& pos ,ObjectType type,long inde
             model = Model::NewModel("models/model1");
             break;
             
-        case kPhysEntiy:
-            controller=new PhysEntity();
-            model = Model::NewModel("models/model1");
-            break;
     }
     
     // SET THE CONTROLLER KEY
@@ -339,9 +305,39 @@ void GameWorld::PopulateWorld(void)
 	for(int i=0;i<collLocatorCount;i++){
 		ReqestOjectAtLocation(collLocatorList[i]->GetNodePosition(),kCollectEntity ,-1);
 	}
-
-
 }
 
+void GameWorld::DeleteMinion(int32 minionId) {
+    GetMinions();
+    for (int i=0; i<minionCount; i++) {
+        Node *minionNode = minionList[i];
+        if (minionNode != nullptr) {
+            MinionController *mc = static_cast<MinionController *>(minionNode->GetController());
+            if (mc->GetId() == minionId) {
+                minionList[i] = nullptr;
+                minionNode->GetSuperNode()->RemoveSubnode(minionNode);
+                delete minionNode;
+            }
+        }
+    }
+}
 
+Node** GameWorld::GetMinions() {
+    Node *child = GetRootNode()->GetFirstSubnode();
+    minionCount = 0;
+    while (child) {
+        Controller *c = child->GetController();
+        if (c != nullptr && c->GetControllerType() == kControllerMinion) {
+            if (minionCount > MAX_NUM_MINIONS) {
+                printf("too many minions!");
+                return;
+            }
+            minionList[minionCount] = child;
+            minionCount++;
+        }
+        child=child->GetNextSubnode();
+    }
+    return minionList;
+
+}
 

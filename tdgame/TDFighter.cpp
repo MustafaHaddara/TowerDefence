@@ -1,26 +1,9 @@
-// MODIFIED my MvM
+#include "TDFighter.h"
+#include "TDGame.h"
+#include "TDCameras.h"
 
 
-//=============================================================
-//
-// Tombstone Engine version 1.0
-// Copyright 2016, by Terathon Software LLC
-//
-// This file is part of the Tombstone Engine and is provided under the
-// terms of the license agreement entered by the registed user.
-//
-// Unauthorized redistribution of source code is strictly
-// prohibited. Violators will be prosecuted.
-//
-//=============================================================
-
-
-#include "MMFighter.h"
-#include "MMGame.h"
-#include "MMCameras.h"
-
-
-using namespace MMGame;
+using namespace TDGame;
 
 
 namespace
@@ -157,9 +140,6 @@ void FighterController::PreprocessController(void)
 
 	Model *model = GetTargetNode();
 	model->AppendSubnode(mountNode);
-    
-    
-    
 
 	rootAnimator = new MergeAnimator(model);
 	mergeAnimator = new MergeAnimator(model);
@@ -415,18 +395,15 @@ ControllerMessage *FighterController::CreateMessage(ControllerMessageType type) 
 {
 	switch (type)
 	{
-            case kFighterMessageBeginMovement:
-            case kFighterMessageEndMovement:
-            case kFighterMessageChangeMovement:
+        case kFighterMessageBeginMovement:
+        case kFighterMessageEndMovement:
+        case kFighterMessageChangeMovement:
+            return (new FighterMovementMessage(type, GetControllerIndex()));
 
-			return (new FighterMovementMessage(type, GetControllerIndex()));
-
-			case kFighterMessageDeath:
-
-			return (new ControllerMessage(kFighterMessageDeath, GetControllerIndex()));
-            
-            case kFireLaser:
-           
+        case kFighterMessageDeath:
+            return (new ControllerMessage(kFighterMessageDeath, GetControllerIndex()));
+        
+        case kFireLaser:
             return(new ControllerMessage(kFireLaser, GetControllerIndex()));
 	}
 

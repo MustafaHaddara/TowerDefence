@@ -1,16 +1,8 @@
-//
-//  MMGamePlayer.cpp
-//  Tombstone
-//
-//  Created by Martin on 2016-10-04.
-//
-//
+#include "TDGamePlayer.h"
+#include "TDGame.h"
+#include "TDFighter.h"
 
-#include "MMGamePlayer.h"
-#include "MMGame.h"
-#include "MMFighter.h"
-
-using namespace MMGame;
+using namespace TDGame;
 
 
 /*---------------------------------------------------------------------*/

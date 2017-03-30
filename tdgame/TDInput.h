@@ -25,9 +25,9 @@ namespace TDGame
 		kActionFirePrimary			= 'fire',
 		kActionFireSecondary		= 'trig',
 		kActionUse					= 'uobj',
-		kActionPistol				= 'pist',
-		kActionShotgun				= 'shgn',
-		kActionCrossbow				= 'cbow',
+		kActionTowerOne				= 'twr1',
+		kActionTowerTwo				= 'twr2',
+		kActionTowerThree			= 'twr3',
 		kActionSpikeShooter			= 'spsh',
 		kActionGrenadeLauncher		= 'gren',
 		kActionQuantumCharger		= 'qchg',
@@ -96,6 +96,17 @@ namespace TDGame
 
 			void HandleEngage(void);
 			void HandleDisengage(void);
+	};
+
+
+	class TowerAction : public Action
+	{
+	public:
+
+		TowerAction(ActionType type);
+		~TowerAction();
+
+		void HandleEngage(void);
 	};
 
 

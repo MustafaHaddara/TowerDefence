@@ -369,6 +369,8 @@ void DisplayBoard::SelectTowerOne(void)
 	if (towerOne->GetValue() == 0)
 	{
 		towerOne->SetValue(1);
+		towerTwo->SetValue(0);
+		towerThree->SetValue(0);
 	}
 	else
 	{
@@ -381,6 +383,8 @@ void DisplayBoard::SelectTowerTwo(void)
 	if (towerTwo->GetValue() == 0)
 	{
 		towerTwo->SetValue(1);
+		towerOne->SetValue(0);
+		towerThree->SetValue(0);
 	}
 	else
 	{
@@ -393,6 +397,8 @@ void DisplayBoard::SelectTowerThree(void)
 	if (towerThree->GetValue() == 0)
 	{
 		towerThree->SetValue(1);
+		towerOne->SetValue(0);
+		towerTwo->SetValue(0);
 	}
 	else
 	{

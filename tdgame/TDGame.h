@@ -76,6 +76,10 @@ namespace TDGame
 			MovementAction									movementAction;
 			FireAction										primaryFireAction;
 
+			TowerAction										towerOneAction;
+			TowerAction										towerTwoAction;
+			TowerAction										towerThreeAction;
+
 
 			InputMgr::KeyCallback							*prevEscapeCallback;
 			void											*prevEscapeCookie;

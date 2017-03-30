@@ -602,3 +602,38 @@ bool ClientRequestMessage::HandleMessage(Player *sender) const
         //}
     //}
 }
+
+ClientTowerSelectMessage::ClientTowerSelectMessage(MessageType type) : Message(type)
+{
+	towerNumber = type;
+}
+
+ClientTowerSelectMessage::~ClientTowerSelectMessage()
+{
+}
+
+void ClientTowerSelectMessage::CompressMessage(Compressor& data) const
+{
+}
+
+bool ClientTowerSelectMessage::DecompressMessage(Decompressor& data)
+{
+	return true;
+}
+
+bool ClientTowerSelectMessage::HandleMessage(Player *sender) const
+{
+	switch (towerNumber)
+	{
+	case (kMessageTowerOne) :
+		TheDisplayBoard->SelectTowerOne();
+		break;
+	case (kMessageTowerTwo) :
+		TheDisplayBoard->SelectTowerTwo();
+		break;
+	case (kMessageTowerThree) :
+		TheDisplayBoard->SelectTowerThree();
+		break;
+	}
+	return true;
+}

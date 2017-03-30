@@ -993,6 +993,7 @@ namespace TDGame
              */
 			void MoveAnimator(void) override;
 	};
+}
 
 
 #endif

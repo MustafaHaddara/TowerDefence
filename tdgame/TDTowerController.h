@@ -156,35 +156,6 @@ namespace TDGame
          */
         bool DecompressMessage(Decompressor& data) override;
     };
-	
-	class TowerCreateMessage : public ControllerMessage {
-		friend class TowerController;
-	
-	private:
-		Point3D position;
-		int32 newControllerIndex;
-		int32 health;
-		int32 id;
-	public:
-
-		Point3D getPosition() const {
-			return position;
-		}
-		int32 GetNewControllerIndex() const {
-			return newControllerIndex;
-		}
-
-		TowerCreateMessage(ControllerMessageType type, int32 index);
-		TowerCreateMessage(ControllerMessageType type, const Point3D& pos, int32 index, unsigned_int32 flags = 0);
-		~TowerCreateMessage();
-
-		void CompressMessage(Compressor & data) const override;
-		bool DecompressMessage(Decompressor& data) override;
-		int32 GetID() {
-			return id;
-		}
-	};
-
 }
 
 #endif
